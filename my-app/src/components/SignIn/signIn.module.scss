@@ -1,0 +1,38 @@
+.main {
+  display: flex;
+  height: 100vh;
+
+  &_logInBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    &_regPage {
+      display: flex;
+      justify-content: center;
+      color: #5082e1;
+      cursor: pointer;
+    }
+
+    &_title {
+      display: flex;
+      justify-content: center;
+      font-size: 2.25rem;
+      color: #2B3844;
+    }
+
+    &_form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.875rem;
+      width: 50%;
+    }
+  }
+
+  &_imgBlock {
+    display: flex;
+    justify-content: flex-end;
+    width: 50%;
+  }
+}

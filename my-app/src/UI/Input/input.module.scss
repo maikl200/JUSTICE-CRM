@@ -1,0 +1,12 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  & input {
+    padding: 1rem;
+    opacity: 0.3;
+    border: 0.063rem solid #354352;
+    border-radius: 0.188rem;
+  }
+}
