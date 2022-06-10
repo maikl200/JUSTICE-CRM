@@ -1,11 +1,24 @@
 .nav {
   display: flex;
-  justify-content: center;
-  width: 15%;
-  margin-top: 50px;
+  align-items: center;
+  flex-direction: column;
+  height: 800px;
+  margin-top: 64px;
+  position: absolute;
+
+  &_logOutBlock {
+    display: flex;
+    position: absolute;
+    border-top: 3px solid #E8EBEF;
+    bottom: 0;
+    gap: 11px;
+    color: #a9aeb3;
+  }
 
   &_navElements {
     display: flex;
     flex-direction: column;
+    margin-top: 67px;
+    width: 100%;
   }
 }
