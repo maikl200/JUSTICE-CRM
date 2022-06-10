@@ -1,0 +1,11 @@
+.nav {
+  display: flex;
+  justify-content: center;
+  width: 15%;
+  margin-top: 50px;
+
+  &_navElements {
+    display: flex;
+    flex-direction: column;
+  }
+}
