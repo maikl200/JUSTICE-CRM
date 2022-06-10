@@ -3,7 +3,7 @@ import React, {FC} from 'react';
 import style from './createAcc.module.scss'
 import imgReg from '../../assets/img_at_registration.png'
 import Input from "../../UI/Input/Input";
-import ButtonUI from "../../UI/Button/Button";
+import ButtonUI from "../../UI/Button/ButtonUI";
 import {useNavigate} from "react-router-dom";
 
 const CreateAcc: FC = () => {
