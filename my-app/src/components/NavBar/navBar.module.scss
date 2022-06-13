@@ -1,10 +1,12 @@
+.wrapper {
+  display: flex
+}
 .nav {
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 800px;
-  margin-top: 64px;
-  position: absolute;
+  height: 100vh;
+  padding-top: 64px;
 
   &_logOutBlock {
     display: flex;

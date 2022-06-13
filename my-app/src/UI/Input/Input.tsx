@@ -3,7 +3,7 @@ import React, {FC} from 'react';
 import style from './input.module.scss'
 
 interface Props {
-    title: string
+    title?: string
     placeholder: string
     type: string
     width: string
