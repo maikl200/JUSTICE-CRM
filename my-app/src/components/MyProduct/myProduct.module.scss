@@ -1,0 +1,81 @@
+.main {
+  display: flex;
+  overflow: hidden;
+
+  &_productBar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background: #f8f8f8;
+    width: 100%;
+
+
+    &_productCard {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      font-size: 14px;
+      margin-top: 28px;
+      overflow: scroll;
+      overflow-x: hidden;
+
+
+      &_Title {
+        display: flex;
+        align-items: center;
+        color: white;
+        background: #2B3844;
+        padding: 20px 22px 20px 39px;
+
+        & p {
+          text-align: center;
+          vertical-align: center;
+          width: 11.1% !important;
+        }
+      }
+
+      &_productData {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+
+        &_product {
+          display: flex;
+          align-items: center;
+          background: #FFFFFF;
+          padding: 20px 22px 20px 39px;
+
+
+          & p {
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 11.1% !important;
+          }
+
+          &_btn {
+            display: flex;
+            gap: 8px;
+
+            & img {
+              cursor: pointer;
+            }
+          }
+        }
+
+        &_product:nth-child(2n) {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #F8F8F8;
+          padding: 20px 22px 20px 39px;
+
+        }
+
+      }
+
+    }
+  }
+}

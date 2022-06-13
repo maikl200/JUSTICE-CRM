@@ -15,9 +15,7 @@ const SignIn: FC = () => {
           <span className={style.main_logInBlock_title}>Sign in</span>
           <Input title='Email' placeholder='Email' type='email' width='100%'/>
           <Input title='Password' placeholder='Password' type='password' width='100%'/>
-          <ButtonUI title='Log in' src='' alt='' justifyContent='' padding='6px 12px' width='100%'
-                    backgroundColorHover='' color='' backgroundColor='' backgroundColorActive='' borderColorActive=''
-                    borderRight='' colorHover=''/>
+          <ButtonUI height='56px' title='Log in' padding='6px 12px' width='100%'/>
           <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
         </form>
       </div>

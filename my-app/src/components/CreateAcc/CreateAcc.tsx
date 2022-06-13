@@ -21,9 +21,7 @@ const CreateAcc: FC = () => {
           <Input title='Email' placeholder='Email' type='email' width='100%'/>
           <Input title='Password' placeholder='Password' type='password' width='100%'/>
           <Input title='Repeat password' placeholder='Repeat password' type='password' width='100%'/>
-          <ButtonUI title='Create account' src='' alt='' justifyContent='' padding='6px 12px' width='100%'
-                    backgroundColorHover='' color='' backgroundColor='' backgroundColorActive='' borderColorActive=''
-                    borderRight='' colorHover=''/>
+          <ButtonUI height='56px' title='Create account' padding='6px 12px' width='100%'/>
           <span className={style.main_regBlock_logInPage}>Already have an account? <span
             onClick={() => navigate('/signIn')}>Log in</span></span>
         </form>

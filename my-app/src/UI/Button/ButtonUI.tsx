@@ -1,29 +1,38 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 
 import {styled} from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import IconSvg, {IconType} from "../../assets/icons/IconSvg";
 
 interface Props {
-  title: string
-  src: string
-  alt: string
-  justifyContent: string
-  backgroundColor: string
-  color: string
-  backgroundColorHover: string
-  borderRight: string
-  colorHover: string
-  padding: string
-  backgroundColorActive: string
-  borderColorActive: string
+  style?: string,
+  title?: string
+  justifyContent?: string
+  backgroundColor?: string
+  color?: string
+  backgroundColorHover?: string
+  borderRight?: string
+  colorHover?: string
+  padding?: string
+  backgroundColorActive?: string
+  borderColorActive?: string
   width: string
+  minWidth?: string
+  icon?: IconType
+  onMouseEnter?: any
+  onMouseLeave?: any
+  leftSrc?: string
+  rightSrc?: string
+  leftAlt?: string
+  rightAlt?: string
+  onClick?: () => void
+  height?: string
+  opacity?: string
 }
 
 const ButtonUI: FC<Props> = (
   {
     title,
-    src,
-    alt,
     justifyContent,
     backgroundColor,
     color,
@@ -33,9 +42,20 @@ const ButtonUI: FC<Props> = (
     padding,
     backgroundColorActive,
     borderColorActive,
-    width
+    width,
+    minWidth,
+    icon,
+    leftSrc,
+    rightSrc,
+    rightAlt,
+    leftAlt,
+    onClick,
+    height,
+    opacity
   }
 ) => {
+
+  const [isHover, setIsHover] = useState(false)
 
   const BootstrapButton = styled(Button)({
     boxShadow: 'none',
@@ -43,11 +63,12 @@ const ButtonUI: FC<Props> = (
     gap: '11px',
     justifyContent: `${justifyContent}`,
     textTransform: 'none',
-    color: `${color}`,
+    opacity: `${opacity}`,
     fontSize: 14,
     padding: `${padding}`,
     width: `${width}`,
-    height: '56px',
+    minWidth: `${minWidth}`,
+    height: `${height}`,
     borderRadius: '3px',
     lineHeight: 1.5,
     backgroundColor: `${backgroundColor}`,
@@ -75,8 +96,13 @@ const ButtonUI: FC<Props> = (
 
   return (
     <>
-      <BootstrapButton type='submit' variant="contained" disableRipple>
-        <img src={src} alt={alt}/> {title}
+      <BootstrapButton onClick={onClick} onMouseEnter={() => setIsHover(true)}
+                       onMouseOut={() => setIsHover(false)} type='submit'
+                       variant="contained" disableRipple>
+        {leftSrc && <img src={leftSrc} alt={leftAlt}/>}
+        {icon && <IconSvg type={icon} fill={isHover ? 'blue' : '#a9aeb3'}/>}
+        {title && <span style={{color: color}}>{title}</span>}
+        {rightSrc && <img src={rightSrc} alt={rightAlt}/>}
       </BootstrapButton>
     </>
   );
