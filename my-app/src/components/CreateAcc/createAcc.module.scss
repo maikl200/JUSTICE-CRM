@@ -8,10 +8,23 @@
     align-items: center;
     width: 100%;
 
+
+    &_error {
+      color: #ff7675;
+      height: 35px;
+    }
+
+    &_errorBlock {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     &_logInPage {
       display: flex;
       justify-content: center;
-      gap: 7px;
+      margin-top: 32px;
+      gap: 10px;
 
       & span {
         color: #5082e1;
@@ -29,13 +42,13 @@
     &_form {
       display: flex;
       flex-direction: column;
-      gap: 1.875rem;
       width: 50%;
     }
 
     &_inputsRow {
       display: flex;
       justify-content: space-between;
+      margin-top: 48px;
       gap: 1rem;
     }
   }
