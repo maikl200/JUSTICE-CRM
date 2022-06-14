@@ -1,0 +1,26 @@
+.main {
+  display: flex;
+
+  &_personalCabinetBar {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background: #f8f8f8;
+    width: 100%;
+
+    &_userSettings {
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      border-top: 1px solid #2B384414;
+      gap: 33px;
+      padding-top: 53px;
+      width: 90%;
+
+      &_row {
+        display: flex;
+        gap: 32px;
+      }
+    }
+  }
+}
