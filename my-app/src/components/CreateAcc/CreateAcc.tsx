@@ -108,7 +108,7 @@ const CreateAcc: FC = () => {
       email: valueEmail,
       repeatPassword: valueRepeatPassword
     }
-    const localUsers: any = localStorage.getItem('users')
+    const localUsers: string | null = localStorage.getItem('users')
     if (localUsers) {
       userCreate(user, localUsers)
     } else {
@@ -117,10 +117,9 @@ const CreateAcc: FC = () => {
     }
   }
 
-  const userCreate = (user: any, localUsers: any) => {
+  const userCreate = (user: userData, localUsers: string) => {
 
-    // @ts-ignore
-    const oldUser = JSON.parse(localUsers).filter(oldUser => oldUser.email === user.email)
+    const oldUser = JSON.parse(localUsers).filter((oldUser: userData) => oldUser.email === user.email)
     if (oldUser.length) {
       setShowError('Пользователь с таким Email существует')
     } else {
