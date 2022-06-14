@@ -16,8 +16,18 @@ const initialTouched = {
   valueRepeatPassword: false,
 }
 
+type userData = {
+  firstName: string
+  lastName: string
+  companyName: string
+  email: string
+  password: string
+  repeatPassword: string
+}
+
 const CreateAcc: FC = () => {
   const navigate = useNavigate()
+
 
   const [valueFirstName, setValueFirstName] = useState<string>('')
   const [touched, setTouched] = useState<object>(initialTouched)
@@ -30,9 +40,10 @@ const CreateAcc: FC = () => {
   const [errorCompanyName, setErrorCompanyName] = useState<string>('Invalid company name')
   const [errorPassword, setErrorPassword] = useState<string>('Invalid password')
   const [errorRepeatPassword, setErrorRepeatPassword] = useState<string>('Password does not match')
-  const [errorEmail, setErrorEmail] = useState<string>('Invalid company name')
+  const [errorEmail, setErrorEmail] = useState<string>('Invalid Email')
   const [errorFirstName, setErrorFirstName] = useState<string>('Invalid name')
   const [errorLastName, setErrorLastName] = useState<string>('Invalid last name')
+  const [showError, setShowError] = useState<string>('')
 
   const regEx = {
     name: /^[a-zA-Z]+$/,
@@ -87,17 +98,37 @@ const CreateAcc: FC = () => {
     }
   }
 
-  const onSubmit = (collection: any,e:any) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(collection)
-    const users = {
+    const user: userData = {
       firstName: valueFirstName,
       lastName: valueLastName,
-      companyName: valueCompanyName
-
+      companyName: valueCompanyName,
+      password: valuePassword,
+      email: valueEmail,
+      repeatPassword: valueRepeatPassword
+    }
+    const localUsers: any = localStorage.getItem('users')
+    if (localUsers) {
+      userCreate(user, localUsers)
+    } else {
+      localStorage.setItem('users', JSON.stringify([user]))
+      navigate('/signIn')
     }
   }
 
+  const userCreate = (user: any, localUsers: any) => {
+
+    // @ts-ignore
+    const oldUser = JSON.parse(localUsers).filter(oldUser => oldUser.email === user.email)
+    if (oldUser.length) {
+      setShowError('Пользователь с таким Email существует')
+    } else {
+      localStorage.setItem('users', JSON.stringify([...JSON.parse(localUsers), user]))
+      setShowError('')
+      navigate('/signIn')
+    }
+  }
 
   useEffect(() => {
     if (!!errorFirstName || !!errorLastName || !!errorCompanyName || !!errorPassword || !!errorEmail || !!errorRepeatPassword) {
@@ -110,9 +141,10 @@ const CreateAcc: FC = () => {
   return (
     <main className={style.main}>
       <div className={style.main_regBlock}>
-        <form className={style.main_regBlock_form} onSubmit={(e: any) => onSubmit(e.target.elements,e)}
+        <form className={style.main_regBlock_form} onSubmit={(e) => onSubmit(e)}
               onBlur={(e) => BlurHandler(e)}>
           <span className={style.main_regBlock_title}>Create an account</span>
+          <span className={style.main_regBlock_error}>{showError}</span>
           <div className={style.main_regBlock_inputsRow}>
             <div className={style.main_regBlock_errorBlock}>
               <Input
