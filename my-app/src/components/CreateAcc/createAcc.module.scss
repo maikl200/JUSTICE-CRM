@@ -10,8 +10,10 @@
 
 
     &_error {
+      display: flex;
+      justify-content: center;
       color: #ff7675;
-      height: 35px;
+      height: 20px;
     }
 
     &_errorBlock {
