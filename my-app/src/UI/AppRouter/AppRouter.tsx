@@ -6,6 +6,7 @@ import SignIn from "../../components/SignIn/SignIn";
 import MainPage from "../../components/MainPage/MainPage";
 import MyProduct from "../../components/MyProduct/MyProduct";
 import MySales from "../../components/MySales/MySales";
+import PersonalCabinet from "../../components/PersonalCabinet/PersonalCabinet";
 
 const AppRouter: FC = () => {
   return (
@@ -15,6 +16,7 @@ const AppRouter: FC = () => {
       <Route path='/mainPage' element={<MainPage/>}/>
       <Route path='/myProduct' element={<MyProduct/>}/>
       <Route path='/mySales' element={<MySales/>}/>
+      <Route path='/personalCabinet' element={<PersonalCabinet/>}/>
       <Route path='*' element={<SignIn/>}/>
       <Route path='/' element={<SignIn/>}/>
     </Routes>

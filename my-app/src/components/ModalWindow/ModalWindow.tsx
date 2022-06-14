@@ -5,12 +5,12 @@ import cross from '../../assets/Cross.svg'
 
 
 interface ModalCreatingProductProps {
-  setModalActive: any
+  setModalActive: (isActive: boolean) => void
   children: React.ReactNode
   title: string
 }
 
-const ModalWindow: FC<ModalCreatingProductProps> = ({ setModalActive, children,title}) => {
+const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children,title}) => {
   return (
     <>
       <div className={style.modal}>
