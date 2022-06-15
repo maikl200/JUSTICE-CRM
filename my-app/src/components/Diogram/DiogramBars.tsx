@@ -1,20 +1,22 @@
 import React from 'react';
 import Chart from "react-apexcharts";
+import {productData} from '../../mockdata/productData'
 
 const DiogramBars = () => {
+
   return (
     <div>
       <Chart
         type='bar'
-        width={765}
+        width={1045}
         height={480}
         series={[{
           name: 'sales',
-          data: [500, 150, 400, 70, 170, 600, 450],
+          data: [...productData.map((item) => item.soldItems)],
           color: '#5B6ACD'
         }, {
           name: '',
-          data: [-200, -200, -200, -200, -200, -200, -200],
+          data: [-200, -200, -200, -200, -200, -200],
           color: '#EFF1FF'
         }]
         }

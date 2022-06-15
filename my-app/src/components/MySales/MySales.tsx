@@ -34,7 +34,7 @@ const MySales: FC = () => {
                     <p>{product.address}</p>
                     <p>{product.category}</p>
                     <p>{product.creationDate}</p>
-                    <p>{product.price}</p>
+                    <p>${product.price}</p>
                     <p>{product.soldItems}</p>
                     <p>{product.weightVolume}</p>
                     <p>{product.lastSale}</p>
