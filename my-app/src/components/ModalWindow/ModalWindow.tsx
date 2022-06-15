@@ -8,16 +8,17 @@ interface ModalCreatingProductProps {
   setModalActive: (isActive: boolean) => void
   children: React.ReactNode
   title: string
+  onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
 }
 
-const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children,title}) => {
+const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children, title, onBlur}) => {
   return (
     <>
       <div className={style.modal}>
         <div className={style.modal_wrapper}>
           <div className={style.modal_wrapper_modalContent}>
             <span className={style.modal_wrapper_modalContent_title}>{title}</span>
-            <form className={style.modal_wrapper_modalContent_form}>
+            <form className={style.modal_wrapper_modalContent_form} onBlur={onBlur}>
               {children}
             </form>
           </div>
