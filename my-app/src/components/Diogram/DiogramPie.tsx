@@ -1,8 +1,13 @@
 import React from 'react';
 
 import Chart from 'react-apexcharts'
+import {productData} from "../../mockdata/productData";
 
 const DiogramPie = () => {
+  const productsInDay = productData.filter(product => product.lastSale === '05.07.2021')
+  const productsCategoryInDay = productsInDay.map(product => product.category)
+  const productsCountInDay = productsInDay.map( product => product.soldItems)
+
   return (
     <div>
       {/*todo Доделай график pie (смотри на макет)*/}
@@ -10,7 +15,8 @@ const DiogramPie = () => {
         type='pie'
         width={350}
         height={350}
-        series={[100, 200, 300, 400]}
+        /*@ts-ignore*/
+        series={[...productsCountInDay]}
         options={{
           dataLabels: {
             enabled: false
@@ -27,7 +33,8 @@ const DiogramPie = () => {
               fontFamily: 'Inter',
             }
           },
-          labels: ['Auto goods', 'Auto goods', 'Auto goods', 'Auto goods'],
+          // labels: ['Auto goods', 'Auto goods', 'Auto goods', 'Auto goods'],
+          labels: [...productsCategoryInDay],
           colors: ['#5B6ACD', '#5182E7', '#F4AE43', '#1CAF7F']
         }}
       >

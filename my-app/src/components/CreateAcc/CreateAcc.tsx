@@ -5,6 +5,7 @@ import imgReg from '../../assets/img_at_registration.png'
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {useNavigate} from "react-router-dom";
+import {regEx} from "../../assets/regEx";
 
 
 const initialTouched = {
@@ -28,7 +29,6 @@ type userData = {
 const CreateAcc: FC = () => {
   const navigate = useNavigate()
 
-
   const [valueFirstName, setValueFirstName] = useState<string>('')
   const [touched, setTouched] = useState<object>(initialTouched)
   const [formIsValid, setFormIsValid] = useState<boolean>(false)
@@ -41,15 +41,10 @@ const CreateAcc: FC = () => {
   const [errorPassword, setErrorPassword] = useState<string>('Invalid password')
   const [errorRepeatPassword, setErrorRepeatPassword] = useState<string>('Password does not match')
   const [errorEmail, setErrorEmail] = useState<string>('Invalid Email')
-  const [errorFirstName, setErrorFirstName] = useState<string>('Invalid name')
+  const [errorFirstName, setErrorFirstName] = useState<string>('Invalid first name')
   const [errorLastName, setErrorLastName] = useState<string>('Invalid last name')
   const [showError, setShowError] = useState<string>('')
-
-  const regEx = {
-    name: /^[a-zA-Z]+$/,
-    email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{6,})/
-  }
+  const auth = JSON.parse(localStorage.getItem('auth') as string)
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -57,32 +52,32 @@ const CreateAcc: FC = () => {
         if (regEx.name.test(e.target.value) && valueFirstName !== '' && valueFirstName.length >= 5) {
           setErrorFirstName('')
         } else {
-          setErrorFirstName('Invalid name')
+          setErrorLastName('Invalid first name')
         }
         break
       case 'lastName':
-        if (regEx.name.test(valueLastName) && valueLastName !== '' && valueLastName.length >= 5) {
+        if (regEx.name.test(e.target.value) && valueLastName !== '' && valueLastName.length >= 5) {
           setErrorLastName('')
         } else {
           setErrorLastName('Invalid last name')
         }
         break
       case 'companyName':
-        if (regEx.name.test(valueCompanyName) && valueCompanyName !== '' && valueCompanyName.length <= 15) {
+        if (regEx.name.test(e.target.value) && valueCompanyName !== '' && valueCompanyName.length <= 15) {
           setErrorCompanyName('')
         } else {
           setErrorCompanyName('Invalid company name')
         }
         break
       case 'email':
-        if (regEx.email.test(valueEmail) && valueEmail !== '') {
+        if (regEx.email.test(e.target.value) && valueEmail !== '') {
           setErrorEmail('')
         } else {
           setErrorEmail('Invalid Email')
         }
         break
       case 'password':
-        if (regEx.password.test(valuePassword) && valuePassword !== '') {
+        if (regEx.password.test(e.target.value) && valuePassword !== '') {
           setErrorPassword('')
         } else {
           setErrorPassword('Invalid password')
@@ -130,6 +125,10 @@ const CreateAcc: FC = () => {
   }
 
   useEffect(() => {
+    if (auth) navigate('/mainPage')
+  }, [auth])
+
+  useEffect(() => {
     if (!!errorFirstName || !!errorLastName || !!errorCompanyName || !!errorPassword || !!errorEmail || !!errorRepeatPassword) {
       setFormIsValid(false)
     } else {
@@ -143,11 +142,12 @@ const CreateAcc: FC = () => {
         <form className={style.main_regBlock_form} onSubmit={(e) => onSubmit(e)}
               onBlur={(e) => BlurHandler(e)}>
           <span className={style.main_regBlock_title}>Create an account</span>
-          <span className={style.main_regBlock_error}>{showError}</span>
+          <span className={style.main_regBlock_errorTop}>{showError}</span>
           <div className={style.main_regBlock_inputsRow}>
             <div className={style.main_regBlock_errorBlock}>
               <Input
                 name='firstName'
+                errorBorder={errorFirstName && '1px solid red'}
                 defaultValue={valueFirstName}
                 onChange={(e) => {
                   setValueFirstName(e.target.value)
@@ -161,6 +161,7 @@ const CreateAcc: FC = () => {
             </div>
             <div className={style.main_regBlock_errorBlock}>
               <Input
+                errorBorder={errorLastName && '1px solid red'}
                 name='lastName'
                 defaultValue={valueLastName}
                 onChange={(e) => {
@@ -175,6 +176,7 @@ const CreateAcc: FC = () => {
             </div>
           </div>
           <Input
+            errorBorder={errorCompanyName && '1px solid red'}
             name='companyName'
             defaultValue={valueCompanyName}
             onChange={(e) => {
@@ -187,6 +189,7 @@ const CreateAcc: FC = () => {
             width='100%'/>
           {touched && <span className={style.main_regBlock_error}>{errorCompanyName}</span>}
           <Input
+            errorBorder={errorEmail && '1px solid red'}
             name='email'
             defaultValue={valueEmail}
             onChange={(e) => {
@@ -200,6 +203,7 @@ const CreateAcc: FC = () => {
             width='100%'/>
           {touched && <span className={style.main_regBlock_error}>{errorEmail}</span>}
           <Input
+            errorBorder={errorPassword && '1px solid red'}
             name='password'
             defaultValue={valuePassword}
             onChange={(e) => setValuePassword(e.target.value)}
@@ -209,6 +213,7 @@ const CreateAcc: FC = () => {
             width='100%'/>
           {touched && <span className={style.main_regBlock_error}>{errorPassword}</span>}
           <Input
+            errorBorder={errorRepeatPassword && '1px solid red'}
             name='repeatPassword'
             defaultValue={valueRepeatPassword}
             onChange={(e) => setValueRepeatPassword(e.target.value)}

@@ -3,22 +3,37 @@ import NavBar from "../NavBar/NavBar";
 import TopBar from "../../UI/TopBar/TopBar";
 
 import style from './myProduct.module.scss'
+
 import pencil from '../../assets/pencil.svg'
 import deleteIcon from '../../assets/Delete.svg'
 
-import {productData} from "../../mockdata/productData";
 import ButtonUI from "../../UI/Button/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 
+export interface DataProductInterface {
+  price: string
+  productCategory: string
+  productName: string
+  quantityGoods: string
+  store: string
+  weightVolumeOneItem: string
+}
+
 const MyProduct: FC = () => {
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
+  const [dataProduct, setDataProduct] = useState<DataProductInterface[]>(() => JSON.parse(localStorage.getItem('dataProduct') as string))
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_productBar}>
-        <TopBar title='My product' subTitle='Product table'/>
+        <TopBar
+          setDataProduct={setDataProduct}
+          dataProduct={dataProduct}
+          title='My product'
+          subTitle='Product table'
+        />
         <div className={style.main_productBar_productCard}>
           <div className={style.main_productBar_productCard_Title}>
             <p>Product name</p>
@@ -32,32 +47,30 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           <div className={style.main_productBar_productCard_productData}>
-            {productData.map((product): any => {
-              return (
-                <>
+            {dataProduct?.map((product: any) => (
                   <div key={product.id} className={style.main_productBar_productCard_productData_product}>
                     <p>{product.productName}</p>
                     <p>{product.store}</p>
-                    <p>{product.address}</p>
-                    <p>{product.category}</p>
+                    <p>{product.address ? product.address : 'none'}</p>
+                    <p>{product.productCategory}</p>
                     <p>{product.creationDate}</p>
-                    <p>{product.price}</p>
-                    <p>{product.remains}</p>
-                    <p>{product.weightVolume}</p>
+                    <p>${product.price}</p>
+                    <p>{product.quantityGoods}</p>
+                    <p>{product.weightVolumeOneItem}</p>
                     <div style={{width: '11.1%'}}
                          className={style.main_productBar_productCard_productData_product_btn}>
-                      <ButtonUI onClick={() => setSellModalActive(true)} color='#5382E7' backgroundColor='#E9EDF7FF'
+                      <ButtonUI onClick={() => setSellModalActive(true)} coloring='#5382E7' bc='#E9EDF7FF'
                                 height='28px' title='Sell'
-                                minWidth='53px'
+                                mw='53px'
                                 width='53px'/>
-                      <ButtonUI onClick={() => setEditModalActive(true)} backgroundColor='#E9EDF7FF' justifyContent='center' height='28px' leftSrc={pencil}
-                                leftAlt='pencilIcon' minWidth='46px' width='46px'/>
+                      <ButtonUI onClick={() => setEditModalActive(true)} bc='#E9EDF7FF'
+                                jc='center' height='28px' leftSrc={pencil}
+                                leftAlt='pencilIcon' mw='46px' width='46px'/>
                       <img src={deleteIcon} alt='deleteIcon'/>
                     </div>
                   </div>
-                </>
               )
-            })}
+            )}
           </div>
         </div>
       </div>

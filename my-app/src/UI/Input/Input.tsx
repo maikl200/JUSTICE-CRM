@@ -11,6 +11,7 @@ interface Props {
   defaultValue?: string
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   onBlur?: () => void
+  errorBorder?: string
 }
 
 const Input: FC<Props> = (
@@ -22,7 +23,8 @@ const Input: FC<Props> = (
     width,
     defaultValue,
     onChange,
-    onBlur
+    onBlur,
+    errorBorder
   }
 ) => {
   return (
@@ -34,7 +36,7 @@ const Input: FC<Props> = (
           defaultValue={defaultValue}
           onChange={onChange}
           onBlur={onBlur}
-          style={{width: width}}
+          style={{width: width, border: errorBorder}}
           type={type}
           placeholder={placeholder}
         />

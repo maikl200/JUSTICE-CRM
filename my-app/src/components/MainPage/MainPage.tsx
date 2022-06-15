@@ -11,6 +11,7 @@ import TopBar from "../../UI/TopBar/TopBar";
 
 
 const MainPage: FC = () => {
+
   return (
     <main className={style.main}>
       <NavBar/>

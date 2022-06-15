@@ -8,6 +8,11 @@
     align-items: center;
     width: 100%;
 
+    &_error {
+      color: #ff7675;
+      height: 20px;
+    }
+
     &_regPage {
       display: flex;
       justify-content: center;
