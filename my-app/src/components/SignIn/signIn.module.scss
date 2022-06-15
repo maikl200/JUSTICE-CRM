@@ -8,6 +8,13 @@
     align-items: center;
     width: 100%;
 
+    &_errorTop {
+      display: flex;
+      justify-content: center;
+      background: #ff7675;
+      color: #000000;
+    }
+
     &_error {
       color: #ff7675;
       height: 20px;

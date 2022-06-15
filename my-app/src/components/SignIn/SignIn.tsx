@@ -77,8 +77,8 @@ const SignIn: FC = () => {
         <form className={style.main_logInBlock_form}
               onSubmit={(e) => onSubmit(e)}
               onBlur={(e) => BlurHandler(e)}>
-          {showError}
           <span className={style.main_logInBlock_title}>Sign in</span>
+          <span className={style.main_logInBlock_errorTop}>{showError}</span>
           <Input
             errorBorder={errorEmail && '1px solid red'}
             defaultValue={valueEmail}

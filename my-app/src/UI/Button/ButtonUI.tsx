@@ -71,8 +71,8 @@ const BootstrapButton = styled(Button)<ButtonMuiStyleProps>`
   font-family: "Inter", sans-serif;
 
   :disabled {
-    background: #ff0000;
-    color: #ff0000;
+    background: #b6b6b6;
+    color: #000000;
   }
 
   :hover {
@@ -97,6 +97,7 @@ const ButtonUI: FC<Props> = (props) => {
     width,
     height,
     ch,
+    disabled,
     coloring,
     br,
     bc,
@@ -112,6 +113,7 @@ const ButtonUI: FC<Props> = (props) => {
         onClick={onClick}
         type='submit'
         variant="contained"
+        disabled={disabled}
         bch={bch}
         jc={jc}
         padding={padding}

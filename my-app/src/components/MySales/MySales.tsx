@@ -3,7 +3,7 @@ import React, {FC} from 'react';
 import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
-import TopBar from "../../UI/TopBar/TopBar";
+import Header from "../../UI/Header/Header";
 import {productData} from "../../mockdata/productData";
 
 const MySales: FC = () => {
@@ -11,7 +11,7 @@ const MySales: FC = () => {
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_salesBar}>
-        <TopBar title='My sales' subTitle='Sales table'/>
+        <Header title='My sales' subTitle='Sales table'/>
         <div className={style.main_salesBar_salesCard}>
           <div className={style.main_salesBar_salesCard_Title}>
             <p>Product name</p>

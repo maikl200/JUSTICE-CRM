@@ -7,7 +7,7 @@ import NavBar from "../NavBar/NavBar";
 import DiogramPie from "../Diogram/DiogramPie";
 import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
-import TopBar from "../../UI/TopBar/TopBar";
+import Header from '../../UI/Header/Header'
 
 
 const MainPage: FC = () => {
@@ -16,7 +16,7 @@ const MainPage: FC = () => {
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_statisticsBar}>
-        <TopBar title='Sales statistics' subTitle='Welcome to CRM dashboard'/>
+        <Header title='Sales statistics' subTitle='Welcome to CRM dashboard'/>
         <div className={style.main_statisticsBar_diogram}>
           <div className={style.main_statisticsBar_diogram_stack}>
             <div className={style.main_statisticsBar_diogram_pie}>

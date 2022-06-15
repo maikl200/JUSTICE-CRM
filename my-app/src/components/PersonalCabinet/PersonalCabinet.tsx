@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import NavBar from "../NavBar/NavBar";
-import TopBar from "../../UI/TopBar/TopBar";
+import Header from "../../UI/Header/Header";
 
 import style from './personalCabinet.module.scss'
 import Input from "../../UI/Input/Input";
@@ -11,7 +11,7 @@ const PersonalCabinet: FC = () => {
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <TopBar title='Personal Cabinet' subTitle='Information about your account'/>
+        <Header title='Personal Cabinet' subTitle='Information about your account'/>
         <form className={style.main_personalCabinetBar_userSettings}>
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input placeholder='First name' title='First name' type='text' width='380px'/>
