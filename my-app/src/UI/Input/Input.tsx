@@ -8,7 +8,7 @@ interface Props {
   type: string
   width: string
   name?: string
-  defaultValue?: string
+  defaultValue?: string | number
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   onBlur?: () => void
   errorBorder?: string

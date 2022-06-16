@@ -223,6 +223,7 @@ const CreateAcc: FC = () => {
             width='100%'/>
           {touched && <span className={style.main_regBlock_error}>{errorRepeatPassword}</span>}
           <ButtonUI
+            type={'submit'}
             disabled={!formIsValid}
             height='56px'
             title='Create account'

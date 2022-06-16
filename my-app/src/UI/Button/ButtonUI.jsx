@@ -4,50 +4,7 @@ import {styled} from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {IconSvg} from "../../assets/icons/IconSvg";
 
-interface ButtonMuiStyleProps {
-  direction?: string;
-  border?: string;
-  width?: string;
-  bc?: string //  background-color
-  jc?: string //  justify-content
-  textTransform?: string;
-  color?: string
-  type?: string
-  mw?: string // min-width
-  ch?: string // color:hover
-  icon?: string
-  coloring?: string
-  bch?: string // background-color:hover
-  height?: string;
-  br?: string // border-right
-  padding?: string;
-  fontWeight?: string;
-}
-
-interface Props extends ButtonMuiStyleProps {
-  title?: string
-  leftSrc?: string
-  coloring?: string
-  colorTitle?: string
-  mw?: string
-  br?: string // border-right
-  color?: string
-  padding?: string
-  bch?: string
-  icon?: string
-  height?: string
-  onClick?: (e: FormEvent) => void
-  width?: string
-  disabled?: boolean
-  type?: string
-  ch?: string // color:hover
-  rightAlt?: string
-  rightSrc?: string
-  leftAlt?: string
-  alt?: string
-}
-
-const BootstrapButton = styled(Button)<ButtonMuiStyleProps>`
+const BootstrapButton = styled(Button)`
   width: ${({width}) => width};
   display: flex;
   justify-content: ${({jc}) => jc};
@@ -84,8 +41,9 @@ const BootstrapButton = styled(Button)<ButtonMuiStyleProps>`
 
 ,`
 
-const ButtonUI: FC<Props> = (props) => {
+const ButtonUI = (props) => {
   const {
+    type,
     leftSrc,
     rightSrc,
     padding,
@@ -111,7 +69,7 @@ const ButtonUI: FC<Props> = (props) => {
     <>
       <BootstrapButton
         onClick={onClick}
-        type='submit'
+        type={type}
         variant="contained"
         disabled={disabled}
         bch={bch}

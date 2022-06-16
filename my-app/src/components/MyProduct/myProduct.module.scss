@@ -18,6 +18,7 @@
       margin-top: 28px;
       max-height: calc(100vh - 180px);
       overflow: scroll;
+      overflow-x: hidden;
 
       &_Title {
         display: flex;
@@ -77,4 +78,8 @@
 
     }
   }
+}
+
+.error {
+  color: #ff7675;
 }

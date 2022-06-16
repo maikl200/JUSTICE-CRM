@@ -7,6 +7,8 @@ import Header from "../../UI/Header/Header";
 import {productData} from "../../mockdata/productData";
 
 const MySales: FC = () => {
+  // @ts-ignore
+  const salesProduct = JSON.parse(localStorage.getItem('salesProduct'))
   return (
     <main className={style.main}>
       <NavBar/>
@@ -25,19 +27,19 @@ const MySales: FC = () => {
             <p>Last sale</p>
           </div>
           <div className={style.main_salesBar_salesCard_salesData}>
-            {productData.map((product): any => {
+            {salesProduct?.map((product: any) => {
               return (
                 <>
                   <div key={product.id} className={style.main_salesBar_salesCard_salesData_sales}>
                     <p>{product.productName}</p>
                     <p>{product.store}</p>
-                    <p>{product.address}</p>
-                    <p>{product.category}</p>
-                    <p>{product.creationDate}</p>
+                    <p>{product.address ? product.address : 'none'}</p>
+                    <p>{product.productCategory}</p>
+                    <p>{product.dateNow}</p>
                     <p>${product.price}</p>
-                    <p>{product.soldItems}</p>
-                    <p>{product.weightVolume}</p>
-                    <p>{product.lastSale}</p>
+                    <p>{product.valueNumberProduct}</p>
+                    <p>{product.weightVolumeOneItem}kg</p>
+                    <p>{product.valueDate}</p>
                   </div>
                 </>
               )

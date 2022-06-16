@@ -7,9 +7,14 @@ import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 
-const initialTouched = {
-  valueEmail: false,
-  valuePassword: false,
+interface InitialTouchedTypes {
+  email: boolean
+  password: boolean
+}
+
+const initialTouched: InitialTouchedTypes = {
+  email: false,
+  password: false,
 }
 
 const SignIn: FC = () => {
@@ -20,7 +25,7 @@ const SignIn: FC = () => {
   const [formIsValid, setFormIsValid] = useState<boolean>(false)
   const [errorPassword, setErrorPassword] = useState<string>('Invalid password')
   const [errorEmail, setErrorEmail] = useState<string>('Invalid Email')
-  const [touched, setTouched] = useState<object>(initialTouched)
+  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
   const auth = JSON.parse(localStorage.getItem('auth') as string)
 
@@ -85,27 +90,27 @@ const SignIn: FC = () => {
             name='email'
             onChange={(e) => {
               setValueEmail(e.target.value)
-              setTouched({valueEmail: true})
+              setTouched({...touched, email: true})
             }}
             title='Email'
             placeholder='Email'
             type='email'
             width='100%'/>
-          {touched && <span className={style.main_logInBlock_error}>{errorEmail}</span>}
+          {touched.email && <span className={style.main_logInBlock_error}>{errorEmail}</span>}
           <Input
             errorBorder={errorPassword && '1px solid red'}
             name='password'
             defaultValue={valuePassword}
             onChange={(e) => {
               setValuePassword(e.target.value)
-              setTouched({valuePassword: true})
+              setTouched({...touched, password: true})
             }}
             title='Password'
             placeholder='Password'
             type='password'
             width='100%'/>
-          {touched && <span className={style.main_logInBlock_error}>{errorPassword}</span>}
-          <ButtonUI disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px' width='100%'/>
+          {touched.password && <span className={style.main_logInBlock_error}>{errorPassword}</span>}
+          <ButtonUI type={'submit'} disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px' width='100%'/>
           <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
         </form>
       </div>
