@@ -1,4 +1,4 @@
-import React, {FC, FormEvent, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 
@@ -24,20 +24,27 @@ export interface DataProductInterface {
   weightVolumeOneItem: string
 }
 
-const initialTouched = {
+interface InitialTouchedTypes {
+  valueNumberProduct: boolean
+  valueDate: boolean
+
+}
+
+const initialTouched: InitialTouchedTypes = {
   valueNumberProduct: false,
-  valueDate: false,
+  valueDate: false
 }
 
 
 const MyProduct: FC = () => {
   const [valueNumberProduct, setValueNumberProduct] = useState<number>()
-  const [touched, setTouched] = useState<object>(initialTouched)
+  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
   const [dataProduct, setDataProduct] = useState<DataProductInterface[]>(() => JSON.parse(localStorage.getItem('dataProduct') as string))
   const [productSell, setProductSell] = useState({})
+  const [isValid, setIsValid] = useState<boolean>(false)
   const [errorValueNumberProduct, setErrorValueProduct] = useState('')
   const [errorValueDate, setErrorValueDate] = useState('')
   const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) || [])
@@ -50,12 +57,10 @@ const MyProduct: FC = () => {
     const filterProduct = dataProduct.filter((item) => item.id === id)
     // @ts-ignore
     setProductSell(...filterProduct)
-    if (quantityGoods === 0) {
-      filterProduct.filter((item) => item.id !== id)
-      console.log(123)
-    } else {
-      console.log(321)
-    }
+
+    // @ts-ignore
+    const newDataProduct = dataProduct.filter((item: { quantityGoods: number }) => item.quantityGoods !== 0)
+    setDataProduct(newDataProduct)
   }
 
   const sellButton = () => {
@@ -63,15 +68,22 @@ const MyProduct: FC = () => {
     const discriminant = +quantityGoods - Number(valueNumberProduct)
     const newProduct = {...productSell, quantityGoods: Number(discriminant), valueNumberProduct, valueDate}
 
-
+    if (!discriminant) {
+      // @ts-ignore
+      setDataProduct(dataProduct.filter((item) => item.id !== newProduct.id))
+      setSalesProducts([...salesProducts, newProduct])
+      return
+    }
     // @ts-ignore
     setDataProduct(dataProduct.map(product => product.id === newProduct.id ? {
       ...product,
       quantityGoods: newProduct.quantityGoods
     } : product))
-    // @ts-ignore
+
     setSalesProducts([...salesProducts, newProduct])
+
   }
+
 
   useEffect(() => {
     localStorage.setItem('salesProduct', JSON.stringify(salesProducts))
@@ -84,15 +96,14 @@ const MyProduct: FC = () => {
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'sellProduct':
-        // @ts-ignore
-        if (valueNumberProduct > 0 && valueNumberProduct <= quantityGoods) {
+        if (e.target.value > 0 && e.target.value <= quantityGoods) {
           setErrorValueProduct('')
         } else {
           setErrorValueProduct('Incorrect filled')
         }
         break
       case 'dateSale':
-        if (regEx.date.test(valueDate) && valueDate !== '') {
+        if (regEx.date.test(e.target.value) && e.target.value !== '') {
           setErrorValueDate('')
         } else {
           setErrorValueDate('Date entered incorrectly')
@@ -101,7 +112,17 @@ const MyProduct: FC = () => {
     }
   }
 
+  useEffect(() => {
+    if (!!errorValueDate || !!errorValueNumberProduct) {
+      setIsValid(false)
+    } else {
+      setIsValid(true)
+    }
+  }, [errorValueNumberProduct, errorValueDate, valueDate])
 
+  const deleteElem = (id: number) => {
+    setDataProduct(dataProduct.filter((item) => item.id !== id))
+  }
   return (
     <main className={style.main}>
       <NavBar/>
@@ -153,7 +174,7 @@ const MyProduct: FC = () => {
                       leftAlt='pencilIcon'
                       mw='46px'
                       width='46px'/>
-                    <img src={deleteIcon} alt='deleteIcon'/>
+                    <img onClick={() => deleteElem(product.id)} src={deleteIcon} alt='deleteIcon'/>
                   </div>
                 </div>
               )
@@ -177,29 +198,35 @@ const MyProduct: FC = () => {
         sellModalActive
           ?
           <ModalWindow
-            onBlur={(e) => onBlurHandler(e)}
+            onBlur={(e: React.FocusEvent<HTMLFormElement>) => onBlurHandler(e)}
             title='Sell the product'
             setModalActive={setSellModalActive}>
             <Input
+              errorBorder={errorValueNumberProduct && '1px solid red'}
               name='sellProduct'
               defaultValue={valueNumberProduct}
               onChange={(e) => {
                 setValueNumberProduct(e.target.valueAsNumber)
-                setTouched({valueNumberProduct: true})
+                setTouched({...touched, valueNumberProduct: true})
               }}
               placeholder='Number of products'
               type='number'
               width='300px'/>
-            {touched && <span className={style.error}>{errorValueNumberProduct}</span>}
+            {touched.valueNumberProduct && <span className={style.error}>{errorValueNumberProduct}</span>}
             <Input
+              errorBorder={errorValueDate && '1px solid red'}
               name='dateSale'
               defaultValue={valueDate}
-              onChange={(e) => setValueDate(e.target.value)}
+              onChange={(e) => {
+                setValueDate(e.target.value)
+                setTouched({...touched, valueDate: true})
+              }}
               placeholder='Date of sale'
               type='text'
               width='300px'/>
-            {touched && <span className={style.error}>{errorValueDate}</span>}
+            {touched.valueDate && <span className={style.error}>{errorValueDate}</span>}
             <ButtonUI
+              disabled={!isValid}
               onClick={() => sellButton()}
               width='300px'
               title='Sell product'
