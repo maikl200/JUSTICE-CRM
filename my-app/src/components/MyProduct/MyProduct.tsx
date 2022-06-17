@@ -11,6 +11,8 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
+import {productDataMocks} from "../../mockdata/productData";
+
 
 export interface DataProductInterface {
   id: number
@@ -27,28 +29,46 @@ export interface DataProductInterface {
 interface InitialTouchedTypes {
   valueNumberProduct: boolean
   valueDate: boolean
+  valueStore: boolean
+  valuePrice: boolean
+  valueCategory: boolean
+  valueRemains: boolean
+  valueWeightVolume: boolean
 
 }
 
 const initialTouched: InitialTouchedTypes = {
   valueNumberProduct: false,
-  valueDate: false
+  valueDate: false,
+  valueStore: false,
+  valuePrice: false,
+  valueCategory: false,
+  valueRemains: false,
+  valueWeightVolume: false
 }
 
 
 const MyProduct: FC = () => {
   const [valueNumberProduct, setValueNumberProduct] = useState<number>()
+  const [valueStore, setValueStore] = useState<string>('')
+  const [valuePrice, setValuePrice] = useState<string>('')
+  const [valueCategory, setValueCategory] = useState<string>('')
+  const [valueRemains, setValueRemains] = useState<string>('')
+  const [valueWeightVolume, setValueWeightVolume] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
-  const [dataProduct, setDataProduct] = useState<DataProductInterface[]>(() => JSON.parse(localStorage.getItem('dataProduct') as string))
+  const [dataProduct, setDataProduct] = useState<DataProductInterface[]>(() => JSON.parse(localStorage.getItem('dataProduct') as string) ?? productDataMocks)
   const [productSell, setProductSell] = useState({})
   const [isValid, setIsValid] = useState<boolean>(false)
   const [errorValueNumberProduct, setErrorValueProduct] = useState('')
   const [errorValueDate, setErrorValueDate] = useState('')
   const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) || [])
+  const [editId, setEditId] = useState<number>(-1)
 
+  const [formEdit, setFormEdit] = useState({})
+  console.log('isValid', isValid)
 
   // @ts-ignore
   const quantityGoods = (productSell.quantityGoods)
@@ -64,7 +84,7 @@ const MyProduct: FC = () => {
   }
 
   const sellButton = () => {
-
+    setSellModalActive(false)
     const discriminant = +quantityGoods - Number(valueNumberProduct)
     const newProduct = {...productSell, quantityGoods: Number(discriminant), valueNumberProduct, valueDate}
 
@@ -113,7 +133,7 @@ const MyProduct: FC = () => {
   }
 
   useEffect(() => {
-    if (!!errorValueDate || !!errorValueNumberProduct) {
+    if (!!errorValueDate && !!errorValueNumberProduct || !touched.valueNumberProduct || !touched.valueDate) {
       setIsValid(false)
     } else {
       setIsValid(true)
@@ -123,6 +143,30 @@ const MyProduct: FC = () => {
   const deleteElem = (id: number) => {
     setDataProduct(dataProduct.filter((item) => item.id !== id))
   }
+
+  const editElem = (id: number) => {
+    setEditModalActive(true)
+    setEditId(id)
+    return
+  }
+
+  const handleEditChange = (e: any) => {
+    setFormEdit({
+      ...formEdit,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const editButton = (id: number) => {
+    console.log(id)
+    const newProducts = dataProduct.map(prod => prod.id === id ? {
+      ...prod,
+      ...formEdit
+    } : prod)
+    setDataProduct(newProducts)
+    setEditModalActive(false)
+  }
+
   return (
     <main className={style.main}>
       <NavBar/>
@@ -166,7 +210,7 @@ const MyProduct: FC = () => {
                       mw='53px'
                       width='53px'/>
                     <ButtonUI
-                      onClick={() => setEditModalActive(true)}
+                      onClick={() => editElem(product.id)}
                       bc='#E9EDF7FF'
                       jc='center'
                       height='28px'
@@ -183,13 +227,64 @@ const MyProduct: FC = () => {
         </div>
       </div>
       {editModalActive ?
-        <ModalWindow title='Editing a product' setModalActive={setEditModalActive}>
-          <Input placeholder='Store' type='text' width='300px'/>
-          <Input placeholder='Price' type='text' width='300px'/>
-          <Input placeholder='Category' type='text' width='300px'/>
-          <Input placeholder='Remains' type='text' width='300px'/>
-          <Input placeholder='Weight / Volume' type='text' width='300px'/>
-          <ButtonUI width='300px' title='Sell product' height='52px'/>
+        <ModalWindow
+          title='Editing a product'
+          setModalActive={setEditModalActive}>
+          <Input
+            onChange={(e) => {
+              setValueStore(e.target.value)
+              setTouched({...touched, valueStore: true})
+              handleEditChange(e)
+            }}
+            placeholder='Store'
+            type='text'
+            name='store'
+            width='300px'/>
+          <Input
+            onChange={(e) => {
+              setValuePrice(e.target.value)
+              setTouched({...touched, valuePrice: true})
+              handleEditChange(e)
+            }}
+            placeholder='Price'
+            type='number'
+            name='price'
+            width='300px'/>
+          <Input
+            onChange={(e) => {
+              setValueCategory(e.target.value)
+              setTouched({...touched, valueCategory: true})
+              handleEditChange(e)
+            }}
+            placeholder='Category'
+            type='text'
+            name='productCategory'
+            width='300px'/>
+          <Input
+            onChange={(e) => {
+              setValueRemains(e.target.value)
+              setTouched({...touched, valueRemains: true})
+              handleEditChange(e)
+            }}
+            placeholder='Remains'
+            type='number'
+            name='quantityGoods'
+            width='300px'/>
+          <Input
+            onChange={(e) => {
+              setValueWeightVolume(e.target.value)
+              setTouched({...touched, valueWeightVolume: true})
+              handleEditChange(e)
+            }}
+            placeholder='Weight / Volume'
+            type='number'
+            name='weightVolumeOneItem'
+            width='300px'/>
+          <ButtonUI
+            onClick={() => editButton(editId)}
+            width='300px'
+            title='Edit product'
+            height='52px'/>
         </ModalWindow>
         :
         ''
@@ -198,7 +293,7 @@ const MyProduct: FC = () => {
         sellModalActive
           ?
           <ModalWindow
-            onBlur={(e: React.FocusEvent<HTMLFormElement>) => onBlurHandler(e)}
+            onBlur={onBlurHandler}
             title='Sell the product'
             setModalActive={setSellModalActive}>
             <Input

@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from "react-apexcharts";
-import {productData} from "../../mockdata/productData";
+import {productDataMocks} from "../../mockdata/productData";
 
 const DiogramLine = () => {
 
@@ -13,7 +13,7 @@ const DiogramLine = () => {
         series={[
           {
             name: "earned",
-            data: [...productData.map((item) => item.price)],
+            data: productDataMocks.map((item) => item.price),
           }
         ]}
         options={{

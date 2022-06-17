@@ -4,11 +4,11 @@ import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
-import {productData} from "../../mockdata/productData";
 
 const MySales: FC = () => {
   // @ts-ignore
   const salesProduct = JSON.parse(localStorage.getItem('salesProduct'))
+
   return (
     <main className={style.main}>
       <NavBar/>

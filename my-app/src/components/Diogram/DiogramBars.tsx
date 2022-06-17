@@ -1,6 +1,6 @@
 import React from 'react';
 import Chart from "react-apexcharts";
-import {productData} from '../../mockdata/productData'
+import {productDataMocks} from '../../mockdata/productData'
 
 const DiogramBars = () => {
 
@@ -12,7 +12,7 @@ const DiogramBars = () => {
         height={480}
         series={[{
           name: 'sales',
-          data: [...productData.map((item) => item.soldItems)],
+          data: productDataMocks.map((item) => item.soldItems),
           color: '#5B6ACD'
         }, {
           name: '',

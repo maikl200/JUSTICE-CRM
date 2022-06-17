@@ -52,13 +52,19 @@ const SignIn: FC = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const loginUser: any = {
+      email: valueEmail,
+      password: valuePassword
+    }
     const user = JSON.parse(localStorage.getItem('users') as string)
     const currentUser = user.some((user: { email: string; password: string; }) => {
       return valueEmail === user.email && valuePassword === user.password
     })
     if (currentUser) {
       localStorage.setItem('auth', 'true')
+      localStorage.setItem('loginUsers', JSON.stringify([loginUser]))
       navigate('/mainPage')
+
     } else {
       setShowError('Пользователь не найден')
     }
@@ -110,7 +116,8 @@ const SignIn: FC = () => {
             type='password'
             width='100%'/>
           {touched.password && <span className={style.main_logInBlock_error}>{errorPassword}</span>}
-          <ButtonUI type={'submit'} disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px' width='100%'/>
+          <ButtonUI type={'submit'} disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px'
+                    width='100%'/>
           <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
         </form>
       </div>

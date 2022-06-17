@@ -1,12 +1,12 @@
 import React from 'react';
 
 import Chart from 'react-apexcharts'
-import {productData} from "../../mockdata/productData";
+import {productDataMocks} from "../../mockdata/productData";
 
 const DiogramPie = () => {
-  const productsInDay = productData.filter(product => product.lastSale === '05.07.2021')
-  const productsCategoryInDay = productsInDay.map(product => product.category)
-  const productsCountInDay = productsInDay.map( product => product.soldItems)
+  const productsInDay = productDataMocks.filter(product => product.lastSale === '05.07.2021')
+  const productsCategoryInDay = productsInDay.map(product => product.productCategory)
+  const productsCountInDay = productsInDay.map(product => product.soldItems)
 
   return (
     <div>
