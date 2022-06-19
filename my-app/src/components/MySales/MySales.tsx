@@ -43,7 +43,7 @@ const MySales: FC = () => {
                   </div>
                 </>
               )
-            })}
+            }).reverse()}
           </div>
         </div>
       </div>

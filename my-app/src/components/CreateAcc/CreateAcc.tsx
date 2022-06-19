@@ -8,16 +8,26 @@ import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 
 
-const initialTouched = {
-  valueFirstName: false,
-  valueLastName: false,
-  valueCompanyName: false,
-  valueEmail: false,
-  valuePassword: false,
-  valueRepeatPassword: false,
+const initialTouched: InitialTouchedTypes = {
+  firstName: false,
+  lastName: false,
+  companyName: false,
+  email: false,
+  password: false,
+  repeatPassword: false,
 }
 
-type userData = {
+interface InitialTouchedTypes {
+  firstName: boolean
+  lastName: boolean
+  companyName: boolean
+  email: boolean
+  password: boolean
+  repeatPassword: boolean
+}
+
+
+interface userData {
   firstName: string
   lastName: string
   companyName: string
@@ -30,7 +40,7 @@ const CreateAcc: FC = () => {
   const navigate = useNavigate()
 
   const [valueFirstName, setValueFirstName] = useState<string>('')
-  const [touched, setTouched] = useState<object>(initialTouched)
+  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [formIsValid, setFormIsValid] = useState<boolean>(false)
   const [valueLastName, setValueLastName] = useState<string>('')
   const [valueCompanyName, setValueCompanyName] = useState<string>('')
@@ -52,7 +62,7 @@ const CreateAcc: FC = () => {
         if (regEx.name.test(e.target.value) && valueFirstName !== '' && valueFirstName.length >= 5) {
           setErrorFirstName('')
         } else {
-          setErrorLastName('Invalid first name')
+          setErrorFirstName('Invalid first name')
         }
         break
       case 'lastName':
@@ -151,13 +161,13 @@ const CreateAcc: FC = () => {
                 defaultValue={valueFirstName}
                 onChange={(e) => {
                   setValueFirstName(e.target.value)
-                  setTouched({valueFirstName: true})
+                  setTouched({...touched, firstName: true})
                 }}
                 title='First name'
                 placeholder='First name'
                 type='text'
-                width='100%'/>
-              {touched && <span className={style.main_regBlock_error}>{errorFirstName}</span>}
+                width='100%'
+                error={touched.firstName ? errorFirstName : undefined}/>
             </div>
             <div className={style.main_regBlock_errorBlock}>
               <Input
@@ -166,13 +176,14 @@ const CreateAcc: FC = () => {
                 defaultValue={valueLastName}
                 onChange={(e) => {
                   setValueLastName(e.target.value)
-                  setTouched({valueLastName: true})
+                  setTouched({...touched, lastName: true})
                 }}
                 title='Last name'
                 placeholder='Last name'
                 type='text'
-                width='100%'/>
-              {touched && <span className={style.main_regBlock_error}>{errorLastName}</span>}
+                width='100%'
+                error={touched.lastName ? errorLastName : undefined}
+              />
             </div>
           </div>
           <Input
@@ -181,47 +192,56 @@ const CreateAcc: FC = () => {
             defaultValue={valueCompanyName}
             onChange={(e) => {
               setValueCompanyName(e.target.value)
-              setTouched({valueCompanyName: true})
+              setTouched({...touched, companyName: true})
             }}
             title='Company name'
             placeholder='Company name'
             type='text'
-            width='100%'/>
-          {touched && <span className={style.main_regBlock_error}>{errorCompanyName}</span>}
+            width='100%'
+            error={touched.companyName ? errorCompanyName : undefined}/>
+
           <Input
             errorBorder={errorEmail && '1px solid red'}
             name='email'
             defaultValue={valueEmail}
             onChange={(e) => {
               setValueEmail(e.target.value)
-              setTouched({valueEmail: true})
+              setTouched({...touched, email: true})
             }}
-
             title='Email'
             placeholder='Email'
             type='email'
-            width='100%'/>
-          {touched && <span className={style.main_regBlock_error}>{errorEmail}</span>}
+            width='100%'
+            error={touched.email ? errorEmail : undefined}/>
+
           <Input
             errorBorder={errorPassword && '1px solid red'}
             name='password'
             defaultValue={valuePassword}
-            onChange={(e) => setValuePassword(e.target.value)}
+            onChange={(e) => {
+              setValuePassword(e.target.value)
+              setTouched({...touched, password: true})
+            }}
             title='Password'
             placeholder='Password'
             type='password'
-            width='100%'/>
-          {touched && <span className={style.main_regBlock_error}>{errorPassword}</span>}
+            width='100%'
+            error={touched.password ? errorPassword : undefined}/>
+
           <Input
             errorBorder={errorRepeatPassword && '1px solid red'}
             name='repeatPassword'
             defaultValue={valueRepeatPassword}
-            onChange={(e) => setValueRepeatPassword(e.target.value)}
+            onChange={(e) => {
+              setValueRepeatPassword(e.target.value)
+              setTouched({...touched, repeatPassword: true})
+            }}
             title='Repeat password'
             placeholder='Repeat password'
             type='password'
-            width='100%'/>
-          {touched && <span className={style.main_regBlock_error}>{errorRepeatPassword}</span>}
+            width='100%'
+            error={touched.repeatPassword ? errorRepeatPassword : undefined}/>
+
           <ButtonUI
             type={'submit'}
             disabled={!formIsValid}

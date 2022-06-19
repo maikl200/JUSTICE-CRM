@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC} from 'react';
+import React, {FC} from 'react';
 
 import style from './input.module.scss'
 
@@ -12,6 +12,9 @@ interface Props {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   onBlur?: () => void
   errorBorder?: string
+  error?: string
+  readOnly?: boolean
+  value?: string
 }
 
 const Input: FC<Props> = (
@@ -24,7 +27,10 @@ const Input: FC<Props> = (
     defaultValue,
     onChange,
     onBlur,
-    errorBorder
+    errorBorder,
+    error,
+    value,
+    readOnly
   }
 ) => {
   return (
@@ -33,13 +39,16 @@ const Input: FC<Props> = (
         {title}
         <input
           name={name}
+          readOnly={readOnly}
           defaultValue={defaultValue}
           onChange={onChange}
           onBlur={onBlur}
           style={{width: width, border: errorBorder}}
           type={type}
+          value={value}
           placeholder={placeholder}
         />
+        {error && <span className={style.label_error}>{error}</span>}
       </label>
     </>
   );

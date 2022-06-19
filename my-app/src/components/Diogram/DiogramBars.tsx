@@ -2,21 +2,32 @@ import React from 'react';
 import Chart from "react-apexcharts";
 import {productDataMocks} from '../../mockdata/productData'
 
+const salesProduct = localStorage.getItem('salesProduct')
+//@ts-ignore
+
+const salesProductInDay =
+  salesProduct && JSON.parse(salesProduct).length
+    ?
+    JSON.parse(salesProduct)?.map((item: any) => item.valueNumberProduct)
+    :
+    productDataMocks?.map(product => product.soldItems)
+
+
 const DiogramBars = () => {
 
   return (
     <div>
       <Chart
         type='bar'
-        width={1045}
+        width={753}
         height={480}
         series={[{
           name: 'sales',
-          data: productDataMocks.map((item) => item.soldItems),
+          data: salesProductInDay?.length && salesProductInDay,
           color: '#5B6ACD'
         }, {
           name: '',
-          data: [-200, -200, -200, -200, -200, -200],
+          data: [-40, -40, -40, -40, -40, -40, -40],
           color: '#EFF1FF'
         }]
         }
@@ -57,7 +68,7 @@ const DiogramBars = () => {
             },
             labels: {
               formatter: (val) => {
-                return `${val}К`
+                return `${val}`
               },
             }
 

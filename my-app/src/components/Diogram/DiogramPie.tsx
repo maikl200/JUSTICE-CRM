@@ -4,19 +4,31 @@ import Chart from 'react-apexcharts'
 import {productDataMocks} from "../../mockdata/productData";
 
 const DiogramPie = () => {
-  const productsInDay = productDataMocks.filter(product => product.lastSale === '05.07.2021')
-  const productsCategoryInDay = productsInDay.map(product => product.productCategory)
-  const productsCountInDay = productsInDay.map(product => product.soldItems)
+  const salesProduct = localStorage.getItem('salesProduct')
+
+
+  const productsCategoryInDay =
+    salesProduct && JSON.parse(salesProduct).length
+      ?
+      JSON.parse(salesProduct)?.map((product: { productCategory: string; }) => product.productCategory)
+      :
+      productDataMocks?.map(product => product.productCategory)
+
+
+  const salesProductInDay =
+    salesProduct && JSON.parse(salesProduct).length
+      ?
+      JSON.parse(salesProduct)?.map((item: any) => item.valueNumberProduct)
+      :
+      productDataMocks?.map(product => product.soldItems)
 
   return (
     <div>
-      {/*todo Доделай график pie (смотри на макет)*/}
       <Chart
         type='pie'
         width={350}
-        height={350}
-        /*@ts-ignore*/
-        series={[...productsCountInDay]}
+        height={262}
+        series={salesProductInDay?.length && salesProductInDay}
         options={{
           dataLabels: {
             enabled: false
@@ -33,8 +45,7 @@ const DiogramPie = () => {
               fontFamily: 'Inter',
             }
           },
-          // labels: ['Auto goods', 'Auto goods', 'Auto goods', 'Auto goods'],
-          labels: [...productsCategoryInDay],
+          labels: productsCategoryInDay,
           colors: ['#5B6ACD', '#5182E7', '#F4AE43', '#1CAF7F']
         }}
       >

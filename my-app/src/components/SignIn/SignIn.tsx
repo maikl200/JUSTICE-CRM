@@ -28,6 +28,8 @@ const SignIn: FC = () => {
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
   const auth = JSON.parse(localStorage.getItem('auth') as string)
+  const user = JSON.parse(localStorage.getItem('users') as string) || []
+
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -52,21 +54,28 @@ const SignIn: FC = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const currentAuthUser = user.filter((item: { email: string; }) => valueEmail === item.email)
     const loginUser: any = {
+      firstName: currentAuthUser[0].firstName,
+      lastName: currentAuthUser[0].lastName,
+      companyName: currentAuthUser[0].companyName,
+      address: currentAuthUser[0].address,
+      password: valuePassword,
       email: valueEmail,
-      password: valuePassword
+      repeatPassword: currentAuthUser[0].repeatPassword,
     }
-    const user = JSON.parse(localStorage.getItem('users') as string)
+
     const currentUser = user.some((user: { email: string; password: string; }) => {
       return valueEmail === user.email && valuePassword === user.password
     })
+
     if (currentUser) {
       localStorage.setItem('auth', 'true')
-      localStorage.setItem('loginUsers', JSON.stringify([loginUser]))
+      localStorage.setItem('loginUsers', JSON.stringify(loginUser))
       navigate('/mainPage')
 
     } else {
-      setShowError('Пользователь не найден')
+      setShowError('User not found')
     }
   }
 
@@ -101,8 +110,9 @@ const SignIn: FC = () => {
             title='Email'
             placeholder='Email'
             type='email'
-            width='100%'/>
-          {touched.email && <span className={style.main_logInBlock_error}>{errorEmail}</span>}
+            width='100%'
+            error={touched.email ? errorEmail : undefined}
+          />
           <Input
             errorBorder={errorPassword && '1px solid red'}
             name='password'
@@ -114,8 +124,9 @@ const SignIn: FC = () => {
             title='Password'
             placeholder='Password'
             type='password'
-            width='100%'/>
-          {touched.password && <span className={style.main_logInBlock_error}>{errorPassword}</span>}
+            width='100%'
+            error={touched.password ? errorPassword : undefined}
+          />
           <ButtonUI type={'submit'} disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px'
                     width='100%'/>
           <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
