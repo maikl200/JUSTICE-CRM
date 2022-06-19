@@ -2,6 +2,20 @@ import React from 'react';
 import Chart from "react-apexcharts";
 import {productDataMocks} from "../../mockdata/productData";
 
+const salesProduct = localStorage.getItem('salesProduct')
+//@ts-ignore
+const priceProductInDay =
+  salesProduct && JSON.parse(salesProduct).length
+    ?
+    JSON.parse(salesProduct)?.map((product : any) => product.price)
+    :
+    productDataMocks?.map(product => product.price)
+
+const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: any, next: any) {
+  return prev + next
+})
+
+console.log(totalCount)
 const DiogramLine = () => {
 
   return (
@@ -13,7 +27,7 @@ const DiogramLine = () => {
         series={[
           {
             name: "earned",
-            data: productDataMocks.map((item) => item.price),
+            data: priceProductInDay
           }
         ]}
         options={{
@@ -38,7 +52,7 @@ const DiogramLine = () => {
               formatter: () => ''
             },
             title: {
-              text: '$106,000',
+              text: `${totalCount}$`,
               style: {color: '#2b3844', fontSize: '24px', fontWeight: '600', fontFamily: 'Inter'}
             },
             axisBorder: {

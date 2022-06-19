@@ -16,27 +16,27 @@ interface HeaderProps {
 }
 
 interface InitialTouchedTypes {
-  valuePrice: boolean
-  valueStore: boolean
-  valueProductName: boolean
-  valueProductCategory: boolean
-  valueQuantityGoods: boolean
-  valueWeightVolumeItem: boolean
+  price: boolean
+  store: boolean
+  productName: boolean
+  productCategory: boolean
+  quantityGoods: boolean
+  weightVolumeItem: boolean
 }
 
 const initialTouched: InitialTouchedTypes = {
-  valuePrice: false,
-  valueStore: false,
-  valueProductName: false,
-  valueProductCategory: false,
-  valueQuantityGoods: false,
-  valueWeightVolumeItem: false
+  price: false,
+  store: false,
+  productName: false,
+  productCategory: false,
+  quantityGoods: false,
+  weightVolumeItem: false
 }
 
 const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct = []}) => {
   const [modalActive, setModalActive] = useState<boolean>(false)
   const [valueStore, setValueStore] = useState<string>('')
-  const [valuePrice, setValuePrice] = useState<string>('')
+  const [valuePrice, setValuePrice] = useState<number>()
   const [valueProductName, setValueProductName] = useState<string>('')
   const [valueProductCategory, setValueProductCategory] = useState<string>('')
   const [valueQuantityGoods, setValueQuantityGoods] = useState<string>('')
@@ -49,6 +49,7 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
   const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('Field is not filled in correctly ')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
+  const userAddress = JSON.parse(localStorage.getItem('loginUsers') as string)
 
 
   // @ts-ignore
@@ -64,14 +65,17 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
       store: valueStore,
       dateNow: new Date().toLocaleDateString(),
       price: valuePrice,
+      address: userAddress.address ? userAddress.address : '15 Krylatskaya st...',
       productName: valueProductName,
       productCategory: valueProductCategory,
       quantityGoods: valueQuantityGoods,
       weightVolumeOneItem: valueWeightVolumeOneItem
     }
+    //@ts-ignore
     const newDataProduct: DataProductInterface[] = dataProduct ? [...dataProduct, product] : [product]
     localStorage.setItem('dataProduct', JSON.stringify(newDataProduct))
     setDataProduct && setDataProduct(newDataProduct)
+    setModalActive(false)
   }
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
@@ -86,7 +90,7 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
 
       }
       case 'price':
-        if (valuePrice !== '') {
+        if (valuePrice !== 0) {
           setErrorPrice('')
         } else {
           setErrorPrice('blank field')
@@ -149,70 +153,76 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
             setModalActive={setModalActive}>
             <Input
               name='store'
-              defaultValue={valueStore}
               onChange={(e) => {
                 setValueStore(e.target.value)
-                setTouched({...touched, valueStore: true})
+                setTouched({...touched, store: true})
               }}
               placeholder='Store'
               type='text'
-              width='300px'/>
-            {touched.valueStore && <span className={style.error}>{errorStore}</span>}
+              width='300px'
+              error={touched.store ? errorStore : undefined}
+              errorBorder={errorStore && '1px solid red'}
+            />
             <Input
               name='price'
-              defaultValue={valuePrice}
               onChange={(e) => {
-                setValuePrice(e.target.value)
-                setTouched({...touched, valuePrice: true})
+                setValuePrice(e.target.valueAsNumber)
+                setTouched({...touched, price: true})
               }}
               placeholder='Price'
               type='number'
-              width='300px'/>
-            {touched.valuePrice && <span className={style.error}>{errorPrice}</span>}
+              width='300px'
+              error={touched.price ? errorPrice : undefined}
+              errorBorder={errorPrice && '1px solid red'}
+            />
             <Input
               name='productName'
-              defaultValue={valueProductName}
               onChange={(e) => {
                 setValueProductName(e.target.value)
-                setTouched({...touched, valueProductName: true})
+                setTouched({...touched, productName: true})
               }}
               placeholder='Product name'
               type='text'
-              width='300px'/>
-            {touched.valueProductName && <span className={style.error}>{errorProductName}</span>}
+              width='300px'
+              errorBorder={errorProductName && '1px solid red'}
+              error={touched.productName ? errorProductName : undefined}
+            />
             <Input
               name='productCategory'
-              defaultValue={valueProductCategory}
               onChange={(e) => {
                 setValueProductCategory(e.target.value)
-                setTouched({...touched, valueProductName: true})
+                setTouched({...touched, productCategory: true})
               }}
               placeholder='Product Category'
               type='text'
-              width='300px'/>
-            {touched.valueProductCategory && <span className={style.error}>{errorProductCategory}</span>}
+              width='300px'
+              errorBorder={errorProductCategory && '1px solid red'}
+              error={touched.productCategory ? errorProductCategory : undefined}
+            />
             <Input
               name='quantityGoods'
-              defaultValue={valueQuantityGoods}
               onChange={(e) => {
                 setValueQuantityGoods(e.target.value)
-                setTouched({...touched, valueQuantityGoods: true})
+                setTouched({...touched, quantityGoods: true})
               }}
               placeholder='Quantity of goods'
               type='number'
-              width='300px'/>
-            {touched.valueQuantityGoods && <span className={style.error}>{errorQuantityGoods}</span>}
+              width='300px'
+              errorBorder={errorQuantityGoods && '1px solid red'}
+              error={touched.quantityGoods ? errorQuantityGoods : undefined}
+            />
             <Input
               name='weightVolumeItem'
-              defaultValue={valueWeightVolumeOneItem}
               onChange={(e) => {
                 setValueWeightVolumeOneItem(e.target.value)
-                setTouched({...touched, valueWeightVolumeItem: true})
+                setTouched({...touched, weightVolumeItem: true})
               }}
               placeholder='Weight / Volume of one item'
               type='number'
-              width='300px'/>
-            {touched.valueWeightVolumeItem && <span className={style.error}>{errorWeightVolumeItem}</span>}
+              width='300px'
+              errorBorder={errorWeightVolumeItem && '1px solid red'}
+              error={touched.weightVolumeItem ? errorWeightVolumeItem : undefined}
+            />
             <ButtonUI
               disabled={!isFormValid}
               onClick={onSubmit}

@@ -18,6 +18,7 @@ const NavBar: FC = () => {
   const logOut = () => {
     localStorage.setItem('auth', "false")
     navigate('/SignIn')
+    localStorage.removeItem('loginUsers')
   }
 
   return (

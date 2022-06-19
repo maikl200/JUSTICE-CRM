@@ -16,14 +16,16 @@
 
 
     &_error {
+      display: flex;
+      align-items: flex-end;
       color: #ff7675;
-      height: 40px;
     }
 
     &_errorBlock {
       display: flex;
       flex-direction: column;
       gap: 8px;
+
     }
 
     &_logInPage {
@@ -35,6 +37,7 @@
       & span {
         color: #5082e1;
         cursor: pointer;
+
       }
     }
 
@@ -49,6 +52,7 @@
       display: flex;
       flex-direction: column;
       width: 50%;
+      gap: 24px;
     }
 
     &_inputsRow {
