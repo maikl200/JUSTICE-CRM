@@ -50,7 +50,7 @@ const initialTouched: InitialTouchedTypes = {
 
 
 const MyProduct: FC = () => {
-  const [valueNumberProduct, setValueNumberProduct] = useState<number>()
+  const [valueNumberProduct, setValueNumberProduct] = useState<number | string>()
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
@@ -66,7 +66,7 @@ const MyProduct: FC = () => {
   const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) || [])
   const [editId, setEditId] = useState<number>(-1)
   const [form, changeForm] = useHandleChange()
-
+  const [dataEditProduct, setDataEditProduct] = useState()
 
   // @ts-ignore
   const quantityGoods = (productSell.quantityGoods)
@@ -82,7 +82,6 @@ const MyProduct: FC = () => {
   }
 
   const sellButton = () => {
-    setSellModalActive(false)
     const discriminant = +quantityGoods - Number(valueNumberProduct)
     const newProduct = {...productSell, quantityGoods: Number(discriminant), valueNumberProduct, valueDate}
 
@@ -99,9 +98,11 @@ const MyProduct: FC = () => {
     } : product))
 
     setSalesProducts([...salesProducts, newProduct])
-
+    setValueDate('')
+    setValueNumberProduct('')
+    setTouched(initialTouched)
+    setSellModalActive(false)
   }
-
 
   useEffect(() => {
     localStorage.setItem('salesProduct', JSON.stringify(salesProducts))
@@ -157,21 +158,25 @@ const MyProduct: FC = () => {
 
   const editElem = (id: number) => {
     setEditModalActive(true)
+    const filterProduct = dataProduct.find((item) => item.id === id)
+    // @ts-ignore
+    setDataEditProduct(filterProduct)
     setEditId(id)
     return
   }
-
-
 
   const editButton = (id: number) => {
     const newProducts = dataProduct?.map(prod => prod.id === id ? {
       ...prod,
       ...form
     } : prod)
-    setDataProduct(newProducts)
-    setEditModalActive(false)
-  }
 
+    setDataProduct(newProducts)
+    // @ts-ignore
+    setTouched(initialTouched)
+    setEditModalActive(false)
+
+  }
   return (
     <main className={style.main}>
       <NavBar/>
@@ -235,7 +240,10 @@ const MyProduct: FC = () => {
         <ModalWindow
           title='Editing a product'
           setModalActive={setEditModalActive}>
+          <span className={style.error}>{!isEditValid && error}</span>
           <Input
+            /*@ts-ignore*/
+            defaultValue={dataEditProduct?.store}
             onChange={(e) => {
               setTouched({...touched, store: true})
               changeForm(e)
@@ -247,6 +255,8 @@ const MyProduct: FC = () => {
             width='300px'
           />
           <Input
+            /*@ts-ignore*/
+            defaultValue={dataEditProduct?.price}
             onChange={(e) => {
               setTouched({...touched, price: true})
               changeForm(e)
@@ -257,6 +267,8 @@ const MyProduct: FC = () => {
             width='300px'
           />
           <Input
+            /*@ts-ignore*/
+            defaultValue={dataEditProduct?.productCategory}
             onChange={(e) => {
               setTouched({...touched, category: true})
               changeForm(e)
@@ -266,6 +278,8 @@ const MyProduct: FC = () => {
             name='productCategory'
             width='300px'/>
           <Input
+            /*@ts-ignore*/
+            defaultValue={dataEditProduct?.quantityGoods}
             onChange={(e) => {
               setTouched({...touched, remains: true})
               changeForm(e)
@@ -275,6 +289,8 @@ const MyProduct: FC = () => {
             name='quantityGoods'
             width='300px'/>
           <Input
+            /*@ts-ignore*/
+            defaultValue={dataEditProduct?.weightVolumeOneItem}
             onChange={(e) => {
               setTouched({...touched, weightVolume: true})
               changeForm(e)
@@ -283,7 +299,6 @@ const MyProduct: FC = () => {
             type='number'
             name='weightVolumeOneItem'
             width='300px'
-            error={!isEditValid ? error : undefined}
           />
           <ButtonUI
             disabled={!isEditValid}
@@ -305,6 +320,7 @@ const MyProduct: FC = () => {
             <Input
               errorBorder={errorValueNumberProduct && '1px solid red'}
               name='numberProduct'
+              defaultValue={valueNumberProduct}
               onChange={(e) => {
                 setValueNumberProduct(e.target.valueAsNumber)
                 setTouched({...touched, numberProduct: true})
@@ -315,6 +331,7 @@ const MyProduct: FC = () => {
               error={touched.numberProduct ? errorValueNumberProduct : undefined}
             />
             <Input
+              defaultValue={valueDate}
               errorBorder={errorValueDate && '1px solid red'}
               name='dateSale'
               onChange={(e) => {

@@ -7,7 +7,7 @@ const salesProduct = localStorage.getItem('salesProduct')
 const priceProductInDay =
   salesProduct && JSON.parse(salesProduct).length
     ?
-    JSON.parse(salesProduct)?.map((product : any) => product.price)
+    JSON.parse(salesProduct)?.map((product: any) => product.price)
     :
     productDataMocks?.map(product => product.price)
 
@@ -15,14 +15,13 @@ const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev:
   return prev + next
 })
 
-console.log(totalCount)
 const DiogramLine = () => {
 
   return (
     <div>
       <Chart
         type='line'
-        width={340}
+        width={480}
         height={140}
         series={[
           {

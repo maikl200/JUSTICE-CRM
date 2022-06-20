@@ -33,7 +33,6 @@ interface userData {
   companyName: string
   email: string
   password: string
-  repeatPassword: string
 }
 
 const CreateAcc: FC = () => {
@@ -47,12 +46,12 @@ const CreateAcc: FC = () => {
   const [valueEmail, setValueEmail] = useState<string>('')
   const [valuePassword, setValuePassword] = useState<string>('')
   const [valueRepeatPassword, setValueRepeatPassword] = useState<string>('')
-  const [errorCompanyName, setErrorCompanyName] = useState<string>('Invalid company name')
-  const [errorPassword, setErrorPassword] = useState<string>('Invalid password')
-  const [errorRepeatPassword, setErrorRepeatPassword] = useState<string>('Password does not match')
-  const [errorEmail, setErrorEmail] = useState<string>('Invalid Email')
-  const [errorFirstName, setErrorFirstName] = useState<string>('Invalid first name')
-  const [errorLastName, setErrorLastName] = useState<string>('Invalid last name')
+  const [errorCompanyName, setErrorCompanyName] = useState<string>('')
+  const [errorPassword, setErrorPassword] = useState<string>('')
+  const [errorRepeatPassword, setErrorRepeatPassword] = useState<string>('')
+  const [errorEmail, setErrorEmail] = useState<string>('')
+  const [errorFirstName, setErrorFirstName] = useState<string>('')
+  const [errorLastName, setErrorLastName] = useState<string>('')
   const [showError, setShowError] = useState<string>('')
   const auth = JSON.parse(localStorage.getItem('auth') as string)
 
@@ -111,7 +110,6 @@ const CreateAcc: FC = () => {
       companyName: valueCompanyName,
       password: valuePassword,
       email: valueEmail,
-      repeatPassword: valueRepeatPassword
     }
     const localUsers: string | null = localStorage.getItem('users')
     if (localUsers) {
@@ -139,12 +137,15 @@ const CreateAcc: FC = () => {
   }, [auth])
 
   useEffect(() => {
-    if (!!errorFirstName || !!errorLastName || !!errorCompanyName || !!errorPassword || !!errorEmail || !!errorRepeatPassword) {
-      setFormIsValid(false)
-    } else {
-      setFormIsValid(true)
+    if (touched.repeatPassword && touched.password && touched.email && touched.companyName && touched.lastName && touched.firstName) {
+      if (!errorPassword && !errorLastName && !errorFirstName && !errorEmail && !errorCompanyName && !errorRepeatPassword) {
+        setFormIsValid(true)
+      } else {
+        setFormIsValid(false)
+      }
     }
-  }, [errorFirstName, errorLastName, errorCompanyName, errorPassword, errorEmail, errorRepeatPassword, valueFirstName])
+  }, [errorPassword, errorLastName, errorFirstName, errorEmail, errorCompanyName, errorRepeatPassword, touched])
+
 
   return (
     <main className={style.main}>

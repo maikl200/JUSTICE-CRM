@@ -81,6 +81,8 @@
 }
 
 .error {
+  display: flex;
+  justify-content: center;
   color: #ff7675;
   height: 20px;
   border: #ff7675;
