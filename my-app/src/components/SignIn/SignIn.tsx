@@ -23,8 +23,8 @@ const SignIn: FC = () => {
   const [valuePassword, setValuePassword] = useState<string>('')
   const [valueEmail, setValueEmail] = useState<string>('')
   const [formIsValid, setFormIsValid] = useState<boolean>(false)
-  const [errorPassword, setErrorPassword] = useState<string>('Invalid password')
-  const [errorEmail, setErrorEmail] = useState<string>('Invalid Email')
+  const [errorPassword, setErrorPassword] = useState<string>('')
+  const [errorEmail, setErrorEmail] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
   const auth = JSON.parse(localStorage.getItem('auth') as string)
@@ -62,7 +62,6 @@ const SignIn: FC = () => {
       address: currentAuthUser[0].address,
       password: valuePassword,
       email: valueEmail,
-      repeatPassword: currentAuthUser[0].repeatPassword,
     }
 
     const currentUser = user.some((user: { email: string; password: string; }) => {
@@ -84,12 +83,14 @@ const SignIn: FC = () => {
   }, [auth])
 
   useEffect(() => {
-    if (!!errorPassword || !!errorEmail) {
-      setFormIsValid(false)
-    } else {
-      setFormIsValid(true)
+    if (touched.email && touched.password) {
+      if (!!errorPassword || !!errorEmail) {
+        setFormIsValid(false)
+      } else {
+        setFormIsValid(true)
+      }
     }
-  }, [errorPassword, errorEmail, valuePassword])
+  }, [errorPassword, errorEmail, touched])
 
   return (
     <main className={style.main}>

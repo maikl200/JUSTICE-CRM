@@ -1,12 +1,12 @@
 import React, {FC} from 'react';
 
 import {Route, Routes} from "react-router-dom";
-import CreateAcc from "../../components/CreateAcc/CreateAcc";
 import SignIn from "../../components/SignIn/SignIn";
 import MainPage from "../../components/MainPage/MainPage";
 import MyProduct from "../../components/MyProduct/MyProduct";
 import MySales from "../../components/MySales/MySales";
 import PersonalCabinet from "../../components/PersonalCabinet/PersonalCabinet";
+import CreateAcc from '../../components/CreateAcc';
 
 const AppRouter: FC = () => {
   return (
