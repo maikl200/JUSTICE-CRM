@@ -61,9 +61,12 @@ const MyProduct: FC = () => {
   const [isEditValid, setIsEditValid] = useState<boolean>(false)
   const [errorValueNumberProduct, setErrorValueProduct] = useState('')
   const [errorValueDate, setErrorValueDate] = useState('')
-  const [error, setError] = useState('')
   const [errorValueStore, setErrorValueStore] = useState('')
-  const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) || [])
+  const [errorValuePrice, setErrorValuePrice] = useState('')
+  const [errorValueCategory, setErrorValueCategory] = useState('')
+  const [errorValueQuantityGoods, setErrorValueQuantityGoods] = useState('')
+  const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
+  const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) ?? productDataMocks)
   const [editId, setEditId] = useState<number>(-1)
   const [form, changeForm] = useHandleChange()
   const [dataEditProduct, setDataEditProduct] = useState()
@@ -89,6 +92,10 @@ const MyProduct: FC = () => {
       // @ts-ignore
       setDataProduct(dataProduct.filter((item) => item.id !== newProduct.id))
       setSalesProducts([...salesProducts, newProduct])
+      setTouched(initialTouched)
+      setValueDate('')
+      setValueNumberProduct('')
+      setSellModalActive(false)
       return
     }
     // @ts-ignore
@@ -98,9 +105,10 @@ const MyProduct: FC = () => {
     } : product))
 
     setSalesProducts([...salesProducts, newProduct])
+
+    setTouched(initialTouched)
     setValueDate('')
     setValueNumberProduct('')
-    setTouched(initialTouched)
     setSellModalActive(false)
   }
 
@@ -115,9 +123,9 @@ const MyProduct: FC = () => {
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'numberProduct':
-        if (Number(e.target.value)) {
+        if (Number(e.target.value) <= quantityGoods && Number(e.target.value) !== 0) {
 
-          Number(e.target.value) <= Number(quantityGoods) && setErrorValueProduct('')
+          Number(e.target.value) <= quantityGoods && setErrorValueProduct('')
         } else {
           setErrorValueProduct('Incorrect filled')
         }
@@ -127,6 +135,41 @@ const MyProduct: FC = () => {
           setErrorValueDate('')
         } else {
           setErrorValueDate('Date entered incorrectly')
+        }
+        break
+      case 'store':
+        if (regEx.name.test(form.store)) {
+          setErrorValueStore('')
+        } else {
+          setErrorValueStore('Invalid store')
+        }
+        break
+      case 'price':
+        if (e.target.value <= 5000 && e.target.value >= 1) {
+          setErrorValuePrice('')
+        } else {
+          setErrorValuePrice('No more than 1,000 or no less than 1')
+        }
+        break
+      case 'productCategory':
+        if (regEx.name.test(form.productCategory)) {
+          setErrorValueCategory('')
+        } else {
+          setErrorValueCategory('Invalid category')
+        }
+        break
+      case 'quantityGoods':
+        if (e.target.value <= 200 && e.target.value >= 1) {
+          setErrorValueQuantityGoods('')
+        } else {
+          setErrorValueQuantityGoods('Invalid remain')
+        }
+        break
+      case 'weightVolumeOneItem':
+        if (e.target.value <= 20 && e.target.value >= 1) {
+          setErrorValueWeightVolumeOneItem('')
+        } else {
+          setErrorValueWeightVolumeOneItem('Invalid remain')
         }
         break
     }
@@ -141,16 +184,12 @@ const MyProduct: FC = () => {
   }, [errorValueNumberProduct, errorValueDate, valueDate])
 
   useEffect(() => {
-    if (!!form.store || !!form.price || form.productCategory || form.quantityGoods || form.weightVolumeOneItem) {
-      setIsEditValid(true)
-      setError('')
-
-    } else {
+    if (!!errorValueStore || !!errorValuePrice || !!errorValueCategory || !!errorValueQuantityGoods || !!errorValueWeightVolumeOneItem) {
       setIsEditValid(false)
-      setError('Fill in at least one field')
-
+    } else {
+      setIsEditValid(true)
     }
-  }, [form.store, form.price, form.productCategory, form.quantityGoods, form.weightVolumeOneItem])
+  }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
 
   const deleteElem = (id: number) => {
     setDataProduct(dataProduct.filter((item) => item.id !== id))
@@ -232,15 +271,15 @@ const MyProduct: FC = () => {
                   </div>
                 </div>
               )
-            )}
+            ).reverse()}
           </div>
         </div>
       </div>
       {editModalActive ?
         <ModalWindow
+          onBlur={onBlurHandler}
           title='Editing a product'
           setModalActive={setEditModalActive}>
-          <span className={style.error}>{!isEditValid && error}</span>
           <Input
             /*@ts-ignore*/
             defaultValue={dataEditProduct?.store}
@@ -249,7 +288,7 @@ const MyProduct: FC = () => {
               changeForm(e)
             }}
             placeholder='Store'
-            error={touched.price ? errorValueStore : undefined}
+            error={touched.store ? errorValueStore : undefined}
             type='text'
             name='store'
             width='300px'
@@ -265,6 +304,7 @@ const MyProduct: FC = () => {
             type='number'
             name='price'
             width='300px'
+            error={touched.price ? errorValuePrice : undefined}
           />
           <Input
             /*@ts-ignore*/
@@ -275,6 +315,7 @@ const MyProduct: FC = () => {
             }}
             placeholder='Category'
             type='text'
+            error={touched.category ? errorValueCategory : undefined}
             name='productCategory'
             width='300px'/>
           <Input
@@ -287,7 +328,9 @@ const MyProduct: FC = () => {
             placeholder='Remains'
             type='number'
             name='quantityGoods'
-            width='300px'/>
+            width='300px'
+            error={touched.remains ? errorValueQuantityGoods : undefined}
+          />
           <Input
             /*@ts-ignore*/
             defaultValue={dataEditProduct?.weightVolumeOneItem}
@@ -295,6 +338,7 @@ const MyProduct: FC = () => {
               setTouched({...touched, weightVolume: true})
               changeForm(e)
             }}
+            error={touched.weightVolume ? errorValueWeightVolumeOneItem : undefined}
             placeholder='Weight / Volume'
             type='number'
             name='weightVolumeOneItem'

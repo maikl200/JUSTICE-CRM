@@ -62,6 +62,7 @@ const SignIn: FC = () => {
       address: currentAuthUser[0].address,
       password: valuePassword,
       email: valueEmail,
+      productCategory: currentAuthUser[0].productCategory
     }
 
     const currentUser = user.some((user: { email: string; password: string; }) => {
@@ -77,6 +78,7 @@ const SignIn: FC = () => {
       setShowError('User not found')
     }
   }
+
 
   useEffect(() => {
     if (auth) navigate('/mainPage')

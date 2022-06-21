@@ -3,9 +3,9 @@ import Chart from "react-apexcharts";
 import {productDataMocks} from "../../mockdata/productData";
 
 const salesProduct = localStorage.getItem('salesProduct')
-//@ts-ignore
+
 const priceProductInDay =
-  salesProduct && JSON.parse(salesProduct).length
+  salesProduct && JSON.parse(salesProduct)?.length
     ?
     JSON.parse(salesProduct)?.map((product: any) => product.price)
     :

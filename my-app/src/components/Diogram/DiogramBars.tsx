@@ -8,7 +8,7 @@ const salesProduct = localStorage.getItem('salesProduct')
 const salesProductInDay =
   salesProduct && JSON.parse(salesProduct).length
     ?
-    JSON.parse(salesProduct)?.map((item: any) => item.valueNumberProduct)
+    JSON.parse(salesProduct)?.map((item: any) => item.soldItems)
     :
     productDataMocks?.map(product => product.soldItems)
 
@@ -19,7 +19,7 @@ const DiogramBars = () => {
     <div>
       <Chart
         type='bar'
-        width={920}
+        width={635}
         height={480}
         series={[{
           name: 'sales',
@@ -27,7 +27,7 @@ const DiogramBars = () => {
           color: '#5B6ACD'
         }, {
           name: '',
-          data: [-40, -40, -40, -40, -40, -40, -40],
+          data: salesProductInDay?.length && salesProductInDay.map( () => -30),
           color: '#EFF1FF'
         }]
         }

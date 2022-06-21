@@ -17,7 +17,7 @@ const DiogramPie = () => {
   const salesProductInDay =
     salesProduct && JSON.parse(salesProduct).length
       ?
-      JSON.parse(salesProduct)?.map((item: any) => item.valueNumberProduct)
+      JSON.parse(salesProduct)?.map((item: any) => item.soldItems)
       :
       productDataMocks?.map(product => product.soldItems)
 
