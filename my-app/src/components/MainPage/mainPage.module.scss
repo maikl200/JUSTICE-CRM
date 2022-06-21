@@ -39,35 +39,13 @@
         }
       }
 
-
       &_bar {
         background: white;
-        //& div div div svg:first-child g:first-child g:nth-child(5) g:first-child path{
-        //  position: relative!important;
-        //}
+
         & div div div svg:first-child g:nth-child(4) g:first-child text:last-child {
           display: none !important;
         }
-
-
-        //& div div div svg:first-child  g:first-child g:nth-child(5) g:nth-child(2) path{
-        //  fill: red!important;
-        //  barHeight: -40px!important;
-        //}
-
-
-        //  & div div div svg:first-child g:first-child g:nth-child(5) g:first-child path::after{
-        //    position: absolute;
-        //    top: 50px;
-        //    left: 0;
-        //    content: '';
-        //    display: inline-block;
-        //    width: 100px;
-        //    height: 100px;
-        //    background: red;
-        //}
       }
-
 
       &_pie {
         display: flex;
@@ -76,5 +54,4 @@
       }
     }
   }
-
 }
