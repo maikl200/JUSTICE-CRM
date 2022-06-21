@@ -50,7 +50,7 @@ const initialTouched: InitialTouchedTypes = {
 
 
 const MyProduct: FC = () => {
-  const [valueNumberProduct, setValueNumberProduct] = useState<number | string>()
+  const [soldItems, setSoldItems] = useState<number | string>()
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
@@ -85,8 +85,8 @@ const MyProduct: FC = () => {
   }
 
   const sellButton = () => {
-    const discriminant = +quantityGoods - Number(valueNumberProduct)
-    const newProduct = {...productSell, quantityGoods: Number(discriminant), valueNumberProduct, valueDate}
+    const discriminant = +quantityGoods - Number(soldItems)
+    const newProduct = {...productSell, quantityGoods: Number(discriminant), soldItems, valueDate}
 
     if (!discriminant) {
       // @ts-ignore
@@ -94,7 +94,7 @@ const MyProduct: FC = () => {
       setSalesProducts([...salesProducts, newProduct])
       setTouched(initialTouched)
       setValueDate('')
-      setValueNumberProduct('')
+      setSoldItems('')
       setSellModalActive(false)
       return
     }
@@ -105,10 +105,10 @@ const MyProduct: FC = () => {
     } : product))
 
     setSalesProducts([...salesProducts, newProduct])
-
+    console.log(salesProducts)
     setTouched(initialTouched)
     setValueDate('')
-    setValueNumberProduct('')
+    setSoldItems('')
     setSellModalActive(false)
   }
 
@@ -364,9 +364,9 @@ const MyProduct: FC = () => {
             <Input
               errorBorder={errorValueNumberProduct && '1px solid red'}
               name='numberProduct'
-              defaultValue={valueNumberProduct}
+              defaultValue={soldItems}
               onChange={(e) => {
-                setValueNumberProduct(e.target.valueAsNumber)
+                setSoldItems(e.target.valueAsNumber)
                 setTouched({...touched, numberProduct: true})
               }}
               placeholder='Number of products'

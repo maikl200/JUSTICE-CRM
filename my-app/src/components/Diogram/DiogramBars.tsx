@@ -3,10 +3,9 @@ import Chart from "react-apexcharts";
 import {productDataMocks} from '../../mockdata/productData'
 
 const salesProduct = localStorage.getItem('salesProduct')
-//@ts-ignore
 
 const salesProductInDay =
-  salesProduct && JSON.parse(salesProduct).length
+  salesProduct && JSON.parse(salesProduct)?.length
     ?
     JSON.parse(salesProduct)?.map((item: any) => item.soldItems)
     :
@@ -27,7 +26,7 @@ const DiogramBars = () => {
           color: '#5B6ACD'
         }, {
           name: '',
-          data: salesProductInDay?.length && salesProductInDay.map( () => -30),
+          data: salesProductInDay?.length && salesProductInDay.map(() => -30),
           color: '#EFF1FF'
         }]
         }
