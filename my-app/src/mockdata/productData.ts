@@ -77,4 +77,18 @@ export const productDataMocks = [
     quantityGoods: 40,
     weightVolumeOneItem: '5',
   },
+  {
+    id: 7,
+    productName: 'Sneakers',
+    store: 'Adidas',
+    address: '15 Krylatskaya st...',
+    productCategory: 'Sportswear',
+    dateNow: '04.07.2021',
+    soldItems: 100,
+    lastSale: '05.07.2021',
+    price: 5000,
+    quantityGoods: 40,
+    weightVolumeOneItem: '5',
+  },
+
 ]

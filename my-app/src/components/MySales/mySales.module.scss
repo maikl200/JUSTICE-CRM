@@ -13,10 +13,11 @@
       display: flex;
       flex-direction: column;
       width: 90%;
-      overflow: scroll;
-      overflow-x: hidden;
       font-size: 14px;
       margin-top: 28px;
+      max-height: calc(100vh - 180px);
+      overflow: scroll;
+      overflow-x: hidden;
 
       &_Title {
         display: flex;

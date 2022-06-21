@@ -43,6 +43,7 @@ const PersonalCabinet: FC = () => {
   const profileChanges = () => {
 
     const newProfile = {...loginUsers, ...form} || loginUsers
+    console.log(newProfile)
     localStorage.setItem('loginUsers', JSON.stringify({...newProfile}))
     localStorage.setItem('users', JSON.stringify([newProfile]))
 
@@ -82,7 +83,6 @@ const PersonalCabinet: FC = () => {
     }
   }, [errorNewPassword, form.newPassword])
 
-
   return (
     <main className={style.main}>
       <NavBar/>
@@ -119,6 +119,7 @@ const PersonalCabinet: FC = () => {
               type='text'
               width='380px'/>
             <Input
+              defaultValue={loginUsers.productCategory}
               name='productCategory'
               onChange={changeForm}
               placeholder='Product Category'

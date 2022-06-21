@@ -4,10 +4,11 @@ import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
+import {productDataMocks} from "../../mockdata/productData";
 
 const MySales: FC = () => {
-  // @ts-ignore
-  const salesProduct = JSON.parse(localStorage.getItem('salesProduct'))
+  const salesProduct = JSON.parse(localStorage.getItem('salesProduct') as string) ?? productDataMocks
+
 
   return (
     <main className={style.main}>
@@ -33,13 +34,13 @@ const MySales: FC = () => {
                   <div key={product.id} className={style.main_salesBar_salesCard_salesData_sales}>
                     <p>{product.productName}</p>
                     <p>{product.store}</p>
-                    <p>{product.address ? product.address : 'none'}</p>
+                    <p>{product.address}</p>
                     <p>{product.productCategory}</p>
                     <p>{product.dateNow}</p>
                     <p>${product.price}</p>
-                    <p>{product.valueNumberProduct}</p>
+                    <p>{product.valueNumberProduct ?? product.soldItems}</p>
                     <p>{product.weightVolumeOneItem}kg</p>
-                    <p>{product.valueDate}</p>
+                    <p>{product.valueDate ?? product.lastSale}</p>
                   </div>
                 </>
               )
