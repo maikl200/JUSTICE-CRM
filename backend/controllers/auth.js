@@ -5,29 +5,34 @@ const keys = require('../config/keys')
 const errorHandler = require('../utils/errorHandler')
 
 module.exports.login = async function (req, res) {
-  console.log(req.body)
-  const candidate = await User.findOne({email: req.body.email})
-  if (candidate) {
-    const passwordResult = bcrypt.compareSync(req.body.password, candidate.password)
-    if (passwordResult) {
-      const token = jwt.sign({
-        email: candidate.email,
-        password: candidate.password,
-        firstName: candidate.firstName,
-        lastName: candidate.lastName,
-        userId: candidate._id
-      }, keys.jwt, {expiresIn: 60 * 60})
-      res.status(200).json({
-        token: `Bearer ${token}`
-      })
+  try {
+    const candidate = await User.findOne({email: req.body.email})
+    if (candidate) {
+      const passwordResult = bcrypt.compareSync(req.body.password, candidate.password)
+      if (passwordResult) {
+        const token = jwt.sign({
+          email: candidate.email,
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          userId: candidate._id
+        }, keys.jwt, {expiresIn: 36000})
+        res.status(200).json({
+          token: `Bearer ${token}`
+        })
+      } else {
+        res.status(401).json({
+          message: 'Passwords do not match'
+        })
+      }
     } else {
-      res.status(401).json({
-        message: 'Passwords do not match'
+      res.status(404).json({
+        message: 'This email was not found'
       })
     }
-  } else {
-    res.status(404).json({
-      message: 'This email was not found'
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({
+      message: "Error server"
     })
   }
 }
