@@ -7,6 +7,9 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 
+import axios from "axios";
+import Cookies from "js-cookie";
+
 
 const initialTouched: InitialTouchedTypes = {
   firstName: false,
@@ -53,7 +56,7 @@ const CreateAcc: FC = () => {
   const [errorFirstName, setErrorFirstName] = useState<string>('')
   const [errorLastName, setErrorLastName] = useState<string>('')
   const [showError, setShowError] = useState<string>('')
-  const auth = JSON.parse(localStorage.getItem('auth') as string)
+  const token = Cookies.get('token')
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -111,30 +114,22 @@ const CreateAcc: FC = () => {
       password: valuePassword,
       email: valueEmail,
     }
-    const localUsers: string | null = localStorage.getItem('users')
-    if (localUsers) {
-      userCreate(user, localUsers)
-    } else {
-      localStorage.setItem('users', JSON.stringify([user]))
-      navigate('/signIn')
-    }
-  }
 
-  const userCreate = (user: userData, localUsers: string) => {
-
-    const oldUser = JSON.parse(localUsers).filter((oldUser: userData) => oldUser.email === user.email)
-    if (oldUser.length) {
-      setShowError('Пользователь с таким Email существует')
-    } else {
-      localStorage.setItem('users', JSON.stringify([...JSON.parse(localUsers), user]))
+    axios.post('http://localhost:3001/auth/register', {
+      ...user
+    }).then((response) => {
+      console.log(response.data)
       setShowError('')
-      navigate('/signIn')
-    }
+      navigate('/signIn', {replace: true})
+    }).catch(() => {
+      setShowError('Пользователь с таким Email существует')
+    })
+
   }
 
   useEffect(() => {
-    if (auth) navigate('/mainPage')
-  }, [auth])
+    if (token) navigate('/mainPage')
+  }, [token])
 
   useEffect(() => {
     if (touched.repeatPassword && touched.password && touched.email && touched.companyName && touched.lastName && touched.firstName) {

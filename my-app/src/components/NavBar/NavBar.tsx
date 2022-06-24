@@ -3,17 +3,18 @@ import React, {FC, useEffect} from 'react';
 import Logo from '../../assets/Logo.svg'
 import style from './navBar.module.scss'
 
+import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {useNavigate} from "react-router-dom";
 
 const NavBar: FC = () => {
   const navigate = useNavigate()
-  const auth = JSON.parse(localStorage.getItem('auth') as string)
+  const token = Cookies.get('token')
 
   useEffect(() => {
-    !auth && navigate('/SignIn')
-  }, [auth])
+    !token && navigate('/SignIn')
+  }, [token])
 
   const logOut = () => {
     localStorage.setItem('auth', "false")

@@ -6,6 +6,8 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 interface InitialTouchedTypes {
   email: boolean
@@ -27,9 +29,7 @@ const SignIn: FC = () => {
   const [errorEmail, setErrorEmail] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
-  const auth = JSON.parse(localStorage.getItem('auth') as string)
-  const user = JSON.parse(localStorage.getItem('users') as string) || []
-
+  const token = Cookies.get('token')
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -54,35 +54,22 @@ const SignIn: FC = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const currentAuthUser = user.filter((item: { email: string; }) => valueEmail === item.email)
-    const loginUser: any = {
-      firstName: currentAuthUser[0].firstName,
-      lastName: currentAuthUser[0].lastName,
-      companyName: currentAuthUser[0].companyName,
-      address: currentAuthUser[0].address,
-      password: valuePassword,
+    axios.post('http://localhost:3001/auth/login', {
       email: valueEmail,
-      productCategory: currentAuthUser[0].productCategory
-    }
-
-    const currentUser = user.some((user: { email: string; password: string; }) => {
-      return valueEmail === user.email && valuePassword === user.password
+      password: valuePassword
+    }).then((response) => {
+      console.log('good', response.data)
+      setShowError('')
+      Cookies.set('token', JSON.stringify(response.data))
+      navigate('/mainPage', {replace: true})
+    }).catch(() => {
+      setShowError('Пользователь не найден')
     })
-
-    if (currentUser) {
-      localStorage.setItem('auth', 'true')
-      localStorage.setItem('loginUsers', JSON.stringify(loginUser))
-      navigate('/mainPage')
-
-    } else {
-      setShowError('User not found')
-    }
   }
 
-
   useEffect(() => {
-    if (auth) navigate('/mainPage')
-  }, [auth])
+    if (token) navigate('/mainPage')
+  }, [token])
 
   useEffect(() => {
     if (touched.email && touched.password) {

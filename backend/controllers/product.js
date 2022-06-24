@@ -17,7 +17,7 @@ module.exports.myProducts = async function (req, res) {
 module.exports.addProduct = async function (req, res) {
   try {
     const user = await User.findOne({_id: req.query.id})
-    if (user){
+    if (user) {
       const newProduct = req.body
       const product = await new Product({
         store: newProduct.store,
@@ -33,31 +33,11 @@ module.exports.addProduct = async function (req, res) {
         res.status(201).json({
           product
         })
-      }
-      catch (e) {
-        errorHandler(res,e)
+      } catch (e) {
+        errorHandler(res, e)
       }
     }
 
-    // const newProduct = await User.findOneAndUpdate({_id: req.params.id},
-    //   {
-    //     $set: {
-    //       products: [...user.products, req.body.prod]
-    //     }
-    //   }, {new: true}
-    // )
-    // res.status(200).json({
-    //   newProducts
-    // })
-
-  } catch (e) {
-    errorHandler(res, e)
-  }
-}
-
-module.exports.sellProduct = function (req, res) {
-  try {
-    // todo Заполнить
   } catch (e) {
     errorHandler(res, e)
   }
@@ -65,21 +45,27 @@ module.exports.sellProduct = function (req, res) {
 
 module.exports.editProduct = async function (req, res) {
   try {
-    const {id} = req.params
+    const {id} = req.query
     const updateProduct = await Product.findOneAndUpdate(
       {_id: id},
       {
-        address: req.body.address,
         store: req.body.store,
         price: req.body.price,
         productName: req.body.productName,
         productCategory: req.body.productCategory,
         quantityGoods: req.body.quantityGoods,
-        weightVolumeOneItem: req.body.weightVolumeOneItem
+        weightVolumeOneItem: req.body.weightVolumeOneItem,
+        address: req.body.address ? req.body.address : 'privet'
       },
     )
+
+    try {
+      await updateProduct.save()
+      res.status(201).json({updateProduct})
+    } catch (e) {
+      console.log(e)
+    }
     res.status(200).json(updateProduct)
-    console.log(updateProduct)
   } catch (e) {
     errorHandler(res, e)
   }
