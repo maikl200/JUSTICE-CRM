@@ -54,7 +54,7 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
 
   const onSubmit = (e: any) => {
-    axios.post('http://localhost:3001/product/addProduct', {
+    axios.post('http://localhost:5100/product/addProduct', {
       store: valueStore,
       price: valuePrice,
       productName: valueProductName,
@@ -98,7 +98,7 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
       }
       case 'price':
         // @ts-ignore
-        if (valuePrice !== 0 && valuePrice <= 5000) {
+        if (valuePrice !== 0 && valuePrice <= 5100) {
           setErrorPrice('')
         } else {
           setErrorPrice('blank field')

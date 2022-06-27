@@ -7,7 +7,7 @@ import axios from "axios";
 const DiogramPie = () => {
 
   // @ts-ignore
-  const salesProduct = axios.get('http://localhost:3001/salesProduct/salesProduct')
+  const salesProduct = axios.get('http://localhost:5100/salesProduct/salesProduct')
     .then(() => {
       return salesProduct
     })

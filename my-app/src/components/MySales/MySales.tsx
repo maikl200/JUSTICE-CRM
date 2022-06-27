@@ -6,6 +6,7 @@ import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 import {productDataMocks} from "../../mockdata/productData";
 
+
 const MySales: FC = () => {
   const salesProduct = JSON.parse(localStorage.getItem('salesProduct') as string) ?? productDataMocks
 
@@ -28,23 +29,23 @@ const MySales: FC = () => {
             <p>Last sale</p>
           </div>
           <div className={style.main_salesBar_salesCard_salesData}>
-            {salesProduct?.map((product: any) => {
-              return (
-                <>
-                  <div key={product.id} className={style.main_salesBar_salesCard_salesData_sales}>
-                    <p>{product.productName}</p>
-                    <p>{product.store}</p>
-                    <p>{product.address}</p>
-                    <p>{product.productCategory}</p>
-                    <p>{product.dateNow}</p>
-                    <p>${product.price}</p>
-                    <p>{product.valueNumberProduct ?? product.soldItems}</p>
-                    <p>{product.weightVolumeOneItem}kg</p>
-                    <p>{product.valueDate ?? product.lastSale}</p>
-                  </div>
-                </>
-              )
-            }).reverse()}
+            {/*{salesProducts?.map((product: any) => {*/}
+            {/*  return (*/}
+            {/*    <>*/}
+            {/*      <div key={product.id} className={style.main_salesBar_salesCard_salesData_sales}>*/}
+            {/*        <p>{product.productName}</p>*/}
+            {/*        <p>{product.store}</p>*/}
+            {/*        <p>{product.address}</p>*/}
+            {/*        <p>{product.productCategory}</p>*/}
+            {/*        <p>{product.dateNow}</p>*/}
+            {/*        <p>${product.price}</p>*/}
+            {/*        <p>{product.valueNumberProduct ?? product.soldItems}</p>*/}
+            {/*        <p>{product.weightVolumeOneItem}kg</p>*/}
+            {/*        <p>{product.valueDate ?? product.lastSale}</p>*/}
+            {/*      </div>*/}
+            {/*    </>*/}
+            {/*  )*/}
+            {/*}).reverse()}*/}
           </div>
         </div>
       </div>

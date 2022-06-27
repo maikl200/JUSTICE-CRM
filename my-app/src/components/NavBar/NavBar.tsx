@@ -17,9 +17,8 @@ const NavBar: FC = () => {
   }, [token])
 
   const logOut = () => {
-    localStorage.setItem('auth', "false")
     navigate('/SignIn')
-    localStorage.removeItem('loginUsers')
+    Cookies.remove('token')
   }
 
   return (

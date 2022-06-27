@@ -115,7 +115,7 @@ const CreateAcc: FC = () => {
       email: valueEmail,
     }
 
-    axios.post('http://localhost:3001/auth/register', {
+    axios.post('http://localhost:5100/auth/register', {
       ...user
     }).then((response) => {
       console.log(response.data)

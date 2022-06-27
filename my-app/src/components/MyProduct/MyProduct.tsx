@@ -67,16 +67,16 @@ const MyProduct: FC = () => {
   const [errorValueCategory, setErrorValueCategory] = useState('')
   const [errorValueQuantityGoods, setErrorValueQuantityGoods] = useState('')
   const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
-  const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) ?? productDataMocks)
+  const [salesProducts, setSalesProducts] = useState()
   const [editId, setEditId] = useState<number>(-1)
+  const [sellId, setSellId] = useState<number>(-1)
   const [form, changeForm] = useHandleChange()
   const [dataProduct, setDataProduct] = useState()
   const [dataEditProduct, setDataEditProduct] = useState()
-  console.log(dataEditProduct)
-  // @ts-ignore
+
 
   const getAllUsers = async () => {
-    const allProducts = axios.get('http://localhost:3001/product/myProducts', {
+    const allProducts = axios.get('http://localhost:5100/product/myProducts', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       },
@@ -87,9 +87,6 @@ const MyProduct: FC = () => {
       console.log(e)
     }
   }
-  // @ts-ignore
-  console.log('da', dataProduct)
-
 
   useEffect(() => {
     getAllUsers()
@@ -99,6 +96,7 @@ const MyProduct: FC = () => {
   const quantityGoods = (productSell.quantityGoods)
   const sellProduct = (id: number) => {
     setSellModalActive(true)
+    setSellId(id)
 
     // @ts-ignore
     const filterProduct = dataProduct?.filter((item: any) => item._id === id)
@@ -110,41 +108,50 @@ const MyProduct: FC = () => {
     // setDataProduct(newDataProduct)
   }
 
-  const sellButton = () => {
+  const sellButton = (sellId: number) => {
     const discriminant = +quantityGoods - Number(soldItems)
     const newProduct = {...productSell, quantityGoods: Number(discriminant), soldItems, valueDate}
+    axios.post('http://localhost:5100/sellProduct/sellProduct', {
+      quantitySell: form.numberProduct,
+      productDate: form.dateSale
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: sellId
+      }
+    })
+      .then((res) => {
+        // @ts-ignore
+        setSalesProducts([...salesProducts, newProduct]);
+      })
 
-    if (!discriminant) {
-      // @ts-ignore
-      setDataProduct(dataProduct.filter((item) => item.id !== newProduct.id))
-      setSalesProducts([...salesProducts, newProduct])
-      setTouched(initialTouched)
-      setValueDate('')
-      setSoldItems('')
-      setSellModalActive(false)
-      return
-    }
+    // if (!discriminant) {
+    //   // @ts-ignore
+    //   setDataProduct(dataProduct.filter((item) => item.id !== newProduct.id))
+    //
+    //   // @ts-ignore
+    //   setSalesProducts([...salesProducts, newProduct])
+    //   setTouched(initialTouched)
+    //   setValueDate('')
+    //   setSoldItems('')
+    //   setSellModalActive(false)
+    //   return
+    // }
     // @ts-ignore
-    setDataProduct(dataProduct?.map(product => product.id === newProduct.id ? {
-      ...product,
-      quantityGoods: newProduct.quantityGoods
-    } : product))
+    // setDataProduct(dataProduct?.map(product => product.id === newProduct.id ? {
+    //   ...product,
+    //   quantityGoods: newProduct.quantityGoods
+    // } : product))
 
-    setSalesProducts([...salesProducts, newProduct])
-    console.log(salesProducts)
+    // @ts-ignore
+    // setSalesProducts([salesProducts, newProduct])
     setTouched(initialTouched)
     setValueDate('')
     setSoldItems('')
     setSellModalActive(false)
   }
-
-  useEffect(() => {
-    localStorage.setItem('salesProduct', JSON.stringify(salesProducts))
-  }, [salesProducts])
-
-  useEffect(() => {
-    localStorage.setItem('dataProduct', JSON.stringify(dataProduct))
-  }, [dataProduct])
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -171,7 +178,7 @@ const MyProduct: FC = () => {
         }
         break
       case 'price':
-        if (e.target.value <= 5000 && e.target.value >= 1) {
+        if (e.target.value <= 5100 && e.target.value >= 1) {
           setErrorValuePrice('')
         } else {
           setErrorValuePrice('No more than 1,000 or no less than 1')
@@ -216,9 +223,22 @@ const MyProduct: FC = () => {
       setIsEditValid(true)
     }
   }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
-
   const deleteElem = (id: number) => {
-    // setDataProduct(dataProduct.filter((item) => item.id !== id))
+    axios.delete('http://localhost:5100/product/deleteProduct', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: id
+      }
+    })
+      .then(() => {
+        // @ts-ignore
+        setDataProduct(dataProduct.filter((prod) => prod._id !== id))
+      })
+      .catch((e) => {
+        console.error(':(')
+      })
   }
 
   const editElem = (id: number) => {
@@ -228,53 +248,29 @@ const MyProduct: FC = () => {
     // @ts-ignore
     setDataEditProduct(filterProduct)
     setEditId(id)
-    console.log('filter', filterProduct)
     return
   }
-  console.log('id', editId)
-  const editButton = async (id: number) => {
 
-    // @ts-ignore
-    const newProducts = dataProduct?.map((prod: { id: number; }) => prod._id === id ? {
-      ...prod,
-      ...form
-    } : prod)
-
-
-    axios.patch('http://localhost:3001/product/editProduct', {
-      // @ts-ignore
-      store: dataEditProduct.store,
-      // @ts-ignore
-      price: dataEditProduct.price,
-      // @ts-ignore
-      productName: dataEditProduct.productName,
-      // @ts-ignore
-      productCategory: dataEditProduct.productCategory,
-      // @ts-ignore
-      quantityGoods: dataEditProduct.quantityGoods,
-      // @ts-ignore
-      weightVolumeOneItem: dataEditProduct.weightVolumeOneItem,
-    }, {
+  const editButton = (editId: number) => {
+    axios.patch('http://localhost:5100/product/editProduct', {...form}, {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       },
+      params: {
+        id: editId
+      }
     })
       .then((res) => {
-        // @ts-ignore
-        setDataProduct([...dataProduct, res.data])
-        // @ts-ignore
-        console.log(dataEditProduct.price)
+        setDataProduct(res.data)
       })
       .catch((e) => {
-        console.error(e)
+        console.error(':(')
       })
 
-    // setDataProduct(newProducts)
-    // @ts-ignore
     setTouched(initialTouched)
     setEditModalActive(false)
-
   }
+
   return (
     <main className={style.main}>
       <NavBar/>
@@ -301,7 +297,7 @@ const MyProduct: FC = () => {
           <div className={style.main_productBar_productCard_productData}>
             {/*@ts-ignore*/}
             {dataProduct?.map((product: any) => (
-                <div key={product?.id} className={style.main_productBar_productCard_productData_product}>
+                <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
                   <p>{product?.productName}</p>
                   <p>{product?.store}</p>
                   <p>{product?.address}</p>
@@ -313,7 +309,7 @@ const MyProduct: FC = () => {
                   <div style={{width: '11.1%'}}
                        className={style.main_productBar_productCard_productData_product_btn}>
                     <ButtonUI
-                      onClick={() => sellProduct(product.id)}
+                      onClick={() => sellProduct(product._id)}
                       coloring='#5382E7'
                       bc='#E9EDF7FF'
                       height='28px' title='Sell'
@@ -328,7 +324,7 @@ const MyProduct: FC = () => {
                       leftAlt='pencilIcon'
                       mw='46px'
                       width='46px'/>
-                    <img onClick={() => deleteElem(product.id)} src={deleteIcon} alt='deleteIcon'/>
+                    <img onClick={() => deleteElem(product._id)} src={deleteIcon} alt='deleteIcon'/>
                   </div>
                 </div>
               )
@@ -429,6 +425,7 @@ const MyProduct: FC = () => {
               onChange={(e) => {
                 setSoldItems(e.target.valueAsNumber)
                 setTouched({...touched, numberProduct: true})
+                changeForm(e)
               }}
               placeholder='Number of products'
               type='number'
@@ -442,6 +439,7 @@ const MyProduct: FC = () => {
               onChange={(e) => {
                 setValueDate(e.target.value)
                 setTouched({...touched, date: true})
+                changeForm(e)
               }}
               placeholder='Date of sale'
               type='text'
@@ -450,7 +448,7 @@ const MyProduct: FC = () => {
             />
             <ButtonUI
               disabled={!isSellValid}
-              onClick={() => sellButton()}
+              onClick={() => sellButton(sellId)}
               width='300px'
               title='Sell product'
               height='52px'/>

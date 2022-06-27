@@ -53,7 +53,7 @@ const SignIn: FC = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    axios.post('http://localhost:3001/auth/login', {
+    axios.post('http://localhost:5100/auth/login', {
       email: valueEmail,
       password: valuePassword
     }).then((response) => {
@@ -66,7 +66,10 @@ const SignIn: FC = () => {
     })
   }
 
-
+  const token = Cookies.get('token')
+  useEffect(() => {
+    if (token) navigate('/mainPage')
+  }, [token])
 
   useEffect(() => {
     if (touched.email && touched.password) {
