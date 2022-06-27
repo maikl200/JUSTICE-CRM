@@ -13,6 +13,8 @@ import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
 import {productDataMocks} from "../../mockdata/productData";
 import {useHandleChange} from "../../utils/useHandleChange";
+import axios from "axios";
+import Cookies from 'js-cookie';
 
 
 export interface DataProductInterface {
@@ -55,7 +57,6 @@ const MyProduct: FC = () => {
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
-  const [dataProduct, setDataProduct] = useState<DataProductInterface[]>(() => JSON.parse(localStorage.getItem('dataProduct') as string) ?? productDataMocks)
   const [productSell, setProductSell] = useState({})
   const [isSellValid, setIsSellValid] = useState<boolean>(false)
   const [isEditValid, setIsEditValid] = useState<boolean>(false)
@@ -69,19 +70,44 @@ const MyProduct: FC = () => {
   const [salesProducts, setSalesProducts] = useState(JSON.parse(localStorage.getItem('salesProduct') as string) ?? productDataMocks)
   const [editId, setEditId] = useState<number>(-1)
   const [form, changeForm] = useHandleChange()
+  const [dataProduct, setDataProduct] = useState()
   const [dataEditProduct, setDataEditProduct] = useState()
+  console.log(dataEditProduct)
+  // @ts-ignore
+
+  const getAllUsers = async () => {
+    const allProducts = axios.get('http://localhost:3001/product/myProducts', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+    try {
+      await allProducts.then((res) => setDataProduct(res.data))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  // @ts-ignore
+  console.log('da', dataProduct)
+
+
+  useEffect(() => {
+    getAllUsers()
+  }, [])
 
   // @ts-ignore
   const quantityGoods = (productSell.quantityGoods)
   const sellProduct = (id: number) => {
     setSellModalActive(true)
-    const filterProduct = dataProduct.filter((item) => item.id === id)
+
+    // @ts-ignore
+    const filterProduct = dataProduct?.filter((item: any) => item._id === id)
     // @ts-ignore
     setProductSell(...filterProduct)
 
     // @ts-ignore
-    const newDataProduct = dataProduct.filter((item: { quantityGoods: number }) => item.quantityGoods !== 0)
-    setDataProduct(newDataProduct)
+    const newDataProduct = dataProduct?.filter((item: { quantityGoods: number }) => item.quantityGoods !== 0)
+    // setDataProduct(newDataProduct)
   }
 
   const sellButton = () => {
@@ -192,25 +218,58 @@ const MyProduct: FC = () => {
   }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
 
   const deleteElem = (id: number) => {
-    setDataProduct(dataProduct.filter((item) => item.id !== id))
+    // setDataProduct(dataProduct.filter((item) => item.id !== id))
   }
 
   const editElem = (id: number) => {
     setEditModalActive(true)
-    const filterProduct = dataProduct.find((item) => item.id === id)
+    // @ts-ignore
+    const filterProduct = dataProduct?.find((item: any) => item._id === id)
     // @ts-ignore
     setDataEditProduct(filterProduct)
     setEditId(id)
+    console.log('filter', filterProduct)
     return
   }
+  console.log('id', editId)
+  const editButton = async (id: number) => {
 
-  const editButton = (id: number) => {
-    const newProducts = dataProduct?.map(prod => prod.id === id ? {
+    // @ts-ignore
+    const newProducts = dataProduct?.map((prod: { id: number; }) => prod._id === id ? {
       ...prod,
       ...form
     } : prod)
 
-    setDataProduct(newProducts)
+
+    axios.patch('http://localhost:3001/product/editProduct', {
+      // @ts-ignore
+      store: dataEditProduct.store,
+      // @ts-ignore
+      price: dataEditProduct.price,
+      // @ts-ignore
+      productName: dataEditProduct.productName,
+      // @ts-ignore
+      productCategory: dataEditProduct.productCategory,
+      // @ts-ignore
+      quantityGoods: dataEditProduct.quantityGoods,
+      // @ts-ignore
+      weightVolumeOneItem: dataEditProduct.weightVolumeOneItem,
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+      .then((res) => {
+        // @ts-ignore
+        setDataProduct([...dataProduct, res.data])
+        // @ts-ignore
+        console.log(dataEditProduct.price)
+      })
+      .catch((e) => {
+        console.error(e)
+      })
+
+    // setDataProduct(newProducts)
     // @ts-ignore
     setTouched(initialTouched)
     setEditModalActive(false)
@@ -221,6 +280,7 @@ const MyProduct: FC = () => {
       <NavBar/>
       <div className={style.main_productBar}>
         <Header
+          /*@ts-ignore*/
           setDataProduct={setDataProduct}
           dataProduct={dataProduct}
           title='My product'
@@ -239,16 +299,17 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           <div className={style.main_productBar_productCard_productData}>
-            {dataProduct?.map((product: DataProductInterface) => (
-                <div key={product.id} className={style.main_productBar_productCard_productData_product}>
-                  <p>{product.productName}</p>
-                  <p>{product.store}</p>
-                  <p>{product.address}</p>
-                  <p>{product.productCategory}</p>
-                  <p>{product.dateNow}</p>
-                  <p>${product.price}</p>
-                  <p>{product.quantityGoods}</p>
-                  <p>{product.weightVolumeOneItem}kg</p>
+            {/*@ts-ignore*/}
+            {dataProduct?.map((product: any) => (
+                <div key={product?.id} className={style.main_productBar_productCard_productData_product}>
+                  <p>{product?.productName}</p>
+                  <p>{product?.store}</p>
+                  <p>{product?.address}</p>
+                  <p>{product?.productCategory}</p>
+                  <p>{product?.dateNow}</p>
+                  <p>${product?.price}</p>
+                  <p>{product?.quantityGoods}</p>
+                  <p>{product?.weightVolumeOneItem}kg</p>
                   <div style={{width: '11.1%'}}
                        className={style.main_productBar_productCard_productData_product_btn}>
                     <ButtonUI
@@ -259,7 +320,7 @@ const MyProduct: FC = () => {
                       mw='53px'
                       width='53px'/>
                     <ButtonUI
-                      onClick={() => editElem(product.id)}
+                      onClick={() => editElem(product._id)}
                       bc='#E9EDF7FF'
                       jc='center'
                       height='28px'

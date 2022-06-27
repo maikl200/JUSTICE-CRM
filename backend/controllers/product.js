@@ -3,10 +3,10 @@ const errorHandler = require('../utils/errorHandler')
 const User = require("../models/Users");
 
 module.exports.myProducts = async function (req, res) {
+    const allProduct = await Product.find({userId: req.user._id})
   try {
-    const allProduct = await Product.find({userId: req.query.id})
     console.log(allProduct)
-    return res.status(200).json({allProduct})
+    return res.status(200).json(allProduct)
   } catch (e) {
     return res.status(400).json({
       message: 'Bad request'
@@ -16,23 +16,22 @@ module.exports.myProducts = async function (req, res) {
 
 module.exports.addProduct = async function (req, res) {
   try {
-    const user = await User.findOne({_id: req.query.id})
+    const user = await User.findOne({_id: req.user._id})
     if (user) {
       const newProduct = req.body
       const product = await new Product({
         store: newProduct.store,
         price: newProduct.price,
+        address: newProduct.address ? newProduct.address : "15 Krylatskaya st...",
         productName: newProduct.productName,
         productCategory: newProduct.productCategory,
         quantityGoods: newProduct.quantityGoods,
         weightVolumeOneItem: newProduct.weightVolumeOneItem,
-        userId: user._id
+        userId: user
       })
       try {
         await product.save()
-        res.status(201).json({
-          product
-        })
+        res.status(201).json(product)
       } catch (e) {
         errorHandler(res, e)
       }
@@ -55,7 +54,7 @@ module.exports.editProduct = async function (req, res) {
         productCategory: req.body.productCategory,
         quantityGoods: req.body.quantityGoods,
         weightVolumeOneItem: req.body.weightVolumeOneItem,
-        address: req.body.address ? req.body.address : 'privet'
+        address: req.body.address ? req.body.address : '15 Krylatskaya st...'
       },
     )
 

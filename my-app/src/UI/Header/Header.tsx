@@ -7,11 +7,14 @@ import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 import {DataProductInterface} from "../../components/MyProduct/MyProduct";
 import {regEx} from "../../assets/regEx";
+import axios from "axios";
+import {response} from "express";
+import Cookies from "js-cookie";
 
 interface HeaderProps {
   title: string
   subTitle: string
-  setDataProduct?: (array: DataProductInterface[]) => void
+  setDataProduct?: React.Dispatch<DataProductInterface[]>
   dataProduct?: DataProductInterface[]
 }
 
@@ -49,32 +52,26 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
   const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
   const [isFormValid, setIsFormValid] = useState<boolean>(false)
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-  const userAddress = JSON.parse(localStorage.getItem('loginUsers') as string)
-
-
-  // @ts-ignore
-  Array.prototype.last = function () {
-    return this[this.length - 1]
-  }
 
   const onSubmit = (e: any) => {
-    e.preventDefault()
-    const product = {
-      // @ts-ignore
-      id: dataProduct?.length ? dataProduct.last().id + 1 : 1,
+    axios.post('http://localhost:3001/product/addProduct', {
       store: valueStore,
-      dateNow: new Date().toLocaleDateString(),
       price: valuePrice,
-      address: userAddress.address ? userAddress.address : '15 Krylatskaya st...',
       productName: valueProductName,
       productCategory: valueProductCategory,
       quantityGoods: valueQuantityGoods,
-      weightVolumeOneItem: valueWeightVolumeOneItem
-    }
-    //@ts-ignore
-    const newDataProduct: DataProductInterface[] = dataProduct ? [...dataProduct, product] : [product]
-    localStorage.setItem('dataProduct', JSON.stringify(newDataProduct))
-    setDataProduct && setDataProduct(newDataProduct)
+      weightVolumeOneItem: valueWeightVolumeOneItem,
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+      .then((res) => {
+        setDataProduct && setDataProduct([...dataProduct, res.data])
+      })
+      .catch((e) => {
+        console.error(e)
+      })
 
     setValuePrice('')
     setValueProductCategory('')

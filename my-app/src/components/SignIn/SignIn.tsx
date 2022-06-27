@@ -29,7 +29,6 @@ const SignIn: FC = () => {
   const [errorEmail, setErrorEmail] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
-  const token = Cookies.get('token')
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -60,16 +59,14 @@ const SignIn: FC = () => {
     }).then((response) => {
       console.log('good', response.data)
       setShowError('')
-      Cookies.set('token', JSON.stringify(response.data))
+      Cookies.set('token', response.data.token)
       navigate('/mainPage', {replace: true})
     }).catch(() => {
       setShowError('Пользователь не найден')
     })
   }
 
-  useEffect(() => {
-    if (token) navigate('/mainPage')
-  }, [token])
+
 
   useEffect(() => {
     if (touched.email && touched.password) {

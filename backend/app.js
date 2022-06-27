@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const passport = require('passport');
 
 
-mongoose.connect('mongodb+srv://alex:12345@cluster0.vn0snqy.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://alex:12345@cluster0.yzle7iv.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -22,7 +22,7 @@ app.use(passport.initialize())
 require('./middleware/passport')(passport)
 
 app.use(require('morgan')('dev'))
-app.use(require('cors')({origin: 'http://localhost:3002'}))
+app.use(require('cors')({origin: 'http://localhost:3000'}))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 

@@ -1,21 +1,29 @@
 import React from 'react';
 import Chart from "react-apexcharts";
 import {productDataMocks} from "../../mockdata/productData";
-
-const salesProduct = localStorage.getItem('salesProduct')
-
-const priceProductInDay =
-  salesProduct && JSON.parse(salesProduct)?.length
-    ?
-    JSON.parse(salesProduct)?.map((product: any) => product.price)
-    :
-    productDataMocks?.map(product => product.price)
-
-const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: any, next: any) {
-  return prev + next
-})
+import axios from "axios";
 
 const DiogramLine = () => {
+
+  // @ts-ignore
+  const salesProduct = axios.get('http://localhost:3001/salesProduct/salesProduct')
+    .then(() => {
+      return salesProduct
+    })
+    .catch(() => {
+      console.log('false')
+    })
+
+  const priceProductInDay =
+    salesProduct && salesProduct?.length
+      ?
+      salesProduct?.map((product: any) => product.price)
+      :
+      productDataMocks?.map(product => product.price)
+
+  const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: any, next: any) {
+    return prev + next
+  })
 
   return (
     <div>
