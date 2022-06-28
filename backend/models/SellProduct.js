@@ -22,9 +22,6 @@ const sellProductSchema = new Schema({
   productName: {
     type: String
   },
-  quantityGoods: {
-    type: Number
-  },
   soldItems: {
     type: Number
   },

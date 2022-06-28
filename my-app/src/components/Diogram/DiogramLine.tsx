@@ -1,22 +1,36 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
 import {productDataMocks} from "../../mockdata/productData";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const DiogramLine = () => {
 
-  // @ts-ignore
-  const salesProduct = axios.get('http://localhost:5100/salesProduct/salesProduct')
-    .then(() => {
-      return salesProduct
+  const [salesProduct, setSalesProduct] = useState()
+
+// @ts-ignore
+  const mySalesProduct = async () => {
+    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
     })
-    .catch(() => {
-      console.log('false')
-    })
+    try {
+      await allSaleProducts.then((res) => setSalesProduct(res.data))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    mySalesProduct()
+  }, [])
 
   const priceProductInDay =
+    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
+      // @ts-ignore
       salesProduct?.map((product: any) => product.price)
       :
       productDataMocks?.map(product => product.price)

@@ -19,6 +19,9 @@ const usersSchema = new Schema({
     type: String,
     required: true
   },
+  address: {
+    type: String
+  },
   companyName: {
     type: String
   }

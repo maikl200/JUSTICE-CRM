@@ -1,23 +1,37 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
 import {productDataMocks} from '../../mockdata/productData'
 import axios from "axios";
+import Cookies from "js-cookie";
 
 
 const DiogramBars = () => {
+  const [salesProduct, setSalesProduct] = useState()
 
 // @ts-ignore
-  const salesProduct = axios.get('http://localhost:5100/sellProduct/sellProduct')
-    .then(() => {
-      return salesProduct
+  const mySalesProduct = async () => {
+    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
     })
-    .catch(() => {
-      console.log('false')
-    })
+    try {
+      await allSaleProducts.then((res) => setSalesProduct(res.data))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    mySalesProduct()
+  }, [])
+
 
   const salesProductInDay =
+    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
+      // @ts-ignore
       salesProduct?.map((item: any) => item.soldItems)
       :
       productDataMocks?.map(product => product.soldItems)
@@ -26,7 +40,7 @@ const DiogramBars = () => {
     <div>
       <Chart
         type='bar'
-        width={915}
+        width={635}
         height={480}
         series={[{
           name: 'sales',

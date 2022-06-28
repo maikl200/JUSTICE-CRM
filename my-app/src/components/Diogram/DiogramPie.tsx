@@ -1,30 +1,46 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import Chart from 'react-apexcharts'
 import {productDataMocks} from "../../mockdata/productData";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const DiogramPie = () => {
 
-  // @ts-ignore
-  const salesProduct = axios.get('http://localhost:5100/salesProduct/salesProduct')
-    .then(() => {
-      return salesProduct
+  const [salesProduct, setSalesProduct] = useState()
+
+// @ts-ignore
+  const mySalesProduct = async () => {
+    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
     })
-    .catch(() => {
-      console.log('false')
-    })
+    try {
+      await allSaleProducts.then((res) => setSalesProduct(res.data))
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  useEffect(() => {
+    mySalesProduct()
+  }, [])
 
   const productsCategoryInDay =
+    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
+      // @ts-ignore
       salesProduct?.map((product: { productCategory: string; }) => product.productCategory)
       :
       productDataMocks?.map(product => product.productCategory)
 
   const salesProductInDay =
+    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
+      // @ts-ignore
       salesProduct?.map((item: any) => item.soldItems)
       :
       productDataMocks?.map(product => product.soldItems)

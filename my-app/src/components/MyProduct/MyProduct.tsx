@@ -15,6 +15,7 @@ import {productDataMocks} from "../../mockdata/productData";
 import {useHandleChange} from "../../utils/useHandleChange";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 
 
 export interface DataProductInterface {
@@ -67,7 +68,6 @@ const MyProduct: FC = () => {
   const [errorValueCategory, setErrorValueCategory] = useState('')
   const [errorValueQuantityGoods, setErrorValueQuantityGoods] = useState('')
   const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
-  const [salesProducts, setSalesProducts] = useState()
   const [editId, setEditId] = useState<number>(-1)
   const [sellId, setSellId] = useState<number>(-1)
   const [form, changeForm] = useHandleChange()
@@ -75,7 +75,7 @@ const MyProduct: FC = () => {
   const [dataEditProduct, setDataEditProduct] = useState()
 
 
-  const getAllUsers = async () => {
+  const getAllProducts = async () => {
     const allProducts = axios.get('http://localhost:5100/product/myProducts', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
@@ -89,7 +89,7 @@ const MyProduct: FC = () => {
   }
 
   useEffect(() => {
-    getAllUsers()
+    getAllProducts()
   }, [])
 
   // @ts-ignore
@@ -102,18 +102,12 @@ const MyProduct: FC = () => {
     const filterProduct = dataProduct?.filter((item: any) => item._id === id)
     // @ts-ignore
     setProductSell(...filterProduct)
-
-    // @ts-ignore
-    const newDataProduct = dataProduct?.filter((item: { quantityGoods: number }) => item.quantityGoods !== 0)
-    // setDataProduct(newDataProduct)
   }
-
   const sellButton = (sellId: number) => {
-    const discriminant = +quantityGoods - Number(soldItems)
-    const newProduct = {...productSell, quantityGoods: Number(discriminant), soldItems, valueDate}
+    const discriminant = Number(quantityGoods) - Number(soldItems)
+    const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
     axios.post('http://localhost:5100/sellProduct/sellProduct', {
-      quantitySell: form.numberProduct,
-      productDate: form.dateSale
+      ...newProduct
     }, {
       headers: {
         Authorization: `${Cookies.get("token")}`,
@@ -121,37 +115,24 @@ const MyProduct: FC = () => {
       params: {
         id: sellId
       }
+    }).then(() => {
+
+      console.log('good', newProduct)
+      // @ts-ignore
+      setDataProduct(dataProduct.map(product => product._id === newProduct._id ? {
+        ...product,
+        quantityGoods: newProduct.quantityGoods
+      } : product))
     })
-      .then((res) => {
-        // @ts-ignore
-        setSalesProducts([...salesProducts, newProduct]);
+      .catch((e) => {
+        console.error(e)
       })
-
-    // if (!discriminant) {
-    //   // @ts-ignore
-    //   setDataProduct(dataProduct.filter((item) => item.id !== newProduct.id))
-    //
-    //   // @ts-ignore
-    //   setSalesProducts([...salesProducts, newProduct])
-    //   setTouched(initialTouched)
-    //   setValueDate('')
-    //   setSoldItems('')
-    //   setSellModalActive(false)
-    //   return
-    // }
-    // @ts-ignore
-    // setDataProduct(dataProduct?.map(product => product.id === newProduct.id ? {
-    //   ...product,
-    //   quantityGoods: newProduct.quantityGoods
-    // } : product))
-
-    // @ts-ignore
-    // setSalesProducts([salesProducts, newProduct])
     setTouched(initialTouched)
     setValueDate('')
     setSoldItems('')
     setSellModalActive(false)
   }
+  console.log(dataProduct)
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -223,6 +204,7 @@ const MyProduct: FC = () => {
       setIsEditValid(true)
     }
   }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
+
   const deleteElem = (id: number) => {
     axios.delete('http://localhost:5100/product/deleteProduct', {
       headers: {
@@ -294,42 +276,50 @@ const MyProduct: FC = () => {
             <p>Weight / Volume</p>
             <p>Actions</p>
           </div>
-          <div className={style.main_productBar_productCard_productData}>
-            {/*@ts-ignore*/}
-            {dataProduct?.map((product: any) => (
-                <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
-                  <p>{product?.productName}</p>
-                  <p>{product?.store}</p>
-                  <p>{product?.address}</p>
-                  <p>{product?.productCategory}</p>
-                  <p>{product?.dateNow}</p>
-                  <p>${product?.price}</p>
-                  <p>{product?.quantityGoods}</p>
-                  <p>{product?.weightVolumeOneItem}kg</p>
-                  <div style={{width: '11.1%'}}
-                       className={style.main_productBar_productCard_productData_product_btn}>
-                    <ButtonUI
-                      onClick={() => sellProduct(product._id)}
-                      coloring='#5382E7'
-                      bc='#E9EDF7FF'
-                      height='28px' title='Sell'
-                      mw='53px'
-                      width='53px'/>
-                    <ButtonUI
-                      onClick={() => editElem(product._id)}
-                      bc='#E9EDF7FF'
-                      jc='center'
-                      height='28px'
-                      leftSrc={pencil}
-                      leftAlt='pencilIcon'
-                      mw='46px'
-                      width='46px'/>
-                    <img onClick={() => deleteElem(product._id)} src={deleteIcon} alt='deleteIcon'/>
-                  </div>
-                </div>
-              )
-            ).reverse()}
-          </div>
+
+
+          {
+            dataProduct
+              ?
+              <div className={style.main_productBar_productCard_productData}>
+                {/*@ts-ignore*/}
+                {dataProduct?.map((product: any) => (
+                    <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
+                      <p>{product?.productName}</p>
+                      <p>{product?.store}</p>
+                      <p>{product?.address ? product.address : '15 Krylatskaya st...'}</p>
+                      <p>{product?.productCategory}</p>
+                      <p>{product?.dateNow}</p>
+                      <p>${product?.price}</p>
+                      <p>{product?.quantityGoods}</p>
+                      <p>{product?.weightVolumeOneItem}kg</p>
+                      <div style={{width: '11.1%'}}
+                           className={style.main_productBar_productCard_productData_product_btn}>
+                        <ButtonUI
+                          onClick={() => sellProduct(product._id)}
+                          coloring='#5382E7'
+                          bc='#E9EDF7FF'
+                          height='28px' title='Sell'
+                          mw='53px'
+                          width='53px'/>
+                        <ButtonUI
+                          onClick={() => editElem(product._id)}
+                          bc='#E9EDF7FF'
+                          jc='center'
+                          height='28px'
+                          leftSrc={pencil}
+                          leftAlt='pencilIcon'
+                          mw='46px'
+                          width='46px'/>
+                        <img onClick={() => deleteElem(product._id)} src={deleteIcon} alt='deleteIcon'/>
+                      </div>
+                    </div>
+                  )
+                ).reverse()}
+              </div>
+              :
+              <CircularIndeterminate/>
+          }
         </div>
       </div>
       {editModalActive ?

@@ -9,6 +9,8 @@ import style from './personalCabinet.module.scss'
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {regEx} from "../../assets/regEx";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 interface InitialTouchedTypes {
   firstName: boolean,
@@ -39,18 +41,45 @@ const PersonalCabinet: FC = () => {
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm] = useHandleChange()
   const [currentPassword, setCurrentPassword] = useState<boolean>()
+  const [myCurrentProfile, setMyCurrentProfile] = useState<any>()
 
   const profileChanges = () => {
 
-    const newProfile = {...loginUsers, ...form} || loginUsers
-    console.log(newProfile)
-    localStorage.setItem('loginUsers', JSON.stringify({...newProfile}))
-    localStorage.setItem('users', JSON.stringify([newProfile]))
-
+    axios.patch('http://localhost:5100/profile/changeProfile', {
+      ...form
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    }).then((res) => {
+      console.log('good change', res.data)
+    }).catch((e) => {
+      console.error(e)
+    })
+    // const newProfile = {...loginUsers, ...form} || loginUsers
+    // localStorage.setItem('loginUsers', JSON.stringify({...newProfile}))
+    // localStorage.setItem('users', JSON.stringify([newProfile]))
   }
 
+  const myProfile = () => {
+    axios.get('http://localhost:5100/profile/myProfile', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    }).then((res) => {
+      const currentProfile = res.data.find((user: any) => user)
+      setMyCurrentProfile(currentProfile)
+    }).catch((e) => {
+      console.error(e)
+    })
+  }
   useEffect(() => {
-    const isPassword = loginUsers.password === form.oldPassword
+    myProfile()
+  }, [])
+
+
+  useEffect(() => {
+    const isPassword = myCurrentProfile?.password === form.oldPassword
     setCurrentPassword(isPassword)
   }, [form.oldPassword, form.password])
 

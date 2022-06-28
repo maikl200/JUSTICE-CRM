@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const authRoutes = require('./routes/auth')
 const productRoutes = require('./routes/product')
 const sellProductRoutes = require('./routes/sellProduct')
+const profileRoutes = require('./routes/profile')
 const keys = require('./config/keys')
 const mongoose = require('mongoose')
 const passport = require('passport');
@@ -13,10 +14,10 @@ mongoose.connect('mongodb+srv://alex:12345@cluster0.yzle7iv.mongodb.net/?retryWr
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => {
-    console.log('MongoDB started')
-  })
-  .catch(() => console.log('NOOOO'))
+    .then(() => {
+      console.log('MongoDB started')
+    })
+    .catch(() => console.log('NOOOO'))
 
 app.use(passport.initialize())
 require('./middleware/passport')(passport)
@@ -27,6 +28,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 app.use('/auth', authRoutes)
+app.use("/profile", profileRoutes)
 app.use('/product', productRoutes)
 app.use('/sellProduct', sellProductRoutes)
 
