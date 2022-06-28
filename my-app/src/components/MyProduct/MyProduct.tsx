@@ -74,7 +74,6 @@ const MyProduct: FC = () => {
   const [dataProduct, setDataProduct] = useState()
   const [dataEditProduct, setDataEditProduct] = useState()
 
-
   const getAllProducts = async () => {
     const allProducts = axios.get('http://localhost:5100/product/myProducts', {
       headers: {
@@ -91,7 +90,6 @@ const MyProduct: FC = () => {
   useEffect(() => {
     getAllProducts()
   }, [])
-
   // @ts-ignore
   const quantityGoods = (productSell.quantityGoods)
   const sellProduct = (id: number) => {
@@ -103,6 +101,7 @@ const MyProduct: FC = () => {
     // @ts-ignore
     setProductSell(...filterProduct)
   }
+
   const sellButton = (sellId: number) => {
     const discriminant = Number(quantityGoods) - Number(soldItems)
     const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
@@ -115,14 +114,15 @@ const MyProduct: FC = () => {
       params: {
         id: sellId
       }
-    }).then(() => {
-
-      console.log('good', newProduct)
+    }).then((data) => {
       // @ts-ignore
-      setDataProduct(dataProduct.map(product => product._id === newProduct._id ? {
-        ...product,
-        quantityGoods: newProduct.quantityGoods
-      } : product))
+      // setDataProduct(dataProduct.map(product => product._id === newProduct._id ? {
+      //   ...product,
+      //   quantityGoods: newProduct.quantityGoods
+      // } : product))
+      setDataProduct(data.data)
+      // @ts-ignore
+      console.log(data)
     })
       .catch((e) => {
         console.error(e)
@@ -132,7 +132,6 @@ const MyProduct: FC = () => {
     setSoldItems('')
     setSellModalActive(false)
   }
-  console.log(dataProduct)
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -276,8 +275,6 @@ const MyProduct: FC = () => {
             <p>Weight / Volume</p>
             <p>Actions</p>
           </div>
-
-
           {
             dataProduct
               ?

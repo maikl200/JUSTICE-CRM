@@ -40,7 +40,7 @@ const DiogramBars = () => {
     <div>
       <Chart
         type='bar'
-        width={635}
+        width={920}
         height={480}
         series={[{
           name: 'sales',

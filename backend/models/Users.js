@@ -7,6 +7,10 @@ const usersSchema = new Schema({
     required: true,
     unique: true
   },
+  imageSrc: {
+    type: String,
+    default: ''
+  },
   password: {
     type: String,
     required: true
@@ -23,6 +27,9 @@ const usersSchema = new Schema({
     type: String
   },
   companyName: {
+    type: String
+  },
+  productCategory: {
     type: String
   }
 })

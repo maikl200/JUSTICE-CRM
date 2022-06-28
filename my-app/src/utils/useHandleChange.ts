@@ -10,5 +10,5 @@ export const useHandleChange = () => {
     })
   }
 
-  return [formEdit, changeForm]
+  return [formEdit, changeForm, setFormEdit]
 }

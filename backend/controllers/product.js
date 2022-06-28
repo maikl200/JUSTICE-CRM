@@ -21,7 +21,7 @@ module.exports.addProduct = async function (req, res) {
       const product = await new Product({
         store: newProduct.store,
         price: newProduct.price,
-        address: newProduct.address ? newProduct.address : "15 Krylatskaya st...",
+        address: user.address,
         productName: newProduct.productName,
         productCategory: newProduct.productCategory,
         quantityGoods: newProduct.quantityGoods,
@@ -64,7 +64,7 @@ module.exports.editProduct = async function (req, res) {
 module.exports.deleteProduct = async function (req, res) {
   const productId = req.query.id
   const deleteProduct = await Product.findOneAndDelete({_id: productId})
-  console.log(productId)
+
   try {
     res.status(200).json(deleteProduct)
   } catch (e) {

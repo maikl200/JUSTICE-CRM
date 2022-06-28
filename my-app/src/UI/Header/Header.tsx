@@ -5,10 +5,12 @@ import file from "../../assets/file.svg";
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
+import avatarImg from '../../assets/avatar.svg'
+
+
 import {DataProductInterface} from "../../components/MyProduct/MyProduct";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
-import {response} from "express";
 import Cookies from "js-cookie";
 
 interface HeaderProps {
@@ -16,6 +18,7 @@ interface HeaderProps {
   subTitle: string
   setDataProduct?: React.Dispatch<DataProductInterface[]>
   dataProduct?: DataProductInterface[]
+  avatar?: string
 }
 
 interface InitialTouchedTypes {
@@ -36,7 +39,7 @@ const initialTouched: InitialTouchedTypes = {
   weightVolumeItem: false
 }
 
-const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct = []}) => {
+const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct, avatar = []}) => {
   const [modalActive, setModalActive] = useState<boolean>(false)
   const [valueStore, setValueStore] = useState<string>('')
   const [valuePrice, setValuePrice] = useState<number | string>()
@@ -67,6 +70,7 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
       },
     })
       .then((res) => {
+        // @ts-ignore
         setDataProduct && setDataProduct([...dataProduct, res.data])
       })
       .catch((e) => {
@@ -165,8 +169,18 @@ const Header: FC<HeaderProps> = ({title, subTitle, setDataProduct, dataProduct =
         <span className={style.topBar_titleBar_topTitle}>{title}</span>
         <span className={style.topBar_titleBar_downTitle}>{subTitle}</span>
       </div>
+
       <ButtonUI onClick={() => setModalActive(true)} title='Create a product' leftSrc={file} leftAlt='fileIcon'
                 bc='#5382E7' width='201px'/>
+      <div className={style.topBar_avatar}>
+        {
+          avatarImg
+            ?
+            <img src={`${avatar}`} alt='avatar'/>
+            :
+            <img src={avatarImg} alt='avatar'/>
+        }
+      </div>
       {
         modalActive
           ?
