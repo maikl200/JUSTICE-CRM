@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import style from './mainPage.module.scss'
 
@@ -9,17 +9,17 @@ import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
 
-
 const MainPage: FC = () => {
 
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_statisticsBar}>
-        <Header title='Sales statistics' subTitle='Welcome to CRM dashboard'/>
+        <Header btnNone={'none'} title='Sales statistics' subTitle='Welcome to CRM dashboard'/>
         <div className={style.main_statisticsBar_diogram}>
           <div className={style.main_statisticsBar_diogram_stack}>
             <div className={style.main_statisticsBar_diogram_pie}>
+
               <DiogramPie/>
             </div>
             <div className={style.main_statisticsBar_diogram_line}>

@@ -28,7 +28,7 @@ const MySales: FC = () => {
   useEffect(() => {
     getAllSalesProducts()
   }, [])
-  console.log(salesProduct)
+
   return (
     <main className={style.main}>
       <NavBar/>
@@ -57,7 +57,7 @@ const MySales: FC = () => {
                       <div key={product._id} className={style.main_salesBar_salesCard_salesData_sales}>
                         <p>{product.productName}</p>
                         <p>{product.store}</p>
-                        <p>{product.address}</p>
+                        <p>{product?.address ? product.address : '15 Krylatskaya st...'}</p>
                         <p>{product.productCategory}</p>
                         <p>{product.dateNow}</p>
                         <p>${product.price}</p>

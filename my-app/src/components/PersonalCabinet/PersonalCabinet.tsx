@@ -52,8 +52,7 @@ const PersonalCabinet: FC = () => {
         Authorization: `${Cookies.get("token")}`,
       }
     })
-      .then((res) => {
-        console.log('good change', res.data)
+      .then(() => {
       }).catch((e) => {
       console.error(e)
     })
@@ -173,15 +172,14 @@ const PersonalCabinet: FC = () => {
 
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
-            <Input
-              // defaultValue={loginUsers.address}
-              name='avatar'
-              /*@ts-ignore*/
-              onChange={(e) => changeForm(e.target.files[0])}
-              placeholder='Avatar'
-              title='Avatar'
-              type='file'
-              width='380px'/>
+            {/*<Input*/}
+            {/*  // defaultValue={loginUsers.address}*/}
+            {/*  name='avatar'*/}
+            {/*  onChange={(e) => changeForm(e.target.files[0])}*/}
+            {/*  placeholder='Avatar'*/}
+            {/*  title='Avatar'*/}
+            {/*  type='file'*/}
+            {/*  width='380px'/>*/}
 
             <Input
               // readOnly={!currentPassword}

@@ -1,29 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
-import {productDataMocks} from "../../mockdata/productData";
+
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const DiogramLine = () => {
+
+const DiogramLine: FC = () => {
 
   const [salesProduct, setSalesProduct] = useState()
 
-// @ts-ignore
-  const mySalesProduct = async () => {
+  useEffect(() => {
+
     const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       },
     })
     try {
-      await allSaleProducts.then((res) => setSalesProduct(res.data))
+      allSaleProducts.then((res) => setSalesProduct(res.data))
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
-  }
 
-  useEffect(() => {
-    mySalesProduct()
   }, [])
 
   const priceProductInDay =
@@ -33,7 +31,7 @@ const DiogramLine = () => {
       // @ts-ignore
       salesProduct?.map((product: any) => product.price)
       :
-      productDataMocks?.map(product => product.price)
+      ['You havent earned a single ']
 
   const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: any, next: any) {
     return prev + next
@@ -48,7 +46,7 @@ const DiogramLine = () => {
         series={[
           {
             name: "earned",
-            data: priceProductInDay
+            data: priceProductInDay?.length ? priceProductInDay : [0]
           }
         ]}
         options={{
@@ -59,14 +57,11 @@ const DiogramLine = () => {
               }
             }
           },
+
           yaxis: {
             labels: {
               show: false
             },
-          },
-          noData: {
-            text: 'No Data',
-            align: 'center',
           },
           xaxis: {
             labels: {

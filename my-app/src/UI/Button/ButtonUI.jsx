@@ -53,6 +53,7 @@ const ButtonUI = (props) => {
     title,
     mw,
     width,
+    btnNone,
     height,
     ch,
     disabled,
@@ -68,6 +69,7 @@ const ButtonUI = (props) => {
   return (
     <>
       <BootstrapButton
+        btnNone={btnNone}
         onClick={onClick}
         type={type}
         variant="contained"

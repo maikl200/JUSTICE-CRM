@@ -1,31 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
-import {productDataMocks} from '../../mockdata/productData'
+
 import axios from "axios";
 import Cookies from "js-cookie";
 
 
 const DiogramBars = () => {
+
   const [salesProduct, setSalesProduct] = useState()
 
-// @ts-ignore
-  const mySalesProduct = async () => {
+  useEffect(() => {
     const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       },
     })
     try {
-      await allSaleProducts.then((res) => setSalesProduct(res.data))
+      allSaleProducts.then((res) => setSalesProduct(res.data))
     } catch (e) {
       console.log(e)
     }
-  }
-
-  useEffect(() => {
-    mySalesProduct()
   }, [])
-
 
   const salesProductInDay =
     // @ts-ignore
@@ -34,7 +29,7 @@ const DiogramBars = () => {
       // @ts-ignore
       salesProduct?.map((item: any) => item.soldItems)
       :
-      productDataMocks?.map(product => product.soldItems)
+      ['No sales']
 
   return (
     <div>
@@ -45,7 +40,7 @@ const DiogramBars = () => {
         series={[{
           name: 'sales',
           data: salesProductInDay?.length && salesProductInDay,
-          color: '#5B6ACD'
+          color: salesProductInDay ? '#5B6ACD' : '#b1b4b9'
         }, {
           name: '',
           data: salesProductInDay?.length && salesProductInDay.map(() => -30),
@@ -59,11 +54,6 @@ const DiogramBars = () => {
           },
           tooltip: {
             enabledOnSeries: [0],
-          },
-
-          noData: {
-            text: 'No Data',
-            align: 'center',
           },
           chart: {
             type: 'bar',
@@ -125,15 +115,16 @@ const DiogramBars = () => {
             axisTicks: {
               show: false,
             },
-            categories: [
-              'Mon',
-              'Tue',
-              'Wed',
-              'Thu',
-              'Fri',
-              'Sat',
-              'Sun',
-            ],
+            categories:
+              salesProductInDay ? [
+                'Mon',
+                'Tue',
+                'Wed',
+                'Thu',
+                'Fri',
+                'Sat',
+                'Sun',
+              ] : ['No sales'],
           },
         }}
       >

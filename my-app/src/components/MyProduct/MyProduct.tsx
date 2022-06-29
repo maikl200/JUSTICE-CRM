@@ -115,14 +115,7 @@ const MyProduct: FC = () => {
         id: sellId
       }
     }).then((data) => {
-      // @ts-ignore
-      // setDataProduct(dataProduct.map(product => product._id === newProduct._id ? {
-      //   ...product,
-      //   quantityGoods: newProduct.quantityGoods
-      // } : product))
       setDataProduct(data.data)
-      // @ts-ignore
-      console.log(data)
     })
       .catch((e) => {
         console.error(e)
@@ -158,7 +151,7 @@ const MyProduct: FC = () => {
         }
         break
       case 'price':
-        if (e.target.value <= 5100 && e.target.value >= 1) {
+        if (e.target.value <= 5100 && e.target.value > 0) {
           setErrorValuePrice('')
         } else {
           setErrorValuePrice('No more than 1,000 or no less than 1')
@@ -172,14 +165,14 @@ const MyProduct: FC = () => {
         }
         break
       case 'quantityGoods':
-        if (e.target.value <= 200 && e.target.value >= 1) {
+        if (e.target.value < 201 && e.target.value > 0) {
           setErrorValueQuantityGoods('')
         } else {
           setErrorValueQuantityGoods('Invalid remain')
         }
         break
       case 'weightVolumeOneItem':
-        if (e.target.value <= 20 && e.target.value >= 1) {
+        if (e.target.value <= 20 && e.target.value > 0) {
           setErrorValueWeightVolumeOneItem('')
         } else {
           setErrorValueWeightVolumeOneItem('Invalid remain')

@@ -8,13 +8,17 @@ import MySales from "../../components/MySales/MySales";
 import PersonalCabinet from "../../components/PersonalCabinet/PersonalCabinet";
 import CreateAcc from '../../components/CreateAcc';
 
+export enum PathEnum {
+  MY_PRODUCT = '/myProduct'
+}
+
 const AppRouter: FC = () => {
   return (
     <Routes>
       <Route path='/createAcc' element={<CreateAcc/>}/>
       <Route path='/signIn' element={<SignIn/>}/>
       <Route path='/mainPage' element={<MainPage/>}/>
-      <Route path='/myProduct' element={<MyProduct/>}/>
+      <Route path={PathEnum.MY_PRODUCT} element={<MyProduct/>}/>
       <Route path='/mySales' element={<MySales/>}/>
       <Route path='/personalCabinet' element={<PersonalCabinet/>}/>
       <Route path='*' element={<SignIn/>}/>

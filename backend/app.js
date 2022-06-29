@@ -9,6 +9,7 @@ const keys = require('./config/keys')
 const mongoose = require('mongoose')
 const passport = require('passport');
 const path = require('path')
+const mockData = require("./routes/mockData");
 
 mongoose.connect(keys.mongoURL, {
   useNewUrlParser: true,
@@ -32,6 +33,8 @@ app.use('/auth', authRoutes)
 app.use("/profile", profileRoutes)
 app.use('/product', productRoutes)
 app.use('/sellProduct', sellProductRoutes)
+
+app.use('/mockData', mockData)
 
 
 module.exports = app

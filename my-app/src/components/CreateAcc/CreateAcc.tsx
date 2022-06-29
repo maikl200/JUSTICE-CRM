@@ -61,21 +61,21 @@ const CreateAcc: FC = () => {
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'firstName':
-        if (regEx.name.test(e.target.value) && valueFirstName !== '' && valueFirstName.length >= 5) {
+        if (regEx.name.test(e.target.value) && valueFirstName !== '') {
           setErrorFirstName('')
         } else {
           setErrorFirstName('Invalid first name')
         }
         break
       case 'lastName':
-        if (regEx.name.test(e.target.value) && valueLastName !== '' && valueLastName.length >= 5) {
+        if (regEx.name.test(e.target.value) && valueLastName !== '') {
           setErrorLastName('')
         } else {
           setErrorLastName('Invalid last name')
         }
         break
       case 'companyName':
-        if (regEx.name.test(e.target.value) && valueCompanyName !== '' && valueCompanyName.length <= 15) {
+        if (regEx.name.test(e.target.value) && valueCompanyName !== '') {
           setErrorCompanyName('')
         } else {
           setErrorCompanyName('Invalid company name')
