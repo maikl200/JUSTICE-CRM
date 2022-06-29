@@ -41,10 +41,24 @@ const PersonalCabinet: FC = () => {
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm, setFormEdit] = useHandleChange()
   const [currentPassword, setCurrentPassword] = useState<boolean>()
-  const [img, setImg] = useState(null)
-  const [avatar, setAvatar] = useState()
+  const [dataProfile, setDataProfile] = useState()
 
-  const profileChanges = async (e: any) => {
+  const changePassword = () => {
+    axios.post('http://localhost:5100/profile/changePassword', {
+      oldPassword: form.oldPassword
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+      .then((res) => {
+        console.log('good', res.data)
+      }).catch((e) => {
+      console.error(e)
+    })
+  }
+
+  const profileChanges = () => {
     axios.patch('http://localhost:5100/profile/changeProfile', {
       ...form
     }, {
@@ -67,19 +81,22 @@ const PersonalCabinet: FC = () => {
     }).then((res) => {
       const currentProfile = res.data.find((user: any) => user)
       setFormEdit(currentProfile)
+      setDataProfile(currentProfile)
+
     }).catch((e) => {
       console.error(e)
     })
   }
-  useLayoutEffect(() => {
+  console.log(dataProfile)
+  useEffect(() => {
     myProfile()
   }, [])
-
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'oldPassword':
-        if (regEx.password.test(form.oldPassword)) {
+        // @ts-ignore
+        if (regEx.password.test(form.oldPassword) && dataProfile?.validPassword) {
           setErrorOldPassword('')
         } else {
           setErrorOldPassword('Invalid password')
@@ -108,7 +125,7 @@ const PersonalCabinet: FC = () => {
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header avatar={avatar} title='Personal Cabinet' subTitle='Information about your account'/>
+        <Header title='Personal Cabinet' subTitle='Information about your account'/>
         <form className={style.main_personalCabinetBar_userSettings}
               onBlur={(e) => onBlurHandler(e)}
         >
@@ -159,6 +176,7 @@ const PersonalCabinet: FC = () => {
               width='380px'/>
             <Input
               name='oldPassword'
+              onBlur={() => changePassword()}
               onChange={(e) => {
                 changeForm(e)
                 setTouched({...touched, oldPassword: true})
@@ -196,7 +214,7 @@ const PersonalCabinet: FC = () => {
             />
           </div>
           <ButtonUI
-            onClick={(e: any) => profileChanges(e)}
+            onClick={() => profileChanges()}
             disabled={!isValid}
             width='158px'
             title='Save changes'

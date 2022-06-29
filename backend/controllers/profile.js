@@ -3,6 +3,8 @@ const User = require("../models/Users");
 const Product = require('../models/Product')
 
 const bcrypt = require('bcryptjs')
+const jwt = require("jsonwebtoken");
+const keys = require("../config/keys");
 
 module.exports.getMyProfile = async (req, res) => {
   const myProfile = await User.find({_id: req.user._id})
@@ -17,15 +19,16 @@ module.exports.getMyProfile = async (req, res) => {
 
 module.exports.changeProfile = async (req, res) => {
   const candidate = await User.findOne({_id: req.user.id})
-  console.log(candidate)
   if (candidate) {
     const profile = {
       email: candidate.email,
       firstName: req.body.firstName ? req.body.firstName : candidate.firstName,
       lastName: req.body.lastName ? req.body.lastName : candidate.lastName,
       password: req.body.password ? req.body.password : candidate.password,
+      oldPassword: req.body.oldPassword ? req.body.oldPassword : '',
       companyName: req.body.companyName ? req.body.companyName : candidate.companyName,
       productCategory: req.body.productCategory ? req.body.productCategory : candidate.productCategory,
+      validPassword: req.user.validPassword,
       address: req.body.address ? req.body.address : candidate.address,
       imageSrc: req.file ? req.file.path : '',
       userid: req.user.id
@@ -57,48 +60,44 @@ module.exports.changeProfile = async (req, res) => {
         const salt = bcrypt.genSaltSync(10)
         const password = req.body.password
         await User.updateOne(
-          {_id: req.user.id},
-          {
-            $set: {
-              password: bcrypt.hashSync(password, salt),
-            }
-          })
+            {_id: req.user.id},
+            {
+              $set: {
+                password: bcrypt.hashSync(password, salt),
+              }
+            })
         const updatedUser = await User.findOne({_id: req.user.id})
         res.status(201).json(updatedUser)
       }
-
-      const updatedUser = await User.findOne({_id: req.user.id})
-
-      res.status(201).json(updatedUser)
     } catch (e) {
       errorHandler(res, e)
     }
   }
 }
 
-// module.exports.changePassword = async (req, res) => {
-//   const candidate = await User.findOne({email: req.user.email})
-//   try {
-//     if (candidate) {
-//       const passwordResult = bcrypt.compareSync(req.body.password, candidate.password)
-//       console.log(passwordResult)
-//       if (passwordResult) {
-//         const salt = bcrypt.genSaltSync(10)
-//         const password = req.body.newPassword
-//         await User.updateOne(
-//           {_id: req.user.id},
-//           {
-//             $set: {
-//               password: bcrypt.hashSync(password, salt),
-//             }
-//           })
-//         const updatedUser = await User.findOne({_id: req.user.id})
-//         res.status(201).json(updatedUser)
-//       } else {
-//         console.log(123)
-//       }
-//     }
-//   } catch (e) {
-//     errorHandler(res, e)
-//   }
-// }
+module.exports.changePassword = async (req, res) => {
+  try {
+    const candidate = await User.findOne({_id: req.user.id})
+    if (candidate) {
+      const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
+      if (passwordResult) {
+        await User.updateOne({_id: req.user.id}, {
+          $set: {
+            validPassword: true
+          }
+        })
+        res.status(201).json(req.user.validPassword)
+      } else {
+        await User.updateOne({_id: req.user.id}, {
+          $set: {
+            validPassword: false
+          }
+        })
+        res.status(201).json(req.user.validPassword)
+      }
+    }
+  } catch (e) {
+    errorHandler(res, e)
+  }
+
+}

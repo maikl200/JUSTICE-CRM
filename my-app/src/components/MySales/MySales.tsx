@@ -4,7 +4,6 @@ import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
-import {productDataMocks} from "../../mockdata/productData";
 import axios from "axios";
 import Cookies from "js-cookie";
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";

@@ -29,6 +29,12 @@ const usersSchema = new Schema({
   companyName: {
     type: String
   },
+  validPassword: {
+    type: Boolean
+  },
+  oldPassword: {
+    type: String
+},
   productCategory: {
     type: String
   }
