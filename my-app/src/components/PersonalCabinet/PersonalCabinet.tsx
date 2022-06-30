@@ -11,6 +11,7 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {cardContentClasses} from "@mui/material";
 
 interface InitialTouchedTypes {
   firstName: boolean,
@@ -40,22 +41,26 @@ const PersonalCabinet: FC = () => {
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm, setFormEdit] = useHandleChange()
-  const [currentPassword, setCurrentPassword] = useState<boolean>()
+  const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [dataProfile, setDataProfile] = useState()
+  const [inputOldPassword, setInputOldPassword] = useState<string>()
+  const [inputNewPassword, setInputNewPassword] = useState<string>()
 
-  const changePassword = () => {
-    axios.post('http://localhost:5100/profile/changePassword', {
+  const changePassword = async () => {
+    await axios.post('http://localhost:5100/profile/changePassword', {
       oldPassword: form.oldPassword
     }, {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       }
     })
-      .then((res) => {
-        console.log('good', res.data)
-      }).catch((e) => {
-      console.error(e)
-    })
+      .then(() => {
+        setErrorOldPassword('')
+        setCurrentPassword(true)
+      }).catch(() => {
+        setErrorOldPassword('invalid password')
+        setCurrentPassword(false)
+      })
   }
 
   const profileChanges = () => {
@@ -67,11 +72,20 @@ const PersonalCabinet: FC = () => {
       }
     })
       .then(() => {
+
       }).catch((e) => {
       console.error(e)
     })
-  }
 
+    setInputOldPassword('')
+    setInputNewPassword('')
+
+    const data = new FormData()
+
+    axios.post('http://localhost:5100/upload', data)
+      .then((res) => console.log(res))
+      .catch((e) => console.log(e))
+  }
   const myProfile = () => {
 
     axios.get('http://localhost:5100/profile/myProfile', {
@@ -87,7 +101,7 @@ const PersonalCabinet: FC = () => {
       console.error(e)
     })
   }
-  console.log(dataProfile)
+
   useEffect(() => {
     myProfile()
   }, [])
@@ -96,7 +110,7 @@ const PersonalCabinet: FC = () => {
     switch (e.target.name) {
       case 'oldPassword':
         // @ts-ignore
-        if (regEx.password.test(form.oldPassword) && dataProfile?.validPassword) {
+        if (regEx.password.test(form.oldPassword)) {
           setErrorOldPassword('')
         } else {
           setErrorOldPassword('Invalid password')
@@ -112,22 +126,26 @@ const PersonalCabinet: FC = () => {
     }
   }
 
+
   useEffect(() => {
-    if (!!errorNewPassword || !!errorOldPassword) {
+    if (!!errorNewPassword) {
       setIsValid(false)
     } else {
       setIsValid(true)
-      setCurrentPassword(false)
     }
-  }, [errorNewPassword, form.newPassword, errorOldPassword])
+  }, [errorNewPassword, form.newPassword])
 
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
         <Header title='Personal Cabinet' subTitle='Information about your account'/>
-        <form className={style.main_personalCabinetBar_userSettings}
-              onBlur={(e) => onBlurHandler(e)}
+        <form
+          className={style.main_personalCabinetBar_userSettings}
+          method='POST'
+          action='/upload'
+          encType='multipart/form-data'
+          onBlur={(e) => onBlurHandler(e)}
         >
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
@@ -175,11 +193,14 @@ const PersonalCabinet: FC = () => {
               type='text'
               width='380px'/>
             <Input
+              defaultValue={inputOldPassword}
+              value={inputOldPassword}
               name='oldPassword'
               onBlur={() => changePassword()}
               onChange={(e) => {
                 changeForm(e)
                 setTouched({...touched, oldPassword: true})
+                setInputOldPassword(e.target.value)
               }}
               placeholder='Enter old password'
               title='Enter old password'
@@ -190,21 +211,23 @@ const PersonalCabinet: FC = () => {
 
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
-            {/*<Input*/}
-            {/*  // defaultValue={loginUsers.address}*/}
-            {/*  name='avatar'*/}
-            {/*  onChange={(e) => changeForm(e.target.files[0])}*/}
-            {/*  placeholder='Avatar'*/}
-            {/*  title='Avatar'*/}
-            {/*  type='file'*/}
-            {/*  width='380px'/>*/}
+            <Input
+              name='image'
+              // onChange={(e) => changeForm(e.target.files[0])}
+              placeholder='Avatar'
+              title='Avatar'
+              type='file'
+              width='380px'/>
 
             <Input
-              // readOnly={!currentPassword}
+              readOnly={!currentPassword}
+              defaultValue={inputNewPassword}
+              value={inputNewPassword}
               name='password'
               onChange={(e) => {
                 changeForm(e)
                 setTouched({...touched, newPassword: true})
+                setInputNewPassword(e.target.value)
               }}
               placeholder='Enter a new password'
               title='Enter a new password'

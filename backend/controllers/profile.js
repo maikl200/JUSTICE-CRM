@@ -60,12 +60,12 @@ module.exports.changeProfile = async (req, res) => {
         const salt = bcrypt.genSaltSync(10)
         const password = req.body.password
         await User.updateOne(
-            {_id: req.user.id},
-            {
-              $set: {
-                password: bcrypt.hashSync(password, salt),
-              }
-            })
+          {_id: req.user.id},
+          {
+            $set: {
+              password: bcrypt.hashSync(password, salt),
+            }
+          })
         const updatedUser = await User.findOne({_id: req.user.id})
         res.status(201).json(updatedUser)
       }
@@ -81,19 +81,11 @@ module.exports.changePassword = async (req, res) => {
     if (candidate) {
       const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
       if (passwordResult) {
-        await User.updateOne({_id: req.user.id}, {
-          $set: {
-            validPassword: true
-          }
-        })
-        res.status(201).json(req.user.validPassword)
+        res.status(201).json({isValid: true})
       } else {
-        await User.updateOne({_id: req.user.id}, {
-          $set: {
-            validPassword: false
-          }
+        res.status(404).json({
+          message: "User not found"
         })
-        res.status(201).json(req.user.validPassword)
       }
     }
   } catch (e) {

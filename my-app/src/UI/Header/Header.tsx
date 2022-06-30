@@ -67,6 +67,8 @@ const Header: FC<HeaderProps> =
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
 
+    const {pathname} = useLocation();
+
     const onSubmit = (e: any) => {
       axios.post('http://localhost:5100/product/addProduct', {
         store: valueStore,
@@ -99,9 +101,6 @@ const Header: FC<HeaderProps> =
       setIsFormValid(false)
       setModalActive(false)
     }
-
-    const {pathname} = useLocation();
-    console.log(pathname)
 
     const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
       switch (e.target.name) {
@@ -292,15 +291,14 @@ const Header: FC<HeaderProps> =
                 error={touched.weightVolumeItem ? errorWeightVolumeItem : undefined}
               />
               <ButtonUI
-                    btnNone={btnNone}
-                    disabled={!isFormValid}
-                    onClick={onSubmit}
-                    height='52px'
-                    title='Add Product'
-                    width='300px'
-                    rightSrc={plus}
-                    rightAlt='plusIcon'/>
-                )
+                btnNone={btnNone}
+                disabled={!isFormValid}
+                onClick={onSubmit}
+                height='52px'
+                title='Add Product'
+                width='300px'
+                rightSrc={plus}
+                rightAlt='plusIcon'/>
             </ModalWindow>
             :
             ''

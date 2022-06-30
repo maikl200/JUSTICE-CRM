@@ -32,7 +32,12 @@ const BootstrapButton = styled(Button)`
     color: #000000;
   }
 
+  :active {
+    background-color: ${({bchActive}) => bchActive};
+  }
+
   :hover {
+    text-decoration: none;
     box-shadow: none;
     border-right: ${({br}) => br};
     color: ${({ch}) => ch};
@@ -60,6 +65,7 @@ const ButtonUI = (props) => {
     coloring,
     br,
     bc,
+    bchActive,
     leftAlt,
     icon,
     colorTitle,
@@ -74,6 +80,7 @@ const ButtonUI = (props) => {
         type={type}
         variant="contained"
         disabled={disabled}
+        bchActive={bchActive}
         bch={bch}
         jc={jc}
         padding={padding}

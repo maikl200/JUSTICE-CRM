@@ -1,6 +1,7 @@
 .wrapper {
   display: flex;
 }
+
 .nav {
   display: flex;
   align-items: center;
@@ -22,5 +23,15 @@
     flex-direction: column;
     margin-top: 67px;
     width: 100%;
+  }
+}
+
+.active {
+  text-decoration: none;
+
+  button {
+    background: #F4F6FAFF;
+    color: #5382E7;
+    border-right: 1px solid #5382E7;
   }
 }

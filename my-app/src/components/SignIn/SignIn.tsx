@@ -57,7 +57,6 @@ const SignIn: FC = () => {
       email: valueEmail,
       password: valuePassword
     }).then((response) => {
-      console.log('good', response.data)
       setShowError('')
       Cookies.set('token', response.data.token)
       navigate('/mainPage', {replace: true})

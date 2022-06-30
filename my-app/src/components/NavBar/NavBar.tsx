@@ -6,7 +6,7 @@ import style from './navBar.module.scss'
 import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/Button/ButtonUI";
-import {useNavigate} from "react-router-dom";
+import {Link, NavLink, useNavigate} from "react-router-dom";
 
 const NavBar: FC = () => {
   const navigate = useNavigate()
@@ -26,29 +26,82 @@ const NavBar: FC = () => {
       <nav className={style.nav}>
         <img src={Logo} alt='Logo'/>
         <div className={style.nav_navElements}>
-          <ButtonUI onClick={() => navigate('/mainPage')} icon='home' title='Main page' jc='flex-start'
-                    bc='white' coloring='#A8ADB2FF'
-                    bch='#F4F6FAFF' br='1px solid #5382E7' ch='#5382E7'
-                    padding='30px 40px' width='273px'/>
-          <ButtonUI onClick={() => navigate('/myProduct')} icon='document' title='My Products'
-                    jc='flex-start'
-                    bc='white'
-                    coloring='#A8ADB2FF' bch='#F4F6FAFF' br='1px solid #5382E7'
-                    ch='#5382E7' padding='30px 40px' width='273px'/>
-          <ButtonUI onClick={() => navigate('/mySales')} icon='percent' title='My sales' jc='flex-start'
-                    bc='white'
-                    coloring='#A8ADB2FF'
-                    bch='#F4F6FAFF' br='1px solid #5382E7' ch='#5382E7'
-                    padding='30px 40px' width='273px'/>
-          <ButtonUI onClick={() => navigate('/personalCabinet')} icon='user' title='Personal Cabinet'
-                    jc='flex-start' bc='white'
-                    coloring='#A8ADB2FF' bch='#F4F6FAFF' br='1px solid #5382E7'
-                    ch='#5382E7' padding='30px 40px' width='273px'/>
+          <NavLink style={{textDecoration: 'none'}} to='/mainPage' className={({isActive}) => isActive && style.active}>
+            <ButtonUI
+              bchActive='red'
+              icon='home'
+              title='Main page'
+              jc='flex-start'
+              bc='white' coloring='#A8ADB2FF'
+              bch='#e1e2f2'
+              br='1px solid #5382E7'
+              ch='#5382E7'
+              padding='30px 40px'
+              width='273px'
+            />
+          </NavLink>
+          <NavLink
+            style={{textDecoration: 'none'}}
+            to='/myProduct'
+            className={({isActive}) => isActive && style.active}>
+            <ButtonUI
+              icon='document'
+              title='My Products'
+              jc='flex-start'
+              bc='white'
+              coloring='#A8ADB2FF'
+              bch='#e1e2f2'
+              br='1px solid #5382E7'
+              ch='#5382E7'
+              padding='30px 40px'
+              width='273px'/>
+          </NavLink>
+          <NavLink
+            style={{textDecoration: 'none'}}
+            to='/mySales' className={({isActive}) => isActive && style.active}>
+            <ButtonUI
+              icon='percent'
+              title='My sales'
+              jc='flex-start'
+              bc='white'
+              coloring='#A8ADB2FF'
+              bch='#e1e2f2'
+              br='1px solid #5382E7'
+              ch='#5382E7'
+              padding='30px 40px'
+              width='273px'/>
+          </NavLink>
+
+          <NavLink
+            style={{textDecoration: 'none'}}
+            to='/personalCabinet'
+            className={({isActive}) => isActive && style.active}>
+            <ButtonUI
+              icon='user'
+              title='Personal Cabinet'
+              jc='flex-start'
+              bc='white'
+              coloring='#A8ADB2FF'
+              bch='#e1e2f2'
+              br='1px solid #5382E7'
+              ch='#5382E7'
+              padding='30px 40px'
+              width='273px'/>
+          </NavLink>
+
         </div>
         <div className={style.nav_logOutBlock}>
-          <ButtonUI onClick={() => logOut()} icon='logout' title='Log out' jc='flex-start'
-                    bc='white' coloring='#A8ADB2FF'
-                    bch='#F4F6FAFF' ch='#5382E7' padding='48px 0' width='194px'/>
+          <ButtonUI
+            onClick={() => logOut()}
+            icon='logout'
+            title='Log out'
+            jc='flex-start'
+            bc='white'
+            coloring='#A8ADB2FF'
+            bch='#F4F6FAFF'
+            ch='#5382E7'
+            padding='48px 0'
+            width='194px'/>
         </div>
       </nav>
     </div>
