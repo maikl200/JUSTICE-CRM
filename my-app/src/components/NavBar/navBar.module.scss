@@ -21,8 +21,25 @@
   &_navElements {
     display: flex;
     flex-direction: column;
-    margin-top: 67px;
+    align-items: center;
+    margin-top: 20px;
     width: 100%;
+
+    &_avatar {
+      display: flex;
+      justify-content: center;
+      border: 1px solid black;
+      width: 20%;
+      overflow: hidden;
+      border-radius: 100px;
+      margin-bottom: 30px;
+    }
+
+    &_avatar img {
+      height: 50px;
+      width: 50px;
+      max-height: 50px;
+    }
   }
 }
 

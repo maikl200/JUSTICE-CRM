@@ -7,7 +7,7 @@ const usersSchema = new Schema({
     required: true,
     unique: true
   },
-  imageSrc: {
+  avatar: {
     type: String,
     default: ''
   },

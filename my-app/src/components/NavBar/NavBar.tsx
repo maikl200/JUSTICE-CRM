@@ -2,13 +2,18 @@ import React, {FC, useEffect} from 'react';
 
 import Logo from '../../assets/Logo.svg'
 import style from './navBar.module.scss'
+import noAvatar from '../../assets/avatar.svg'
 
 import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/Button/ButtonUI";
-import {Link, NavLink, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
-const NavBar: FC = () => {
+interface NavBarProps {
+  avatar?: string
+}
+
+const NavBar: FC<NavBarProps> = ({avatar}) => {
   const navigate = useNavigate()
   const token = Cookies.get('token')
 
@@ -20,12 +25,21 @@ const NavBar: FC = () => {
     navigate('/SignIn')
     Cookies.remove('token')
   }
-
+  console.log(avatar)
   return (
     <div className={style.wrapper}>
       <nav className={style.nav}>
         <img src={Logo} alt='Logo'/>
         <div className={style.nav_navElements}>
+          <div className={style.nav_navElements_avatar}>
+            {
+              avatar
+                ?
+                <img src='../../../../backend/images/image-1656628782095.png' alt='avatar'/>
+                :
+                <img src={noAvatar} alt='noAvatar'/>
+            }
+          </div>
           <NavLink style={{textDecoration: 'none'}} to='/mainPage' className={({isActive}) => isActive && style.active}>
             <ButtonUI
               bchActive='red'

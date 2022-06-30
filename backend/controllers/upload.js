@@ -1,8 +1,10 @@
 const multer = require('multer')
+const User = require("../models/Users");
+const bcrypt = require("bcryptjs");
 
 const multerConfig = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'images/')
+    callback(null, './images')
   },
   filename: (req, file, callback) => {
     const ext = file.mimetype.split('/')[1]
@@ -11,13 +13,9 @@ const multerConfig = multer.diskStorage({
 })
 
 const isImage = (req, file, callback) => {
-
-  console.log(file.mimetype.startsWith('image'))
   if (file.mimetype.startsWith('image')) {
-    console.log(123)
     callback(null, true)
   } else {
-    console.log(321)
     callback(new Error('Only Image is Allowed..'))
   }
 }
@@ -29,9 +27,7 @@ const upload = multer({
 
 exports.uploadImage = upload.single('image')
 
-exports.upload = (req, res) => {
-  console.log(req.file)
-  res.status(200).json({
-    success: 'Success',
-  })
+
+exports.upload = async (req, res) => {
+  res.status(200).json(req.file)
 }

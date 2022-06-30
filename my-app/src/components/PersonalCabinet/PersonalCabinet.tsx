@@ -12,6 +12,7 @@ import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {cardContentClasses} from "@mui/material";
+import ava from '../../../../backend/images/image-1656628782095.png'
 
 interface InitialTouchedTypes {
   firstName: boolean,
@@ -41,6 +42,8 @@ const PersonalCabinet: FC = () => {
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm, setFormEdit] = useHandleChange()
+  const [image, setImage] = useState()
+  const [avatar, setAvatar] = useState()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [dataProfile, setDataProfile] = useState()
   const [inputOldPassword, setInputOldPassword] = useState<string>()
@@ -63,7 +66,7 @@ const PersonalCabinet: FC = () => {
       })
   }
 
-  const profileChanges = () => {
+  const profileChanges = async () => {
     axios.patch('http://localhost:5100/profile/changeProfile', {
       ...form
     }, {
@@ -80,12 +83,21 @@ const PersonalCabinet: FC = () => {
     setInputOldPassword('')
     setInputNewPassword('')
 
-    const data = new FormData()
-
-    axios.post('http://localhost:5100/upload', data)
-      .then((res) => console.log(res))
-      .catch((e) => console.log(e))
+    await axios.post('http://localhost:5100/upload',
+      {
+        // @ts-ignore
+        image: image[0]
+      },
+      {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      })
+      .then((res) => setAvatar(res.data.path))
+      .catch((e) => console.error(e))
   }
+
+
   const myProfile = () => {
 
     axios.get('http://localhost:5100/profile/myProfile', {
@@ -137,7 +149,7 @@ const PersonalCabinet: FC = () => {
 
   return (
     <main className={style.main}>
-      <NavBar/>
+      <NavBar avatar={avatar}/>
       <div className={style.main_personalCabinetBar}>
         <Header title='Personal Cabinet' subTitle='Information about your account'/>
         <form
@@ -213,7 +225,8 @@ const PersonalCabinet: FC = () => {
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
               name='image'
-              // onChange={(e) => changeForm(e.target.files[0])}
+              //@ts-ignore
+              onChange={(e) => setImage(e.target.files)}
               placeholder='Avatar'
               title='Avatar'
               type='file'

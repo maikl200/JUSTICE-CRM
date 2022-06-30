@@ -5,18 +5,6 @@
   padding: 64px 0 30px 0;
   width: 90%;
 
-  &_avatar {
-    border: 1px solid black;
-    overflow: hidden;
-    border-radius: 100px;
-  }
-
-  &_avatar img {
-    height: 50px;
-    width: 50px;
-    max-height: 50px;
-  }
-
   &_titleBar {
     display: flex;
     flex-direction: column;

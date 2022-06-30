@@ -9,6 +9,5 @@ router.patch('/changeProfile', passport.authenticate("jwt", {session: false}), c
 router.get('/myProfile', passport.authenticate("jwt", {session: false}), controller.getMyProfile)
 router.post('/changePassword', passport.authenticate("jwt", {session: false}), controller.changePassword)
 
-// router.post('/upload',passport.authenticate("jwt", {session: false}), upload.single('image'), controller.changeProfile)
 
 module.exports = router

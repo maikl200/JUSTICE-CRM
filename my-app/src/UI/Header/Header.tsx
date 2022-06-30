@@ -189,15 +189,6 @@ const Header: FC<HeaderProps> =
                       bc='#5382E7' width='201px'/>
           )
         }
-        {/*<div className={style.topBar_avatar}>*/}
-        {/*  {*/}
-        {/*    avatarImg*/}
-        {/*      ?*/}
-        {/*      <img src={`${avatar}`} alt='avatar'/>*/}
-        {/*      :*/}
-        {/*      <img src={avatarImg} alt='avatar'/>*/}
-        {/*  }*/}
-        {/*</div>*/}
         {
           modalActive
             ?
