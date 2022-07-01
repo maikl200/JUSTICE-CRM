@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import Logo from '../../assets/Logo.svg'
 import style from './navBar.module.scss'
@@ -8,14 +8,12 @@ import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {NavLink, useNavigate} from "react-router-dom";
+import axios from "axios";
 
-interface NavBarProps {
-  avatar?: string
-}
-
-const NavBar: FC<NavBarProps> = ({avatar}) => {
+const NavBar: FC = () => {
   const navigate = useNavigate()
   const token = Cookies.get('token')
+
 
   useEffect(() => {
     !token && navigate('/SignIn')
@@ -25,21 +23,13 @@ const NavBar: FC<NavBarProps> = ({avatar}) => {
     navigate('/SignIn')
     Cookies.remove('token')
   }
-  console.log(avatar)
+
+
   return (
     <div className={style.wrapper}>
       <nav className={style.nav}>
         <img src={Logo} alt='Logo'/>
         <div className={style.nav_navElements}>
-          <div className={style.nav_navElements_avatar}>
-            {
-              avatar
-                ?
-                <img src='../../../../backend/images/image-1656628782095.png' alt='avatar'/>
-                :
-                <img src={noAvatar} alt='noAvatar'/>
-            }
-          </div>
           <NavLink style={{textDecoration: 'none'}} to='/mainPage' className={({isActive}) => isActive && style.active}>
             <ButtonUI
               bchActive='red'

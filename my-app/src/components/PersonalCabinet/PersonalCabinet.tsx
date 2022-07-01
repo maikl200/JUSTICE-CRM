@@ -6,13 +6,14 @@ import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 
 import style from './personalCabinet.module.scss'
+import previeAvatar from '../../assets/previeAvatar.jpg'
+
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {cardContentClasses} from "@mui/material";
-import ava from '../../../../backend/images/image-1656628782095.png'
+
 
 interface InitialTouchedTypes {
   firstName: boolean,
@@ -90,13 +91,13 @@ const PersonalCabinet: FC = () => {
       },
       {
         headers: {
+          Authorization: `${Cookies.get("token")}`,
           'content-type': 'multipart/form-data'
         }
       })
-      .then((res) => setAvatar(res.data.path))
+      .then((res) => setAvatar(res.data))
       .catch((e) => console.error(e))
   }
-
 
   const myProfile = () => {
 
@@ -149,9 +150,9 @@ const PersonalCabinet: FC = () => {
 
   return (
     <main className={style.main}>
-      <NavBar avatar={avatar}/>
+      <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header title='Personal Cabinet' subTitle='Information about your account'/>
+        <Header avatar={avatar} title='Personal Cabinet' subTitle='Information about your account'/>
         <form
           className={style.main_personalCabinetBar_userSettings}
           method='POST'
@@ -176,6 +177,7 @@ const PersonalCabinet: FC = () => {
               title='Last name'
               type='text'
               width='380px'/>
+
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
@@ -194,6 +196,12 @@ const PersonalCabinet: FC = () => {
               title='Product Category'
               type='text'
               width='380px'/>
+            <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
+              <span>Avatar preview</span>
+              <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
+                <img src={previeAvatar} alt='previe Avatar'/>
+              </div>
+            </div>
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
@@ -204,6 +212,7 @@ const PersonalCabinet: FC = () => {
               title='Address'
               type='text'
               width='380px'/>
+
             <Input
               defaultValue={inputOldPassword}
               value={inputOldPassword}

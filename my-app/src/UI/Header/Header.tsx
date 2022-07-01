@@ -14,6 +14,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
+import noAvatar from "../../assets/avatar.svg";
 
 interface HeaderProps {
   title: string
@@ -66,6 +67,7 @@ const Header: FC<HeaderProps> =
     const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
+    const [dataProfile, setDataProfile] = useState()
 
     const {pathname} = useLocation();
 
@@ -154,6 +156,18 @@ const Header: FC<HeaderProps> =
     }
 
     useEffect(() => {
+      axios.get('http://localhost:5100/profile/myProfile', {
+        headers: {
+          Authorization: `${Cookies.get("token")}`,
+        }
+      }).then((res) => {
+        setDataProfile(res.data[0].avatar)
+      }).catch((e) => {
+        console.error(e)
+      })
+    }, [avatar])
+
+    useEffect(() => {
       if (touched.price && touched.store && touched.productName && touched.productCategory && touched.quantityGoods && touched.weightVolumeItem) {
         if (
           !errorStore &&
@@ -189,6 +203,16 @@ const Header: FC<HeaderProps> =
                       bc='#5382E7' width='201px'/>
           )
         }
+        <div className={style.topBar_avatar}>
+          {
+            dataProfile
+              ?
+              // @ts-ignore
+              <img src={'http://localhost:5100/' + dataProfile} alt='avatar'/>
+              :
+              <img src={noAvatar} alt='noAvatar'/>
+          }
+        </div>
         {
           modalActive
             ?
