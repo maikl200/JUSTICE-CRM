@@ -8,6 +8,11 @@
     background: #f8f8f8;
     width: 100%;
 
+    &_btns {
+      display: flex;
+      gap: 60px;
+    }
+
     &_userSettings {
       display: flex;
       align-items: flex-start;
@@ -24,7 +29,7 @@
         &_avatarContainer {
           display: flex;
           flex-direction: column;
-          top: 22vh;
+          top: 40vh;
           position: absolute;
           right: 0;
 

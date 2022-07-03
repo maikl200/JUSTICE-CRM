@@ -6,7 +6,7 @@ import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 
 import style from './personalCabinet.module.scss'
-import previeAvatar from '../../assets/previeAvatar.jpg'
+import previewAvatar from '../../assets/previeAvatar.jpg'
 
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/Button/ButtonUI";
@@ -44,6 +44,7 @@ const PersonalCabinet: FC = () => {
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm, setFormEdit] = useHandleChange()
   const [image, setImage] = useState()
+  const [previewAvatar, setPreviewAvatar] = useState()
   const [avatar, setAvatar] = useState()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [dataProfile, setDataProfile] = useState()
@@ -109,7 +110,6 @@ const PersonalCabinet: FC = () => {
       const currentProfile = res.data.find((user: any) => user)
       setFormEdit(currentProfile)
       setDataProfile(currentProfile)
-
     }).catch((e) => {
       console.error(e)
     })
@@ -139,6 +139,20 @@ const PersonalCabinet: FC = () => {
     }
   }
 
+  const deleteAvatar = () => {
+    axios.delete('http://localhost:5100/upload/deleteAvatar', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+      .then((res) => {
+        setDataProfile(res.data)
+        setAvatar(res.data)
+      })
+      .catch((e) => {
+        console.error(':(')
+      })
+  }
 
   useEffect(() => {
     if (!!errorNewPassword) {
@@ -147,12 +161,12 @@ const PersonalCabinet: FC = () => {
       setIsValid(true)
     }
   }, [errorNewPassword, form.newPassword])
-
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header avatar={avatar} title='Personal Cabinet' subTitle='Information about your account'/>
+        <Header avatar={avatar} title='Personal Cabinet'
+                subTitle='Information about your account'/>
         <form
           className={style.main_personalCabinetBar_userSettings}
           method='POST'
@@ -199,7 +213,12 @@ const PersonalCabinet: FC = () => {
             <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
               <span>Avatar preview</span>
               <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
-                <img src={previeAvatar} alt='previe Avatar'/>
+                {image
+                  ?
+                  <img src={image[0]} alt='preview Avatar'/>
+                  :
+                  <img src={previewAvatar} alt='preview Avatar'/>
+                }
               </div>
             </div>
           </div>
@@ -258,12 +277,21 @@ const PersonalCabinet: FC = () => {
               width='380px'
             />
           </div>
-          <ButtonUI
-            onClick={() => profileChanges()}
-            disabled={!isValid}
-            width='158px'
-            title='Save changes'
-            height='52px'/>
+          <div className={style.main_personalCabinetBar_btns}>
+            <ButtonUI
+              onClick={() => profileChanges()}
+              disabled={!isValid}
+              width='158px'
+              title='Save changes'
+              height='52px'/>
+            <ButtonUI
+              bch='#c23616'
+              bc='#e84118'
+              onClick={() => deleteAvatar()}
+              width='158px'
+              title='Delete avatar'
+              height='52px'/>
+          </div>
         </form>
       </div>
     </main>

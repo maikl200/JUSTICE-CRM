@@ -5,7 +5,6 @@ import file from "../../assets/file.svg";
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
-import avatarImg from '../../assets/avatar.svg'
 
 
 import {DataProductInterface} from "../../components/MyProduct/MyProduct";
@@ -14,7 +13,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
-import noAvatar from "../../assets/avatar.svg";
+import noAvatar from "../../assets/previeAvatar.jpg";
 
 interface HeaderProps {
   title: string
@@ -23,6 +22,7 @@ interface HeaderProps {
   dataProduct?: DataProductInterface[]
   avatar?: string
   btnNone?: string
+  formFirstName?: string
 }
 
 interface InitialTouchedTypes {
@@ -50,7 +50,8 @@ const Header: FC<HeaderProps> =
      setDataProduct,
      dataProduct,
      btnNone,
-     avatar = []
+     avatar,
+     formFirstName = []
    }) => {
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [valueStore, setValueStore] = useState<string>('')
@@ -161,10 +162,12 @@ const Header: FC<HeaderProps> =
           Authorization: `${Cookies.get("token")}`,
         }
       }).then((res) => {
-        setDataProfile(res.data[0].avatar)
+        const currentProfile = res.data.find((user: any) => user)
+        setDataProfile(currentProfile)
       }).catch((e) => {
         console.error(e)
       })
+      //@ts-ignore
     }, [avatar])
 
     useEffect(() => {
@@ -189,29 +192,35 @@ const Header: FC<HeaderProps> =
         }
       }
     }, [errorStore, errorPrice, errorQuantityGoods, errorProductName, errorProductCategory, errorWeightVolumeItem, touched])
-
     return (
       <div className={style.topBar}>
         <div className={style.topBar_titleBar}>
           <span className={style.topBar_titleBar_topTitle}>{title}</span>
           <span className={style.topBar_titleBar_downTitle}>{subTitle}</span>
         </div>
-
-        {
-          pathname === PathEnum.MY_PRODUCT && (
-            <ButtonUI onClick={() => setModalActive(true)} title='Create a product' leftSrc={file} leftAlt='fileIcon'
-                      bc='#5382E7' width='201px'/>
-          )
-        }
-        <div className={style.topBar_avatar}>
+        <div className={style.topBar_btn}>
           {
-            dataProfile
-              ?
-              // @ts-ignore
-              <img src={'http://localhost:5100/' + dataProfile} alt='avatar'/>
-              :
-              <img src={noAvatar} alt='noAvatar'/>
+            pathname === PathEnum.MY_PRODUCT && (
+              <ButtonUI height='52px' onClick={() => setModalActive(true)} title='Create a product' leftSrc={file}
+                        leftAlt='fileIcon'
+                        bc='#5382E7' width='201px'/>
+            )
           }
+          <div className={style.topBar_containerInfoPerson}>
+            <div className={style.topBar_containerInfoPerson_avatar}>
+              {
+                // @ts-ignore
+                dataProfile?.avatar
+                  ?
+                  // @ts-ignore
+                  <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
+                  :
+                  <img src={noAvatar} alt='noAvatar'/>
+              }
+            </div>
+            {/*@ts-ignore*/}
+            {dataProfile?.firstName}
+          </div>
         </div>
         {
           modalActive

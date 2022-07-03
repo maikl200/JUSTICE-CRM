@@ -1,6 +1,8 @@
 const multer = require('multer')
 const User = require("../models/Users");
 const bcrypt = require("bcryptjs");
+const Product = require("../models/Product");
+const errorHandler = require("../utils/errorHandler");
 
 const multerConfig = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -41,6 +43,24 @@ exports.upload = async (req, res) => {
       res.status(200).json(updatedUser.avatar)
     } catch (e) {
       console.error(e)
+    }
+  }
+}
+
+module.exports.deleteAvatar = async function (req, res) {
+  const candidate = await User.findOne({_id: req.user.id})
+  if (candidate) {
+    try {
+      await User.updateOne({
+        $unset: {
+          avatar: candidate.avatar
+        }
+      })
+      res.status(200).json({
+        message: 'good'
+      })
+    } catch (e) {
+      console.log(e)
     }
   }
 }
