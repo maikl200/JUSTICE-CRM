@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
+import {typeProduct} from '../../types/types'
 
 import axios from "axios";
 import Cookies from "js-cookie";
 
 
-const DiogramBars = () => {
+const DiogramBars: FC = () => {
 
-  const [salesProduct, setSalesProduct] = useState()
+  const [salesProduct, setSalesProduct] = useState<any>()
 
   useEffect(() => {
     const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
@@ -23,11 +24,9 @@ const DiogramBars = () => {
   }, [])
 
   const salesProductInDay =
-    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
-      // @ts-ignore
-      salesProduct?.map((item: any) => item.soldItems)
+      salesProduct?.map((item: typeProduct) => item.soldItems)
       :
       ['No sales']
 

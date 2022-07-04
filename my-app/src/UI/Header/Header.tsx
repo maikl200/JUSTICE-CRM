@@ -7,19 +7,18 @@ import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 
 
-import {DataProductInterface} from "../../components/MyProduct/MyProduct";
+import {typeProduct} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
-import noAvatar from "../../assets/previeAvatar.jpg";
 
 interface HeaderProps {
   title: string
   subTitle: string
-  setDataProduct?: React.Dispatch<DataProductInterface[]>
-  dataProduct?: DataProductInterface[]
+  setDataProduct?: React.Dispatch<typeProduct[]>
+  dataProduct?: typeProduct[]
   avatar?: string
   btnNone?: string
   formFirstName?: string
@@ -211,11 +210,9 @@ const Header: FC<HeaderProps> =
               {
                 // @ts-ignore
                 dataProfile?.avatar
-                  ?
-                  // @ts-ignore
-                  <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
-                  :
-                  <img src={noAvatar} alt='noAvatar'/>
+                &&
+                // @ts-ignore
+                <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
               }
             </div>
             {/*@ts-ignore*/}

@@ -8,6 +8,7 @@ const multerConfig = multer.diskStorage({
   destination: (req, file, callback) => {
     callback(null, './images')
   },
+
   filename: (req, file, callback) => {
     const ext = file.mimetype.split('/')[1]
     callback(null, `image-${Date.now()}.${ext}`)
@@ -33,14 +34,18 @@ exports.uploadImage = upload.single('image')
 exports.upload = async (req, res) => {
   const candidate = await User.findOne({_id: req.user.id})
   if (candidate) {
+    console.log('req.file.path', req.file.path)
     try {
+      console.log('candidate',candidate)
       await User.updateOne({
+        _id: req.user.id},{
         $set: {
           avatar: req.file.path
         }
       })
+
       const updatedUser = await User.findOne({_id: req.user.id})
-      res.status(200).json(updatedUser.avatar)
+      res.status(200).json(updatedUser)
     } catch (e) {
       console.error(e)
     }
@@ -51,14 +56,14 @@ module.exports.deleteAvatar = async function (req, res) {
   const candidate = await User.findOne({_id: req.user.id})
   if (candidate) {
     try {
-      await User.updateOne({
-        $unset: {
-          avatar: candidate.avatar
+      await User.updateOne({_id: req.user.id},{
+        $set: {
+          avatar: 'images/image-1656925193112.jpeg'
         }
       })
-      res.status(200).json({
-        message: 'good'
-      })
+      const updatedUser = await User.findOne({_id: req.user.id})
+      console.log(updatedUser)
+      res.status(200).json(updatedUser)
     } catch (e) {
       console.log(e)
     }

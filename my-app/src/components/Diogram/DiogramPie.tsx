@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 
 import Chart from 'react-apexcharts'
+import {typeProduct} from '../../types/types'
 
 import axios from "axios";
 import Cookies from "js-cookie";
 
 const DiogramPie = () => {
 
-  const [salesProduct, setSalesProduct] = useState()
+  const [salesProduct, setSalesProduct] = useState<any>()
 
   useEffect(() => {
 
@@ -25,21 +26,17 @@ const DiogramPie = () => {
   }, [])
 
   const productsCategoryInDay =
-    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
-      // @ts-ignore
-      salesProduct?.map((product: { productCategory: string; }) => product.productCategory)
+      salesProduct?.map((product: typeProduct) => product.productCategory)
       :
       null
 
 
   const salesProductInDay =
-    // @ts-ignore
     salesProduct && salesProduct?.length
       ?
-      // @ts-ignore
-      salesProduct?.map((item: any) => item.soldItems)
+      salesProduct?.map((item: typeProduct) => item.soldItems)
       :
       []
   return (

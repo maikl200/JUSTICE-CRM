@@ -117,7 +117,7 @@ const CreateAcc: FC = () => {
 
     axios.post('http://localhost:5100/auth/register', {
       ...user
-    }).then((response) => {
+    }).then(() => {
       setShowError('')
       navigate('/signIn', {replace: true})
     }).catch(() => {

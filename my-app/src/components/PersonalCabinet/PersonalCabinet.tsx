@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useLayoutEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import {useHandleChange} from "../../utils/useHandleChange";
 
@@ -13,6 +13,7 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {typeUser} from "../../types/types";
 
 
 interface InitialTouchedTypes {
@@ -43,11 +44,10 @@ const PersonalCabinet: FC = () => {
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [isValid, setIsValid] = useState<boolean>(false)
   const [form, changeForm, setFormEdit] = useHandleChange()
-  const [image, setImage] = useState()
-  const [previewAvatar, setPreviewAvatar] = useState()
+  const [image, setImage] = useState<FileList | null>()
+  const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
   const [avatar, setAvatar] = useState()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
-  const [dataProfile, setDataProfile] = useState()
   const [inputOldPassword, setInputOldPassword] = useState<string>()
   const [inputNewPassword, setInputNewPassword] = useState<string>()
 
@@ -85,19 +85,31 @@ const PersonalCabinet: FC = () => {
     setInputOldPassword('')
     setInputNewPassword('')
 
-    await axios.post('http://localhost:5100/upload',
-      {
-        // @ts-ignore
-        image: image[0]
-      },
-      {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-          'content-type': 'multipart/form-data'
-        }
-      })
-      .then((res) => setAvatar(res.data))
-      .catch((e) => console.error(e))
+    if (image) {
+      await axios.post('http://localhost:5100/upload',
+        {
+          image: image[0]
+        },
+        {
+          headers: {
+            Authorization: `${Cookies.get("token")}`,
+            'content-type': 'multipart/form-data'
+          }
+        })
+        .then((res) => setAvatar(res.data))
+        .catch((e) => console.error(e))
+    }
+  }
+
+  const imageHandler = (e: any) => {
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setPreviewAvatarState(reader.result)
+      }
+    }
+    reader.readAsDataURL(e.target.files[0])
   }
 
   const myProfile = () => {
@@ -107,9 +119,8 @@ const PersonalCabinet: FC = () => {
         Authorization: `${Cookies.get("token")}`,
       }
     }).then((res) => {
-      const currentProfile = res.data.find((user: any) => user)
+      const currentProfile = res.data.find((user: typeUser) => user)
       setFormEdit(currentProfile)
-      setDataProfile(currentProfile)
     }).catch((e) => {
       console.error(e)
     })
@@ -122,7 +133,6 @@ const PersonalCabinet: FC = () => {
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'oldPassword':
-        // @ts-ignore
         if (regEx.password.test(form.oldPassword)) {
           setErrorOldPassword('')
         } else {
@@ -146,11 +156,10 @@ const PersonalCabinet: FC = () => {
       },
     })
       .then((res) => {
-        setDataProfile(res.data)
         setAvatar(res.data)
       })
       .catch((e) => {
-        console.error(':(')
+        console.error(e)
       })
   }
 
@@ -161,6 +170,7 @@ const PersonalCabinet: FC = () => {
       setIsValid(true)
     }
   }, [errorNewPassword, form.newPassword])
+
   return (
     <main className={style.main}>
       <NavBar/>
@@ -191,6 +201,20 @@ const PersonalCabinet: FC = () => {
               title='Last name'
               type='text'
               width='380px'/>
+            <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
+              <span>Avatar preview</span>
+              <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
+                {
+                  previewAvatarState
+                    ?
+                    //@ts-ignore
+                    <img src={previewAvatarState} alt='preview Avatar'/>
+                    // todo Спросить у димы про ArrayBuffer
+                    :
+                    <img src={previewAvatar} alt='preview Avatar'/>
+                }
+              </div>
+            </div>
 
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
@@ -210,17 +234,6 @@ const PersonalCabinet: FC = () => {
               title='Product Category'
               type='text'
               width='380px'/>
-            <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
-              <span>Avatar preview</span>
-              <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
-                {image
-                  ?
-                  <img src={image[0]} alt='preview Avatar'/>
-                  :
-                  <img src={previewAvatar} alt='preview Avatar'/>
-                }
-              </div>
-            </div>
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
@@ -253,8 +266,10 @@ const PersonalCabinet: FC = () => {
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
               name='image'
-              //@ts-ignore
-              onChange={(e) => setImage(e.target.files)}
+              onChange={(e) => {
+                imageHandler(e)
+                setImage(e.target.files)
+              }}
               placeholder='Avatar'
               title='Avatar'
               type='file'

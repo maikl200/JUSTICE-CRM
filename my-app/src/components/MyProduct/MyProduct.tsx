@@ -11,24 +11,11 @@ import ButtonUI from "../../UI/Button/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
-import {productDataMocks} from "../../mockdata/productData";
 import {useHandleChange} from "../../utils/useHandleChange";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
-
-
-export interface DataProductInterface {
-  id: number
-  price: number
-  dateNow: string
-  address?: string
-  productCategory: string
-  productName: string
-  quantityGoods: string
-  store: string
-  weightVolumeOneItem: string
-}
+import {typeProduct} from "../../types/types";
 
 interface InitialTouchedTypes {
   numberProduct: boolean
@@ -58,7 +45,7 @@ const MyProduct: FC = () => {
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
-  const [productSell, setProductSell] = useState({})
+  const [productSell, setProductSell] = useState<typeProduct>()
   const [isSellValid, setIsSellValid] = useState<boolean>(false)
   const [isEditValid, setIsEditValid] = useState<boolean>(false)
   const [errorValueNumberProduct, setErrorValueProduct] = useState('')
@@ -68,12 +55,11 @@ const MyProduct: FC = () => {
   const [errorValueCategory, setErrorValueCategory] = useState('')
   const [errorValueQuantityGoods, setErrorValueQuantityGoods] = useState('')
   const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
-  const [editId, setEditId] = useState<number>(-1)
-  const [sellId, setSellId] = useState<number>(-1)
+  const [editId, setEditId] = useState<string>('')
+  const [sellId, setSellId] = useState<string>('')
   const [form, changeForm] = useHandleChange()
-  const [dataProduct, setDataProduct] = useState()
-  const [dataEditProduct, setDataEditProduct] = useState()
-
+  const [dataProduct, setDataProduct] = useState<typeProduct[]>()
+  const [dataEditProduct, setDataEditProduct] = useState<typeProduct>()
   const getAllProducts = async () => {
     const allProducts = axios.get('http://localhost:5100/product/myProducts', {
       headers: {
@@ -90,19 +76,18 @@ const MyProduct: FC = () => {
   useEffect(() => {
     getAllProducts()
   }, [])
-  // @ts-ignore
-  const quantityGoods = (productSell.quantityGoods)
-  const sellProduct = (id: number) => {
+
+  const quantityGoods = (productSell?.quantityGoods)
+
+  const sellProduct = (id: string) => {
     setSellModalActive(true)
     setSellId(id)
 
-    // @ts-ignore
-    const filterProduct = dataProduct?.filter((item: any) => item._id === id)
-    // @ts-ignore
-    setProductSell(...filterProduct)
+    const filterProduct = dataProduct?.find((item: typeProduct) => item._id === id)
+    setProductSell(filterProduct)
   }
 
-  const sellButton = (sellId: number) => {
+  const sellButton = (sellId: string) => {
     const discriminant = Number(quantityGoods) - Number(soldItems)
     const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
     axios.post('http://localhost:5100/sellProduct/sellProduct', {
@@ -129,6 +114,7 @@ const MyProduct: FC = () => {
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'numberProduct':
+        if (!quantityGoods) return
         if (Number(e.target.value) <= quantityGoods && Number(e.target.value) !== 0) {
 
           Number(e.target.value) <= quantityGoods && setErrorValueProduct('')
@@ -197,7 +183,7 @@ const MyProduct: FC = () => {
     }
   }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
 
-  const deleteElem = (id: number) => {
+  const deleteElem = (id: string) => {
     axios.delete('http://localhost:5100/product/deleteProduct', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
@@ -207,25 +193,23 @@ const MyProduct: FC = () => {
       }
     })
       .then(() => {
-        // @ts-ignore
-        setDataProduct(dataProduct.filter((prod) => prod._id !== id))
+        if (!dataProduct) return
+        setDataProduct(dataProduct.filter((prod: typeProduct) => prod._id !== id))
       })
       .catch((e) => {
-        console.error(':(')
+        console.error(e)
       })
   }
 
-  const editElem = (id: number) => {
+  const editElem = (id: string) => {
     setEditModalActive(true)
-    // @ts-ignore
-    const filterProduct = dataProduct?.find((item: any) => item._id === id)
-    // @ts-ignore
+    const filterProduct = dataProduct?.find((item: typeProduct) => item._id === id)
     setDataEditProduct(filterProduct)
     setEditId(id)
     return
   }
 
-  const editButton = (editId: number) => {
+  const editButton = (editId: string) => {
     axios.patch('http://localhost:5100/product/editProduct', {...form}, {
       headers: {
         Authorization: `${Cookies.get("token")}`,
@@ -238,7 +222,7 @@ const MyProduct: FC = () => {
         setDataProduct(res.data)
       })
       .catch((e) => {
-        console.error(':(')
+        console.error(e)
       })
 
     setTouched(initialTouched)
@@ -250,7 +234,6 @@ const MyProduct: FC = () => {
       <NavBar/>
       <div className={style.main_productBar}>
         <Header
-          /*@ts-ignore*/
           setDataProduct={setDataProduct}
           dataProduct={dataProduct}
           title='My product'
@@ -272,8 +255,7 @@ const MyProduct: FC = () => {
             dataProduct
               ?
               <div className={style.main_productBar_productCard_productData}>
-                {/*@ts-ignore*/}
-                {dataProduct?.map((product: any) => (
+                {dataProduct?.map((product: typeProduct) => (
                     <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
                       <p>{product?.productName}</p>
                       <p>{product?.store}</p>
@@ -318,7 +300,6 @@ const MyProduct: FC = () => {
           title='Editing a product'
           setModalActive={setEditModalActive}>
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.store}
             onChange={(e) => {
               setTouched({...touched, store: true})
@@ -331,7 +312,6 @@ const MyProduct: FC = () => {
             width='300px'
           />
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.price}
             onChange={(e) => {
               setTouched({...touched, price: true})
@@ -344,7 +324,6 @@ const MyProduct: FC = () => {
             error={touched.price ? errorValuePrice : undefined}
           />
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.productCategory}
             onChange={(e) => {
               setTouched({...touched, category: true})
@@ -356,7 +335,6 @@ const MyProduct: FC = () => {
             name='productCategory'
             width='300px'/>
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.quantityGoods}
             onChange={(e) => {
               setTouched({...touched, remains: true})
@@ -369,7 +347,6 @@ const MyProduct: FC = () => {
             error={touched.remains ? errorValueQuantityGoods : undefined}
           />
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.weightVolumeOneItem}
             onChange={(e) => {
               setTouched({...touched, weightVolume: true})

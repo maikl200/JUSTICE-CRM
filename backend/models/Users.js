@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
+
 const usersSchema = new Schema({
   email: {
     type: String,
@@ -9,7 +10,7 @@ const usersSchema = new Schema({
   },
   avatar: {
     type: String,
-    default: ''
+    default: 'images/image-1656925193112.jpeg'
   },
   password: {
     type: String,

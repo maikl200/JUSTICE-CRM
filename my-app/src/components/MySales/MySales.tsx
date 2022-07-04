@@ -7,10 +7,11 @@ import Header from "../../UI/Header/Header";
 import axios from "axios";
 import Cookies from "js-cookie";
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
+import {typeProduct} from "../../types/types";
 
 
 const MySales: FC = () => {
-  const [salesProduct, setSalesProduct] = useState()
+  const [salesProduct, setSalesProduct] = useState<typeProduct[]>()
   const getAllSalesProducts = async () => {
     const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
       headers: {
@@ -49,8 +50,7 @@ const MySales: FC = () => {
             salesProduct
               ?
               <div className={style.main_salesBar_salesCard_salesData}>
-                {/*@ts-ignore*/}
-                {salesProduct?.map((product: any) => {
+                {salesProduct?.map((product: typeProduct) => {
                   return (
                     <>
                       <div key={product._id} className={style.main_salesBar_salesCard_salesData_sales}>

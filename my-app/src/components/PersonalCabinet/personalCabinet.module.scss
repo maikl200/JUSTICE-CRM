@@ -29,24 +29,30 @@
         &_avatarContainer {
           display: flex;
           flex-direction: column;
-          top: 40vh;
+          align-items: center;
           position: absolute;
-          right: 0;
+          right: 150px;
+          max-width: 300px;
+
 
           &_imgPreviewContainer {
-            max-width: 300px;
-
-            & img {
-              width: 100%;
-              object-fit: cover;
-            }
+            width: 100%;
+            height: 300px;
+            box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
           }
 
-          & span {
-            margin-bottom: 10px;
+          & img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
           }
+        }
+
+        & span {
+          margin-bottom: 10px;
         }
       }
     }
   }
 }
+

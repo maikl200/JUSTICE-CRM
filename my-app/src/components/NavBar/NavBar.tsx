@@ -1,16 +1,15 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 
 import Logo from '../../assets/Logo.svg'
 import style from './navBar.module.scss'
-import noAvatar from '../../assets/avatar.svg'
 
 import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/Button/ButtonUI";
 import {NavLink, useNavigate} from "react-router-dom";
-import axios from "axios";
 
 const NavBar: FC = () => {
+
   const navigate = useNavigate()
   const token = Cookies.get('token')
 
@@ -23,7 +22,6 @@ const NavBar: FC = () => {
     navigate('/SignIn')
     Cookies.remove('token')
   }
-
 
   return (
     <div className={style.wrapper}>
