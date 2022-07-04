@@ -1,13 +1,13 @@
 import React, {FC, useEffect, useState} from 'react';
 import style from "./header.module.scss";
-import ButtonUI from "../Button/ButtonUI";
+import ButtonUI from "../ButtonTS/ButtonUI";
 import file from "../../assets/file.svg";
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 
 
-import {typeProduct} from "../../types/types";
+import {typeProduct, typeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -48,9 +48,7 @@ const Header: FC<HeaderProps> =
      subTitle,
      setDataProduct,
      dataProduct,
-     btnNone,
-     avatar,
-     formFirstName = []
+     avatar = []
    }) => {
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [valueStore, setValueStore] = useState<string>('')
@@ -67,11 +65,11 @@ const Header: FC<HeaderProps> =
     const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-    const [dataProfile, setDataProfile] = useState()
+    const [dataProfile, setDataProfile] = useState<typeUser>()
 
     const {pathname} = useLocation();
 
-    const onSubmit = (e: any) => {
+    const onSubmit = () => {
       axios.post('http://localhost:5100/product/addProduct', {
         store: valueStore,
         price: valuePrice,
@@ -85,7 +83,8 @@ const Header: FC<HeaderProps> =
         },
       })
         .then((res) => {
-          // @ts-ignore
+          //@ts-ignore
+          // todo Спросить у димы
           setDataProduct && setDataProduct([...dataProduct, res.data])
         })
         .catch((e) => {
@@ -116,7 +115,7 @@ const Header: FC<HeaderProps> =
 
         }
         case 'price':
-          // @ts-ignore
+          if (!valuePrice) return
           if (valuePrice !== 0 && valuePrice <= 5100) {
             setErrorPrice('')
           } else {
@@ -145,8 +144,7 @@ const Header: FC<HeaderProps> =
           }
           break
         case 'weightVolumeItem':
-          // @ts-ignore
-          if (valueWeightVolumeOneItem !== '' && valueWeightVolumeOneItem <= 20 && valueWeightVolumeOneItem > 0) {
+          if (valueWeightVolumeOneItem !== '' && Number(valueWeightVolumeOneItem) <= 20 && Number(valueWeightVolumeOneItem) > 0) {
             setErrorWeightVolumeItem('')
           } else {
             setErrorWeightVolumeItem('blank field')
@@ -166,7 +164,6 @@ const Header: FC<HeaderProps> =
       }).catch((e) => {
         console.error(e)
       })
-      //@ts-ignore
     }, [avatar])
 
     useEffect(() => {
@@ -208,14 +205,11 @@ const Header: FC<HeaderProps> =
           <div className={style.topBar_containerInfoPerson}>
             <div className={style.topBar_containerInfoPerson_avatar}>
               {
-                // @ts-ignore
                 dataProfile?.avatar
                 &&
-                // @ts-ignore
-                <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
+                  <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
               }
             </div>
-            {/*@ts-ignore*/}
             {dataProfile?.firstName}
           </div>
         </div>
@@ -242,7 +236,6 @@ const Header: FC<HeaderProps> =
               />
               <Input
                 name='price'
-                /*@ts-ignore*/
                 value={valuePrice}
                 onChange={(e) => {
                   setValuePrice(e.target.valueAsNumber)
@@ -312,9 +305,8 @@ const Header: FC<HeaderProps> =
                 error={touched.weightVolumeItem ? errorWeightVolumeItem : undefined}
               />
               <ButtonUI
-                btnNone={btnNone}
                 disabled={!isFormValid}
-                onClick={onSubmit}
+                onClick={() => onSubmit()}
                 height='52px'
                 title='Add Product'
                 width='300px'

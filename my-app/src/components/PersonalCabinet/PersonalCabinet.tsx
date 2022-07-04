@@ -9,7 +9,7 @@ import style from './personalCabinet.module.scss'
 import previewAvatar from '../../assets/previeAvatar.jpg'
 
 import Input from "../../UI/Input/Input";
-import ButtonUI from "../../UI/Button/ButtonUI";
+import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -101,7 +101,7 @@ const PersonalCabinet: FC = () => {
     }
   }
 
-  const imageHandler = (e: any) => {
+  const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const reader = new FileReader()
     reader.onload = () => {
@@ -109,7 +109,7 @@ const PersonalCabinet: FC = () => {
         setPreviewAvatarState(reader.result)
       }
     }
-    reader.readAsDataURL(e.target.files[0])
+    reader.readAsDataURL(e.target.files![0])
   }
 
   const myProfile = () => {

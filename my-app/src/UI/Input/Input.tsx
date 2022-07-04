@@ -14,7 +14,7 @@ interface Props {
   errorBorder?: string
   error?: string
   readOnly?: boolean
-  value?: string
+  value?: string | number
 }
 
 const Input: FC<Props> = (

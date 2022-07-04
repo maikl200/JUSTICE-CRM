@@ -2,7 +2,7 @@ import React, {FC, FormEvent, useEffect, useState} from 'react';
 
 import style from './signIn.module.scss'
 import Input from "../../UI/Input/Input";
-import ButtonUI from "../../UI/Button/ButtonUI";
+import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";

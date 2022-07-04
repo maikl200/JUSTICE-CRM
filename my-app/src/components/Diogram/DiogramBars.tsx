@@ -9,6 +9,8 @@ import Cookies from "js-cookie";
 const DiogramBars: FC = () => {
 
   const [salesProduct, setSalesProduct] = useState<any>()
+  //todo Спросить у димы
+  console.log('salesProduct', salesProduct)
 
   useEffect(() => {
     const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {

@@ -3,7 +3,7 @@ import React, {FC, useEffect, useState} from 'react';
 import style from './createAcc.module.scss'
 import imgReg from '../../assets/img_at_registration.png'
 import Input from "../../UI/Input/Input";
-import ButtonUI from "../../UI/Button/ButtonUI";
+import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 

@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 const DiogramPie = () => {
 
-  const [salesProduct, setSalesProduct] = useState<any>()
+  const [salesProduct, setSalesProduct] = useState<typeProduct[]>()
 
   useEffect(() => {
 

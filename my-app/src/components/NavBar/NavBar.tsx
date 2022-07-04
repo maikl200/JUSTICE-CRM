@@ -5,7 +5,7 @@ import style from './navBar.module.scss'
 
 import Cookies from 'js-cookie'
 
-import ButtonUI from "../../UI/Button/ButtonUI";
+import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {NavLink, useNavigate} from "react-router-dom";
 
 const NavBar: FC = () => {

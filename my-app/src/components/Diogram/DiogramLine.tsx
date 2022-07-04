@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 const DiogramLine: FC = () => {
 
   const [salesProduct, setSalesProduct] = useState<any>()
+  // todo Спросить у димы
 
   useEffect(() => {
 
@@ -32,7 +33,7 @@ const DiogramLine: FC = () => {
       :
       ['You havent earned a single ']
 
-  const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: any, next: any) {
+  const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: number, next: number) {
     return prev + next
   })
 

@@ -7,7 +7,7 @@ import style from './myProduct.module.scss'
 import pencil from '../../assets/pencil.svg'
 import deleteIcon from '../../assets/Delete.svg'
 
-import ButtonUI from "../../UI/Button/ButtonUI";
+import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
@@ -271,7 +271,8 @@ const MyProduct: FC = () => {
                           onClick={() => sellProduct(product._id)}
                           coloring='#5382E7'
                           bc='#E9EDF7FF'
-                          height='28px' title='Sell'
+                          height='28px'
+                          title='Sell'
                           mw='53px'
                           width='53px'/>
                         <ButtonUI
