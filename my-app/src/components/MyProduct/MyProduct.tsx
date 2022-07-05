@@ -16,11 +16,6 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 import {typeProduct} from "../../types/types";
-import {useDispatch, useSelector} from "react-redux";
-import {getProduct} from "../../redux/reducers/getProductReducer";
-import {RootState} from "../../redux/store";
-import {getProducts} from "../../redux/asyncActions/getProducts";
-import {GET_PRODUCT} from "../../redux/actionTypes";
 
 interface InitialTouchedTypes {
   numberProduct: boolean
@@ -65,13 +60,21 @@ const MyProduct: FC = () => {
   const [form, changeForm] = useHandleChange()
   const [dataProduct, setDataProduct] = useState<typeProduct[]>()
   const [dataEditProduct, setDataEditProduct] = useState<typeProduct>()
-  const dispatch = useDispatch()
-  const products = useSelector<RootState>(state => state.getProduct) as typeProduct[]
+  const getAllProducts = async () => {
+    const allProducts = axios.get('http://localhost:5100/product/myProducts', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+    try {
+      await allProducts.then((res) => setDataProduct(res.data))
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   useEffect(() => {
-
-    dispatch(getProducts() as any)
-    setDataProduct(products)
+    getAllProducts()
   }, [])
 
   const quantityGoods = (productSell?.quantityGoods)
@@ -253,7 +256,7 @@ const MyProduct: FC = () => {
               ?
               <div className={style.main_productBar_productCard_productData}>
                 {/*@ts-ignore*/}
-                {dataProduct?.map((product: typeProduct) => (
+                {dataProduct?.map((product: any) => (
                     <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
                       <p>{product?.productName}</p>
                       <p>{product?.store}</p>
@@ -269,8 +272,7 @@ const MyProduct: FC = () => {
                           onClick={() => sellProduct(product._id)}
                           coloring='#5382E7'
                           bc='#E9EDF7FF'
-                          height='28px'
-                          title='Sell'
+                          height='28px' title='Sell'
                           mw='53px'
                           width='53px'/>
                         <ButtonUI
@@ -299,6 +301,7 @@ const MyProduct: FC = () => {
           title='Editing a product'
           setModalActive={setEditModalActive}>
           <Input
+            /*@ts-ignore*/
             defaultValue={dataEditProduct?.store}
             onChange={(e) => {
               setTouched({...touched, store: true})
@@ -311,6 +314,7 @@ const MyProduct: FC = () => {
             width='300px'
           />
           <Input
+            /*@ts-ignore*/
             defaultValue={dataEditProduct?.price}
             onChange={(e) => {
               setTouched({...touched, price: true})
@@ -323,6 +327,7 @@ const MyProduct: FC = () => {
             error={touched.price ? errorValuePrice : undefined}
           />
           <Input
+            /*@ts-ignore*/
             defaultValue={dataEditProduct?.productCategory}
             onChange={(e) => {
               setTouched({...touched, category: true})
@@ -334,6 +339,7 @@ const MyProduct: FC = () => {
             name='productCategory'
             width='300px'/>
           <Input
+            /*@ts-ignore*/
             defaultValue={dataEditProduct?.quantityGoods}
             onChange={(e) => {
               setTouched({...touched, remains: true})
@@ -346,6 +352,7 @@ const MyProduct: FC = () => {
             error={touched.remains ? errorValueQuantityGoods : undefined}
           />
           <Input
+            /*@ts-ignore*/
             defaultValue={dataEditProduct?.weightVolumeOneItem}
             onChange={(e) => {
               setTouched({...touched, weightVolume: true})
