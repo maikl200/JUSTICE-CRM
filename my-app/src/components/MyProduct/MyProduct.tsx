@@ -15,7 +15,10 @@ import {useHandleChange} from "../../utils/useHandleChange";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
-import {typeProduct} from "../../types/types";
+import {TypeProduct} from "../../types/types";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {fetchProducts} from "../../redux/action-creater/product";
+import {useAction} from "../../utils/useAction";
 
 interface InitialTouchedTypes {
   numberProduct: boolean
@@ -45,7 +48,7 @@ const MyProduct: FC = () => {
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
-  const [productSell, setProductSell] = useState<typeProduct>()
+  const [productSell, setProductSell] = useState<TypeProduct>()
   const [isSellValid, setIsSellValid] = useState<boolean>(false)
   const [isEditValid, setIsEditValid] = useState<boolean>(false)
   const [errorValueNumberProduct, setErrorValueProduct] = useState('')
@@ -58,24 +61,15 @@ const MyProduct: FC = () => {
   const [editId, setEditId] = useState<string>('')
   const [sellId, setSellId] = useState<string>('')
   const [form, changeForm] = useHandleChange()
-  const [dataProduct, setDataProduct] = useState<typeProduct[]>()
-  const [dataEditProduct, setDataEditProduct] = useState<typeProduct>()
-  const getAllProducts = async () => {
-    const allProducts = axios.get('http://localhost:5100/product/myProducts', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-    try {
-      await allProducts.then((res) => setDataProduct(res.data))
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  const [dataProduct, setDataProduct] = useState<TypeProduct[]>()
+  const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
+
+  const products = useTypedSelector(state => state.productReducer)
+  const {fetchProducts} = useAction()
 
   useEffect(() => {
-    getAllProducts()
-  }, [])
+    fetchProducts()
+  }, [products])
 
   const quantityGoods = (productSell?.quantityGoods)
 
@@ -83,7 +77,7 @@ const MyProduct: FC = () => {
     setSellModalActive(true)
     setSellId(id)
 
-    const filterProduct = dataProduct?.find((item: typeProduct) => item._id === id)
+    const filterProduct = dataProduct?.find((item: TypeProduct) => item._id === id)
     setProductSell(filterProduct)
   }
 
@@ -194,7 +188,7 @@ const MyProduct: FC = () => {
     })
       .then(() => {
         if (!dataProduct) return
-        setDataProduct(dataProduct.filter((prod: typeProduct) => prod._id !== id))
+        setDataProduct(dataProduct.filter((prod: TypeProduct) => prod._id !== id))
       })
       .catch((e) => {
         console.error(e)
@@ -203,7 +197,7 @@ const MyProduct: FC = () => {
 
   const editElem = (id: string) => {
     setEditModalActive(true)
-    const filterProduct = dataProduct?.find((item: typeProduct) => item._id === id)
+    const filterProduct = dataProduct?.find((item: TypeProduct) => item._id === id)
     setDataEditProduct(filterProduct)
     setEditId(id)
     return
@@ -252,11 +246,11 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           {
-            dataProduct
+            products.length > 1
               ?
               <div className={style.main_productBar_productCard_productData}>
                 {/*@ts-ignore*/}
-                {dataProduct?.map((product: any) => (
+                {products?.map(product => (
                     <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
                       <p>{product?.productName}</p>
                       <p>{product?.store}</p>

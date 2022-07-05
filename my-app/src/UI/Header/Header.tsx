@@ -7,7 +7,7 @@ import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 
 
-import {typeProduct, typeUser} from "../../types/types";
+import {TypeProduct, typeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -17,8 +17,8 @@ import {PathEnum} from "../AppRouter/AppRouter";
 interface HeaderProps {
   title: string
   subTitle: string
-  setDataProduct?: React.Dispatch<typeProduct[]>
-  dataProduct?: typeProduct[]
+  setDataProduct?: React.Dispatch<TypeProduct[]>
+  dataProduct?: TypeProduct[]
   avatar?: string
   btnNone?: string
   formFirstName?: string

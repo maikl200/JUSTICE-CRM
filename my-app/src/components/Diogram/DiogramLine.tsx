@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
-import {typeProduct} from '../../types/types'
+import {TypeProduct} from '../../types/types'
 
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -29,7 +29,7 @@ const DiogramLine: FC = () => {
   const priceProductInDay =
     salesProduct && salesProduct?.length
       ?
-      salesProduct?.map((product: typeProduct) => product.price)
+      salesProduct?.map((product: TypeProduct) => product.price)
       :
       ['You havent earned a single ']
 

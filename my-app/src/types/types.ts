@@ -1,4 +1,4 @@
-export interface typeProduct {
+export interface TypeProduct {
   _id: string
   address?: string | null
   dateNow: string
@@ -24,9 +24,4 @@ export interface typeUser {
   password: string
   productCategory?: string
   _id: string
-}
-
-export interface TypesAction {
-  type: string
-  payload?: any
 }

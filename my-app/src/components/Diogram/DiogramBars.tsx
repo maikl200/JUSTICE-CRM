@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import Chart from "react-apexcharts";
-import {typeProduct} from '../../types/types'
+import {TypeProduct} from '../../types/types'
 
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -27,7 +27,7 @@ const DiogramBars: FC = () => {
   const salesProductInDay =
     salesProduct && salesProduct?.length
       ?
-      salesProduct?.map((item: typeProduct) => item.soldItems)
+      salesProduct?.map((item: TypeProduct) => item.soldItems)
       :
       ['No sales']
 
