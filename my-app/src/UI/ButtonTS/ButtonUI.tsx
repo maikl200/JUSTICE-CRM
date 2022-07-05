@@ -13,7 +13,7 @@ interface ButtonMuiStyleProps {
   bch?: string
   border?: string
   height?: string
-  bchActive?: string
+  bchactive?: string
   br?: string
   ch?: string
   padding?: string
@@ -33,7 +33,7 @@ interface ButtonMuiProps extends ButtonMuiStyleProps {
   leftSrc?: string
   coloring?: string
   bc?: string
-  bchActive?: string
+  bchactive?: string
   leftAlt?: string
   title?: string
   height?: string
@@ -77,7 +77,7 @@ const BootstrapButton = styled(Button)<ButtonMuiStyleProps>`
   }
 
   :active {
-    background-color: ${({bchActive}) => bchActive};
+    background-color: ${({bchactive}) => bchactive};
   }
 
   :hover {
@@ -108,7 +108,7 @@ const ButtonUI =
      coloring,
      br,
      bc,
-     bchActive,
+     bchactive,
      leftAlt,
      icon,
      colorTitle,
@@ -122,7 +122,7 @@ const ButtonUI =
           type={type}
           variant="contained"
           disabled={disabled}
-          bchActive={bchActive}
+          bchactive={bchactive}
           bch={bch}
           jc={jc}
           padding={padding}

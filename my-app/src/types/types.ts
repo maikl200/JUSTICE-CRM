@@ -1,7 +1,6 @@
 export interface typeProduct {
-  id: string
   _id: string
-  address?: string
+  address?: string | null
   dateNow: string
   lastSale: string
   price: number
@@ -25,4 +24,9 @@ export interface typeUser {
   password: string
   productCategory?: string
   _id: string
+}
+
+export interface TypesAction {
+  type: string
+  payload?: any
 }

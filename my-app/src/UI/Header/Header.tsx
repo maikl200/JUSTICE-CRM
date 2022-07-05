@@ -154,7 +154,7 @@ const Header: FC<HeaderProps> =
     }
 
     useEffect(() => {
-      axios.get('http://localhost:5100/profile/myProfile', {
+      axios.get<typeUser[]>('http://localhost:5100/profile/myProfile', {
         headers: {
           Authorization: `${Cookies.get("token")}`,
         }
@@ -207,7 +207,7 @@ const Header: FC<HeaderProps> =
               {
                 dataProfile?.avatar
                 &&
-                  <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
+                <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
               }
             </div>
             {dataProfile?.firstName}

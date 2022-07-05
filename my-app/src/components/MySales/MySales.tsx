@@ -13,7 +13,7 @@ import {typeProduct} from "../../types/types";
 const MySales: FC = () => {
   const [salesProduct, setSalesProduct] = useState<typeProduct[]>()
   const getAllSalesProducts = async () => {
-    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
+    const allSaleProducts = axios.get<typeProduct[]>('http://localhost:5100/sellProduct/mySellProduct', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       },

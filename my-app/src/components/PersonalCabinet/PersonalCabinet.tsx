@@ -114,7 +114,7 @@ const PersonalCabinet: FC = () => {
 
   const myProfile = () => {
 
-    axios.get('http://localhost:5100/profile/myProfile', {
+    axios.get<typeUser[]>('http://localhost:5100/profile/myProfile', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       }

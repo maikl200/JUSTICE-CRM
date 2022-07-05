@@ -30,7 +30,7 @@ const NavBar: FC = () => {
         <div className={style.nav_navElements}>
           <NavLink style={{textDecoration: 'none'}} to='/mainPage' className={({isActive}) => isActive && style.active}>
             <ButtonUI
-              bchActive='red'
+              bchactive='red'
               icon='home'
               title='Main page'
               jc='flex-start'
