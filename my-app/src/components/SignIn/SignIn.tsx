@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
+import {useAction} from "../../utils/useAction";
 
 interface InitialTouchedTypes {
   email: boolean
@@ -29,6 +30,8 @@ const SignIn: FC = () => {
   const [errorEmail, setErrorEmail] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
+
+  const {loginUser} = useAction()
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -53,16 +56,12 @@ const SignIn: FC = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    axios.post('http://localhost:5100/auth/login', {
+    const candidate = {
       email: valueEmail,
       password: valuePassword
-    }).then((response) => {
-      setShowError('')
-      Cookies.set('token', response.data.token)
-      navigate('/mainPage', {replace: true})
-    }).catch(() => {
-      setShowError('Пользователь не найден')
-    })
+    }
+    // @ts-ignore
+    loginUser(setShowError, navigate, {payload: candidate})
   }
 
   const token = Cookies.get('token')

@@ -9,6 +9,7 @@ import {regEx} from "../../assets/regEx";
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import {useAction} from "../../utils/useAction";
 
 
 const initialTouched: InitialTouchedTypes = {
@@ -57,6 +58,8 @@ const CreateAcc: FC = () => {
   const [errorLastName, setErrorLastName] = useState<string>('')
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
+
+  const {regUser} = useAction()
 
   const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
@@ -114,16 +117,8 @@ const CreateAcc: FC = () => {
       password: valuePassword,
       email: valueEmail,
     }
-
-    axios.post('http://localhost:5100/auth/register', {
-      ...user
-    }).then(() => {
-      setShowError('')
-      navigate('/signIn', {replace: true})
-    }).catch(() => {
-      setShowError('Пользователь с таким Email существует')
-    })
-
+    // @ts-ignore
+    regUser(setShowError, navigate, {payload: user})
   }
 
   useEffect(() => {

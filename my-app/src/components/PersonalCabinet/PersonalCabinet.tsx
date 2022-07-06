@@ -13,7 +13,10 @@ import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {typeUser} from "../../types/types";
+import {TypeUser} from "../../types/types";
+import {useAction} from "../../utils/useAction";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {changeCurrentPassword} from "../../redux/action-creater/user";
 
 
 interface InitialTouchedTypes {
@@ -51,21 +54,10 @@ const PersonalCabinet: FC = () => {
   const [inputOldPassword, setInputOldPassword] = useState<string>()
   const [inputNewPassword, setInputNewPassword] = useState<string>()
 
-  const changePassword = async () => {
-    await axios.post('http://localhost:5100/profile/changePassword', {
-      oldPassword: form.oldPassword
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    })
-      .then(() => {
-        setErrorOldPassword('')
-        setCurrentPassword(true)
-      }).catch(() => {
-        setErrorOldPassword('invalid password')
-        setCurrentPassword(false)
-      })
+  const {fetchUsers, changeCurrentPassword} = useAction()
+
+  const changePassword = () => {
+    changeCurrentPassword(setCurrentPassword, setErrorOldPassword, {payload: form.oldPassword})
   }
 
   const profileChanges = async () => {
@@ -112,22 +104,8 @@ const PersonalCabinet: FC = () => {
     reader.readAsDataURL(e.target.files![0])
   }
 
-  const myProfile = () => {
-
-    axios.get<typeUser[]>('http://localhost:5100/profile/myProfile', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    }).then((res) => {
-      const currentProfile = res.data.find((user: typeUser) => user)
-      setFormEdit(currentProfile)
-    }).catch((e) => {
-      console.error(e)
-    })
-  }
-
   useEffect(() => {
-    myProfile()
+    fetchUsers(setFormEdit)
   }, [])
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
@@ -184,6 +162,7 @@ const PersonalCabinet: FC = () => {
           encType='multipart/form-data'
           onBlur={(e) => onBlurHandler(e)}
         >
+
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
               value={form.firstName}

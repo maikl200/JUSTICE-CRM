@@ -1,32 +1,20 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 
 import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
-import axios from "axios";
-import Cookies from "js-cookie";
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
-import {TypeProduct} from "../../types/types";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useAction} from "../../utils/useAction";
 
 
 const MySales: FC = () => {
-  const [salesProduct, setSalesProduct] = useState<TypeProduct[]>()
-  const getAllSalesProducts = async () => {
-    const allSaleProducts = axios.get<TypeProduct[]>('http://localhost:5100/sellProduct/mySellProduct', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-    try {
-      await allSaleProducts.then((res) => setSalesProduct(res.data))
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  const sellProduct = useTypedSelector(state => state.sellProductReducer)
+  const {fetchSellProducts} = useAction()
 
   useEffect(() => {
-    getAllSalesProducts()
+    fetchSellProducts()
   }, [])
 
   return (
@@ -47,10 +35,10 @@ const MySales: FC = () => {
             <p>Last sale</p>
           </div>
           {
-            salesProduct
+            sellProduct
               ?
               <div className={style.main_salesBar_salesCard_salesData}>
-                {salesProduct?.map((product: TypeProduct) => {
+                {sellProduct?.map((product) => {
                   return (
                     <>
                       <div key={product._id} className={style.main_salesBar_salesCard_salesData_sales}>

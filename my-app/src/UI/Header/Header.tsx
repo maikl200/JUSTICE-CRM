@@ -7,12 +7,14 @@ import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 
 
-import {TypeProduct, typeUser} from "../../types/types";
+import {TypeProduct, TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
+import {useAction} from "../../utils/useAction";
+import {addProduct} from "../../redux/action-creater/product";
 
 interface HeaderProps {
   title: string
@@ -46,8 +48,6 @@ const Header: FC<HeaderProps> =
   ({
      title,
      subTitle,
-     setDataProduct,
-     dataProduct,
      avatar = []
    }) => {
     const [modalActive, setModalActive] = useState<boolean>(false)
@@ -55,7 +55,7 @@ const Header: FC<HeaderProps> =
     const [valuePrice, setValuePrice] = useState<number | string>()
     const [valueProductName, setValueProductName] = useState<string>('')
     const [valueProductCategory, setValueProductCategory] = useState<string>('')
-    const [valueQuantityGoods, setValueQuantityGoods] = useState<string>('')
+    const [valueQuantityGoods, setValueQuantityGoods] = useState<string | number>('')
     const [valueWeightVolumeOneItem, setValueWeightVolumeOneItem] = useState<string>('')
     const [errorStore, setErrorStore] = useState<string>('')
     const [errorPrice, setErrorPrice] = useState<string>('')
@@ -65,31 +65,23 @@ const Header: FC<HeaderProps> =
     const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-    const [dataProfile, setDataProfile] = useState<typeUser>()
+    const [dataProfile, setDataProfile] = useState<TypeUser>()
 
+    const {addProduct} = useAction()
     const {pathname} = useLocation();
 
     const onSubmit = () => {
-      axios.post('http://localhost:5100/product/addProduct', {
+      const product = {
         store: valueStore,
         price: valuePrice,
         productName: valueProductName,
         productCategory: valueProductCategory,
         quantityGoods: valueQuantityGoods,
         weightVolumeOneItem: valueWeightVolumeOneItem,
-      }, {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        },
-      })
-        .then((res) => {
-          //@ts-ignore
-          // todo Спросить у димы
-          setDataProduct && setDataProduct([...dataProduct, res.data])
-        })
-        .catch((e) => {
-          console.error(e)
-        })
+      }
+
+      // @ts-ignore
+      addProduct({payload: product})
 
       setValuePrice('')
       setValueProductCategory('')
@@ -154,7 +146,7 @@ const Header: FC<HeaderProps> =
     }
 
     useEffect(() => {
-      axios.get<typeUser[]>('http://localhost:5100/profile/myProfile', {
+      axios.get<TypeUser[]>('http://localhost:5100/profile/myProfile', {
         headers: {
           Authorization: `${Cookies.get("token")}`,
         }
@@ -164,7 +156,7 @@ const Header: FC<HeaderProps> =
       }).catch((e) => {
         console.error(e)
       })
-    }, [avatar])
+    }, [])
 
     useEffect(() => {
       if (touched.price && touched.store && touched.productName && touched.productCategory && touched.quantityGoods && touched.weightVolumeItem) {

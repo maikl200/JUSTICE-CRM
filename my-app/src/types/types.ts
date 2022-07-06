@@ -3,17 +3,17 @@ export interface TypeProduct {
   address?: string | null
   dateNow: string
   lastSale: string
-  price: number
+  price: number | string
   productCategory: string
   productName: string
-  quantityGoods: number
+  quantityGoods: number | string
   soldItems: number
   store: string
   userId: string
   weightVolumeOneItem: number
 }
 
-export interface typeUser {
+export interface TypeUser {
   address?: string
   avatar?: string
   companyName: string

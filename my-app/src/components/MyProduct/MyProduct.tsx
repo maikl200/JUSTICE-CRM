@@ -12,12 +12,10 @@ import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
 import {useHandleChange} from "../../utils/useHandleChange";
-import axios from "axios";
-import Cookies from 'js-cookie';
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 import {TypeProduct} from "../../types/types";
 import {useTypedSelector} from "../../utils/useTypedSelector";
-import {fetchProducts} from "../../redux/action-creater/product";
+import {fetchProducts, sellGoods} from "../../redux/action-creater/product";
 import {useAction} from "../../utils/useAction";
 
 interface InitialTouchedTypes {
@@ -65,11 +63,12 @@ const MyProduct: FC = () => {
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
 
   const products = useTypedSelector(state => state.productReducer)
-  const {fetchProducts} = useAction()
+
+  const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
 
   useEffect(() => {
     fetchProducts()
-  }, [products])
+  }, [])
 
   const quantityGoods = (productSell?.quantityGoods)
 
@@ -77,28 +76,16 @@ const MyProduct: FC = () => {
     setSellModalActive(true)
     setSellId(id)
 
-    const filterProduct = dataProduct?.find((item: TypeProduct) => item._id === id)
+    const filterProduct = products?.find((item: TypeProduct) => item._id === id)
     setProductSell(filterProduct)
   }
 
   const sellButton = (sellId: string) => {
     const discriminant = Number(quantityGoods) - Number(soldItems)
     const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
-    axios.post('http://localhost:5100/sellProduct/sellProduct', {
-      ...newProduct
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-      params: {
-        id: sellId
-      }
-    }).then((data) => {
-      setDataProduct(data.data)
-    })
-      .catch((e) => {
-        console.error(e)
-      })
+    // @ts-ignore
+    sellGoods(sellId, {payload: newProduct})
+
     setTouched(initialTouched)
     setValueDate('')
     setSoldItems('')
@@ -178,47 +165,19 @@ const MyProduct: FC = () => {
   }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
 
   const deleteElem = (id: string) => {
-    axios.delete('http://localhost:5100/product/deleteProduct', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-      params: {
-        id: id
-      }
-    })
-      .then(() => {
-        if (!dataProduct) return
-        setDataProduct(dataProduct.filter((prod: TypeProduct) => prod._id !== id))
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+    deleteProduct(id, products)
   }
 
   const editElem = (id: string) => {
     setEditModalActive(true)
-    const filterProduct = dataProduct?.find((item: TypeProduct) => item._id === id)
+    const filterProduct = products?.find((item: TypeProduct) => item._id === id)
     setDataEditProduct(filterProduct)
     setEditId(id)
     return
   }
-
   const editButton = (editId: string) => {
-    axios.patch('http://localhost:5100/product/editProduct', {...form}, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-      params: {
-        id: editId
-      }
-    })
-      .then((res) => {
-        setDataProduct(res.data)
-      })
-      .catch((e) => {
-        console.error(e)
-      })
-
+    // @ts-ignore
+    editProduct(editId, {payload: form})
     setTouched(initialTouched)
     setEditModalActive(false)
   }
@@ -246,7 +205,7 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           {
-            products.length > 1
+            products
               ?
               <div className={style.main_productBar_productCard_productData}>
                 {/*@ts-ignore*/}

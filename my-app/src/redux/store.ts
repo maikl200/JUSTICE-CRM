@@ -1,10 +1,20 @@
 import {createStore, applyMiddleware, combineReducers} from 'redux'
 import thunk from "redux-thunk";
+import {composeWithDevTools} from "redux-devtools-extension";
 import {productReducer} from "./reducers/productReducer";
+import {sellProductReducer} from "./reducers/sellProductReducer";
+import {authReducer} from "./reducers/authReducer";
+import {userReducer} from "./reducers/userReducer";
 
-const rootReducer = combineReducers({productReducer})
+const rootReducer = combineReducers(
+  {
+    productReducer,
+    sellProductReducer,
+    userReducer,
+    authReducer
+  })
 
-export const store = createStore(rootReducer, applyMiddleware(thunk))
+
+export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
 
 export type RootState = ReturnType<typeof rootReducer>
-export type AppDispatch = typeof store.dispatch
