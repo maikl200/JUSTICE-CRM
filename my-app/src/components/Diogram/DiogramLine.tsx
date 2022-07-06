@@ -1,29 +1,18 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import Chart from "react-apexcharts";
 import {TypeProduct} from '../../types/types'
 
-import axios from "axios";
-import Cookies from "js-cookie";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useAction} from "../../utils/useAction";
 
 
 const DiogramLine: FC = () => {
 
-  const [salesProduct, setSalesProduct] = useState<any>()
-  // todo Спросить у димы
+  const salesProduct = useTypedSelector(state => state.sellProductReducer)
+  const {fetchSellProducts} = useAction()
 
   useEffect(() => {
-
-    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-    try {
-      allSaleProducts.then((res) => setSalesProduct(res.data))
-    } catch (e) {
-      console.error(e)
-    }
-
+    fetchSellProducts()
   }, [])
 
   const priceProductInDay =
@@ -33,6 +22,7 @@ const DiogramLine: FC = () => {
       :
       ['You havent earned a single ']
 
+  // @ts-ignore
   const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: number, next: number) {
     return prev + next
   })
@@ -44,6 +34,7 @@ const DiogramLine: FC = () => {
         width={480}
         height={140}
         series={[
+          //@ts-ignore
           {
             name: "earned",
             data: priceProductInDay?.length ? priceProductInDay : [0]

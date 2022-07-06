@@ -1,28 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 
 import Chart from 'react-apexcharts'
 import {TypeProduct} from '../../types/types'
 
-import axios from "axios";
-import Cookies from "js-cookie";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useAction} from "../../utils/useAction";
 
 const DiogramPie = () => {
 
-  const [salesProduct, setSalesProduct] = useState<TypeProduct[]>()
+  const salesProduct = useTypedSelector(state => state.sellProductReducer)
+  const {fetchSellProducts} = useAction()
 
   useEffect(() => {
-
-    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-    try {
-      allSaleProducts.then((res) => setSalesProduct(res.data))
-    } catch (e) {
-      console.error(e)
-    }
-
+    fetchSellProducts()
   }, [])
 
   const productsCategoryInDay =

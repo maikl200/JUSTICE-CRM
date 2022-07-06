@@ -11,12 +11,9 @@ import previewAvatar from '../../assets/previeAvatar.jpg'
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {regEx} from "../../assets/regEx";
-import axios from "axios";
-import Cookies from "js-cookie";
-import {TypeUser} from "../../types/types";
 import {useAction} from "../../utils/useAction";
+import {changeCurrentPassword, deleteAvatar} from "../../redux/action-creater/user";
 import {useTypedSelector} from "../../utils/useTypedSelector";
-import {changeCurrentPassword} from "../../redux/action-creater/user";
 
 
 interface InitialTouchedTypes {
@@ -49,48 +46,26 @@ const PersonalCabinet: FC = () => {
   const [form, changeForm, setFormEdit] = useHandleChange()
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
-  const [avatar, setAvatar] = useState()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [inputOldPassword, setInputOldPassword] = useState<string>()
   const [inputNewPassword, setInputNewPassword] = useState<string>()
 
-  const {fetchUsers, changeCurrentPassword} = useAction()
+  const user = useTypedSelector(state => state.userReducer)
+  const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = () => {
     changeCurrentPassword(setCurrentPassword, setErrorOldPassword, {payload: form.oldPassword})
   }
 
-  const profileChanges = async () => {
-    axios.patch('http://localhost:5100/profile/changeProfile', {
-      ...form
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    })
-      .then(() => {
+  const profileChanges = () => {
 
-      }).catch((e) => {
-      console.error(e)
-    })
+    changeProfile({payload: form})
 
     setInputOldPassword('')
     setInputNewPassword('')
 
-    if (image) {
-      await axios.post('http://localhost:5100/upload',
-        {
-          image: image[0]
-        },
-        {
-          headers: {
-            Authorization: `${Cookies.get("token")}`,
-            'content-type': 'multipart/form-data'
-          }
-        })
-        .then((res) => setAvatar(res.data))
-        .catch((e) => console.error(e))
-    }
+    if (!image) return
+    uploadAvatar({payload: image[0]})
   }
 
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,18 +102,8 @@ const PersonalCabinet: FC = () => {
     }
   }
 
-  const deleteAvatar = () => {
-    axios.delete('http://localhost:5100/upload/deleteAvatar', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-      .then((res) => {
-        setAvatar(res.data)
-      })
-      .catch((e) => {
-        console.error(e)
-      })
+  const deleteAvatarFunk = () => {
+    deleteAvatar()
   }
 
   useEffect(() => {
@@ -153,7 +118,7 @@ const PersonalCabinet: FC = () => {
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header avatar={avatar} title='Personal Cabinet'
+        <Header avatar={user.avatar} title='Personal Cabinet'
                 subTitle='Information about your account'/>
         <form
           className={style.main_personalCabinetBar_userSettings}
@@ -281,7 +246,7 @@ const PersonalCabinet: FC = () => {
             <ButtonUI
               bch='#c23616'
               bc='#e84118'
-              onClick={() => deleteAvatar()}
+              onClick={() => deleteAvatarFunk()}
               width='158px'
               title='Delete avatar'
               height='52px'/>

@@ -7,14 +7,13 @@ import Input from "../Input/Input";
 import plus from "../../assets/Plus.svg";
 
 
-import {TypeProduct, TypeUser} from "../../types/types";
+import {TypeProduct} from "../../types/types";
 import {regEx} from "../../assets/regEx";
-import axios from "axios";
-import Cookies from "js-cookie";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
 import {useAction} from "../../utils/useAction";
 import {addProduct} from "../../redux/action-creater/product";
+import {useTypedSelector} from "../../utils/useTypedSelector";
 
 interface HeaderProps {
   title: string
@@ -47,8 +46,7 @@ const initialTouched: InitialTouchedTypes = {
 const Header: FC<HeaderProps> =
   ({
      title,
-     subTitle,
-     avatar = []
+     subTitle = []
    }) => {
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [valueStore, setValueStore] = useState<string>('')
@@ -65,9 +63,9 @@ const Header: FC<HeaderProps> =
     const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-    const [dataProfile, setDataProfile] = useState<TypeUser>()
 
-    const {addProduct} = useAction()
+    const user = useTypedSelector(state => state.userReducer)
+    const {addProduct, fetchUsers} = useAction()
     const {pathname} = useLocation();
 
     const onSubmit = () => {
@@ -146,16 +144,7 @@ const Header: FC<HeaderProps> =
     }
 
     useEffect(() => {
-      axios.get<TypeUser[]>('http://localhost:5100/profile/myProfile', {
-        headers: {
-          Authorization: `${Cookies.get("token")}`,
-        }
-      }).then((res) => {
-        const currentProfile = res.data.find((user: any) => user)
-        setDataProfile(currentProfile)
-      }).catch((e) => {
-        console.error(e)
-      })
+      fetchUsers()
     }, [])
 
     useEffect(() => {
@@ -197,12 +186,12 @@ const Header: FC<HeaderProps> =
           <div className={style.topBar_containerInfoPerson}>
             <div className={style.topBar_containerInfoPerson_avatar}>
               {
-                dataProfile?.avatar
+                user?.avatar
                 &&
-                <img src={'http://localhost:5100/' + dataProfile?.avatar} alt='avatar'/>
+                  <img src={'http://localhost:5100/' + user?.avatar} alt='avatar'/>
               }
             </div>
-            {dataProfile?.firstName}
+            {user?.firstName}
           </div>
         </div>
         {

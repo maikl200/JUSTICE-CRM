@@ -7,7 +7,6 @@ import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 
-import axios from "axios";
 import Cookies from "js-cookie";
 import {useAction} from "../../utils/useAction";
 

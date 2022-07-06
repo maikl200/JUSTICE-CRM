@@ -3,8 +3,6 @@ const User = require("../models/Users");
 const Product = require('../models/Product')
 
 const bcrypt = require('bcryptjs')
-const jwt = require("jsonwebtoken");
-const keys = require("../config/keys");
 
 module.exports.getMyProfile = async (req, res) => {
   const myProfile = await User.find({_id: req.user._id})
@@ -28,7 +26,6 @@ module.exports.changeProfile = async (req, res) => {
       oldPassword: req.body.oldPassword ? req.body.oldPassword : '',
       companyName: req.body.companyName ? req.body.companyName : candidate.companyName,
       productCategory: req.body.productCategory ? req.body.productCategory : candidate.productCategory,
-      validPassword: req.user.validPassword,
       address: req.body.address ? req.body.address : candidate.address,
       imageSrc: req.file ? req.file.path : '',
       userid: req.user.id

@@ -1,27 +1,19 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import Chart from "react-apexcharts";
 import {TypeProduct} from '../../types/types'
 
-import axios from "axios";
-import Cookies from "js-cookie";
+import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useAction} from "../../utils/useAction";
 
 
 const DiogramBars: FC = () => {
 
-  const [salesProduct, setSalesProduct] = useState<any>()
+  const salesProduct = useTypedSelector(state => state.sellProductReducer)
+  const {fetchSellProducts} = useAction()
   //todo Спросить у димы
 
   useEffect(() => {
-    const allSaleProducts = axios.get('http://localhost:5100/sellProduct/mySellProduct', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      },
-    })
-    try {
-      allSaleProducts.then((res) => setSalesProduct(res.data))
-    } catch (e) {
-      console.log(e)
-    }
+    fetchSellProducts()
   }, [])
 
   const salesProductInDay =
@@ -33,6 +25,7 @@ const DiogramBars: FC = () => {
 
   return (
     <div>
+      {/*@ts-ignore*/}
       <Chart
         type='bar'
         width={920}
