@@ -1,27 +1,28 @@
 export interface TypeProduct {
-  _id: string
+  _id?: string
   address?: string | null
-  dateNow: string
-  lastSale: string
-  price: number | string
+  dateNow?: string
+  lastSale?: string
+  valueDate?: string
+  price?: number | null
   productCategory: string
-  productName: string
-  quantityGoods: number | string
-  soldItems: number
-  store: string
-  userId: string
-  weightVolumeOneItem: number
+  productName?: string
+  quantityGoods?: number | null
+  soldItems?: number | null
+  store?: string
+  userId?: string
+  weightVolumeOneItem?: number | null
 }
 
 export interface TypeUser {
   address?: string
   avatar?: string
-  companyName: string
-  email: string
-  firstName: string
-  lastName: string
+  companyName?: string
+  email?: string
+  firstName?: string
+  lastName?: string
   oldPassword?: string
-  password: string
+  newPassword?: string
+  password?: string
   productCategory?: string
-  _id: string
 }

@@ -16,15 +16,10 @@ const DiogramLine: FC = () => {
   }, [])
 
   const priceProductInDay =
-    salesProduct && salesProduct?.length
-      ?
-      salesProduct?.map((product: TypeProduct) => product.price)
-      :
-      ['You havent earned a single ']
+    salesProduct?.map((product) => product.price || 0)
 
-  // @ts-ignore
-  const totalCount = priceProductInDay && priceProductInDay.reduce(function (prev: number, next: number) {
-    return prev + next
+  const totalCount = priceProductInDay && priceProductInDay.length && priceProductInDay.reduce((prev, next) => {
+    return Number(prev) + Number(next)
   })
 
   return (
@@ -34,10 +29,9 @@ const DiogramLine: FC = () => {
         width={480}
         height={140}
         series={[
-          //@ts-ignore
           {
             name: "earned",
-            data: priceProductInDay?.length ? priceProductInDay : [0]
+            data: (priceProductInDay)
           }
         ]}
         options={{
@@ -48,7 +42,10 @@ const DiogramLine: FC = () => {
               }
             }
           },
-
+          noData: {
+            text: 'No Data',
+            align: 'center',
+          },
           yaxis: {
             labels: {
               show: false

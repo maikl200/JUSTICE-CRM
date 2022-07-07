@@ -1,9 +1,11 @@
-import {Dispatch} from "react";
+import {Dispatch, SetStateAction} from "react";
 import axios from "axios";
 import {AuthAction, AuthActionEnum} from "../types/auth";
 import Cookies from "js-cookie";
+import {TypeUser} from "../../types/types";
+import {NavigateFunction} from "react-router-dom";
 
-export const regUser = (setShowError: any, navigate: any, action: AuthAction) => {
+export const regUser = (setShowError: Dispatch<SetStateAction<string>>, navigate: NavigateFunction, action: { payload: TypeUser }) => {
   return (dispatch: Dispatch<AuthAction>) => {
     axios.post('http://localhost:5100/auth/register', {
       ...action.payload
@@ -18,7 +20,7 @@ export const regUser = (setShowError: any, navigate: any, action: AuthAction) =>
   }
 }
 
-export const loginUser = (setShowError: any, navigate: any, action: AuthAction) => {
+export const loginUser = (setShowError: Dispatch<SetStateAction<string>>, navigate: NavigateFunction, action: { payload: { password: string; email: string }; type: AuthActionEnum }) => {
   return (dispatch: Dispatch<AuthAction>) => {
     axios.post('http://localhost:5100/auth/login', {
       ...action.payload

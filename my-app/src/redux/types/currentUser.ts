@@ -30,7 +30,7 @@ export interface uploadAvatar {
 
 export interface deleteAvatar {
   type: UserActionEnum.DELETE_AVATAR
-  payload: any
+  payload: TypeUser
 }
 
 export type UserAction = SetUser | changePassword | profileChange | uploadAvatar | deleteAvatar

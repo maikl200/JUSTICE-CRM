@@ -24,18 +24,15 @@ const DiogramPie = () => {
 
 
   const salesProductInDay =
-    salesProduct && salesProduct?.length
-      ?
-      salesProduct?.map((item: TypeProduct) => item.soldItems)
-      :
-      []
+    salesProduct?.map((item) => item.soldItems || 1)
+
   return (
     <div>
       <Chart
         type='pie'
         width={350}
         height={262}
-        series={salesProductInDay?.length ? salesProductInDay : [1]}
+        series={salesProductInDay}
         options={{
           dataLabels: {
             enabled: false

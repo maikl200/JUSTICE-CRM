@@ -1,5 +1,5 @@
 import {Dispatch} from "react";
-import {ProductAction, ProductActionEnum} from "../types/product";
+import {AddProduct, ProductAction, ProductActionEnum} from "../types/product";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {TypeProduct} from "../../types/types";
@@ -20,7 +20,7 @@ export const fetchProducts = () => {
   }
 }
 
-export const addProduct = (action: ProductAction) => {
+export const addProduct = (action: { payload: TypeProduct }) => {
   return (dispatch: Dispatch<ProductAction>) => {
     axios.post('http://localhost:5100/product/addProduct', {
       ...action.payload
@@ -39,7 +39,7 @@ export const addProduct = (action: ProductAction) => {
   }
 }
 
-export const sellGoods = (sellId: string, action: ProductAction) => {
+export const sellGoods = (sellId: string, action: { payload: { valueDate: string; soldItems: number | null; quantityGoods: number | null } }) => {
   return (dispatch: Dispatch<ProductAction>) => {
     axios.post('http://localhost:5100/sellProduct/sellProduct', {
       ...action.payload
@@ -59,7 +59,7 @@ export const sellGoods = (sellId: string, action: ProductAction) => {
   }
 }
 
-export const editProduct = (editId: string, action: ProductAction) => {
+export const editProduct = (editId: string, action: { payload: TypeProduct }) => {
   return (dispatch: Dispatch<ProductAction>) => {
     axios.patch('http://localhost:5100/product/editProduct',
       {
@@ -81,7 +81,7 @@ export const editProduct = (editId: string, action: ProductAction) => {
   }
 }
 
-export const deleteProduct = (id: string, state: any) => {
+export const deleteProduct = (id: string, state: TypeProduct[]) => {
   return (dispatch: Dispatch<ProductAction>) => {
     axios.delete('http://localhost:5100/product/deleteProduct', {
       headers: {

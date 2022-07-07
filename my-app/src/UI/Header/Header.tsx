@@ -50,11 +50,11 @@ const Header: FC<HeaderProps> =
    }) => {
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [valueStore, setValueStore] = useState<string>('')
-    const [valuePrice, setValuePrice] = useState<number | string>()
+    const [valuePrice, setValuePrice] = useState<number | null>()
     const [valueProductName, setValueProductName] = useState<string>('')
     const [valueProductCategory, setValueProductCategory] = useState<string>('')
-    const [valueQuantityGoods, setValueQuantityGoods] = useState<string | number>('')
-    const [valueWeightVolumeOneItem, setValueWeightVolumeOneItem] = useState<string>('')
+    const [valueQuantityGoods, setValueQuantityGoods] = useState<number | null>(null)
+    const [valueWeightVolumeOneItem, setValueWeightVolumeOneItem] = useState<number | null>(null)
     const [errorStore, setErrorStore] = useState<string>('')
     const [errorPrice, setErrorPrice] = useState<string>('')
     const [errorProductName, setErrorProductName] = useState<string>('')
@@ -64,12 +64,13 @@ const Header: FC<HeaderProps> =
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
 
-    const user = useTypedSelector(state => state.userReducer)
+    const user = useTypedSelector(state => state.user)
+
     const {addProduct, fetchUsers} = useAction()
     const {pathname} = useLocation();
-
+    console.log(user.firstName)
     const onSubmit = () => {
-      const product = {
+      const product: TypeProduct = {
         store: valueStore,
         price: valuePrice,
         productName: valueProductName,
@@ -78,14 +79,13 @@ const Header: FC<HeaderProps> =
         weightVolumeOneItem: valueWeightVolumeOneItem,
       }
 
-      // @ts-ignore
       addProduct({payload: product})
 
-      setValuePrice('')
+      setValuePrice(null)
       setValueProductCategory('')
       setValueProductName('')
-      setValueWeightVolumeOneItem('')
-      setValueQuantityGoods('')
+      setValueWeightVolumeOneItem(null)
+      setValueQuantityGoods(null)
       setValueStore('')
 
       setTouched(initialTouched)
@@ -127,14 +127,14 @@ const Header: FC<HeaderProps> =
           }
           break
         case 'quantityGoods':
-          if (valueQuantityGoods !== '' && valueQuantityGoods <= "200" && valueQuantityGoods > '0') {
+          if (valueQuantityGoods !== null && valueQuantityGoods <= 200 && valueQuantityGoods > 0) {
             setErrorQuantityGoods('')
           } else {
             setErrorQuantityGoods('blank field')
           }
           break
         case 'weightVolumeItem':
-          if (valueWeightVolumeOneItem !== '' && Number(valueWeightVolumeOneItem) <= 20 && Number(valueWeightVolumeOneItem) > 0) {
+          if (valueWeightVolumeOneItem !== null && Number(valueWeightVolumeOneItem) <= 20 && Number(valueWeightVolumeOneItem) > 0) {
             setErrorWeightVolumeItem('')
           } else {
             setErrorWeightVolumeItem('blank field')
@@ -188,7 +188,7 @@ const Header: FC<HeaderProps> =
               {
                 user?.avatar
                 &&
-                  <img src={'http://localhost:5100/' + user?.avatar} alt='avatar'/>
+                <img src={'http://localhost:5100/' + user?.avatar} alt='avatar'/>
               }
             </div>
             {user?.firstName}
@@ -217,7 +217,7 @@ const Header: FC<HeaderProps> =
               />
               <Input
                 name='price'
-                value={valuePrice}
+                value={valuePrice!}
                 onChange={(e) => {
                   setValuePrice(e.target.valueAsNumber)
                   setTouched({...touched, price: true})
@@ -258,10 +258,10 @@ const Header: FC<HeaderProps> =
                 error={touched.productCategory ? errorProductCategory : undefined}
               />
               <Input
-                value={valueQuantityGoods}
+                value={valueQuantityGoods!}
                 name='quantityGoods'
                 onChange={(e) => {
-                  setValueQuantityGoods(e.target.value)
+                  setValueQuantityGoods(e.target.valueAsNumber)
                 }}
                 defaultValue={''}
                 onBlur={() => setTouched({...touched, quantityGoods: true})}
@@ -272,10 +272,10 @@ const Header: FC<HeaderProps> =
                 error={touched.quantityGoods ? errorQuantityGoods : undefined}
               />
               <Input
-                value={valueWeightVolumeOneItem}
+                value={valueWeightVolumeOneItem!}
                 name='weightVolumeItem'
                 onChange={(e) => {
-                  setValueWeightVolumeOneItem(e.target.value)
+                  setValueWeightVolumeOneItem(e.target.valueAsNumber)
                 }}
                 defaultValue={''}
                 onBlur={() => setTouched({...touched, weightVolumeItem: true})}

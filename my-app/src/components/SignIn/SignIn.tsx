@@ -8,6 +8,8 @@ import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 import Cookies from "js-cookie";
 import {useAction} from "../../utils/useAction";
+import {AuthActionEnum} from "../../redux/types/auth";
+import {TypeUser} from "../../types/types";
 
 interface InitialTouchedTypes {
   email: boolean
@@ -59,8 +61,7 @@ const SignIn: FC = () => {
       email: valueEmail,
       password: valuePassword
     }
-    // @ts-ignore
-    loginUser(setShowError, navigate, {payload: candidate})
+    loginUser(setShowError, navigate, {type: AuthActionEnum.LOGIN_USER, payload: candidate})
   }
 
   const token = Cookies.get('token')

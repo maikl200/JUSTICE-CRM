@@ -1,10 +1,9 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 
-export const useHandleChange = () => {
-  const [formEdit, setFormEdit] = useState<any>({})
-  //todo Спросить у димы
+export function useHandleChange<T>(initialState: T): [formEdit: T, changeForm: (e: ChangeEvent<HTMLInputElement>) => void, setFormEdit: React.Dispatch<React.SetStateAction<T>>] {
+  const [formEdit, setFormEdit] = useState(initialState as T)
 
-  const changeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeForm = (e: ChangeEvent<HTMLInputElement>) => {
     setFormEdit({
       ...formEdit,
       [e.target.name]: e.target.value

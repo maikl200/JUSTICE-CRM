@@ -1,27 +1,25 @@
-import {Dispatch} from "react";
+import {Dispatch, SetStateAction} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {TypeUser} from "../../types/types";
 import {UserAction, UserActionEnum} from "../types/currentUser";
 
-export const fetchUsers = (setFormEdit?: any) => {
+export const fetchUsers = () => {
   return (dispatch: Dispatch<UserAction>) => {
     axios.get<TypeUser[]>('http://localhost:5100/profile/myProfile', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       }
     }).then((res) => {
-      const currentProfile = res.data.find((user: TypeUser) => user)
-      setFormEdit(currentProfile)
-      // @ts-ignore
-      dispatch({type: UserActionEnum.SET_USER, payload: currentProfile})
+      const currentProfile = res.data.find(user => user)
+      dispatch({type: UserActionEnum.SET_USER, payload: currentProfile!})
     }).catch((e) => {
       console.error(e)
     })
   }
 }
 
-export const changeCurrentPassword = (setCurrentPassword: any, setErrorOldPassword: any, action: any) => {
+export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateAction<boolean>>, setErrorOldPassword: Dispatch<SetStateAction<string>>, action: { payload: string }) => {
   return (dispatch: Dispatch<UserAction>) => {
     axios.post('http://localhost:5100/profile/changePassword', {
       oldPassword: action.payload
@@ -41,7 +39,7 @@ export const changeCurrentPassword = (setCurrentPassword: any, setErrorOldPasswo
   }
 }
 
-export const changeProfile = (action: any) => {
+export const changeProfile = (action: { payload: TypeUser }) => {
   return (dispatch: Dispatch<UserAction>) => {
     axios.patch('http://localhost:5100/profile/changeProfile', {
       ...action.payload
@@ -58,7 +56,7 @@ export const changeProfile = (action: any) => {
   }
 }
 
-export const uploadAvatar = (action: any) => {
+export const uploadAvatar = (action: { payload: File }) => {
   return (dispatch: Dispatch<UserAction>) => {
     axios.post('http://localhost:5100/upload',
       {
@@ -87,8 +85,6 @@ export const deleteAvatar = () => {
     })
       .then((res) => {
         dispatch({type: UserActionEnum.DELETE_AVATAR, payload: res.data})
-        console.log(res.data)
-        // setAvatar(res.data)
       })
       .catch((e) => {
         console.error(e)

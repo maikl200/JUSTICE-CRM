@@ -1,9 +1,9 @@
 import {TypeUser} from "../../types/types";
 import {AuthAction, AuthActionEnum} from "../types/auth";
 
-const initialState: TypeUser[] = []
+const initialState: TypeUser = {}
 
-export const authReducer = (state = initialState, action: AuthAction): TypeUser[] => {
+export const authReducer = (state = initialState, action: AuthAction): TypeUser => {
   switch (action.type) {
     case AuthActionEnum.REG_USER:
       return action.payload

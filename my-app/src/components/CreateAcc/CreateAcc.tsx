@@ -29,15 +29,6 @@ interface InitialTouchedTypes {
   repeatPassword: boolean
 }
 
-
-interface userData {
-  firstName: string
-  lastName: string
-  companyName: string
-  email: string
-  password: string
-}
-
 const CreateAcc: FC = () => {
   const navigate = useNavigate()
 
@@ -109,14 +100,14 @@ const CreateAcc: FC = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const user: userData = {
+    const user = {
       firstName: valueFirstName,
       lastName: valueLastName,
       companyName: valueCompanyName,
       password: valuePassword,
       email: valueEmail,
     }
-    // @ts-ignore
+
     regUser(setShowError, navigate, {payload: user})
   }
 

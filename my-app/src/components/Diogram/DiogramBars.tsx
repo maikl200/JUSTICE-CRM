@@ -1,6 +1,5 @@
 import React, {FC, useEffect} from 'react';
 import Chart from "react-apexcharts";
-import {TypeProduct} from '../../types/types'
 
 import {useTypedSelector} from "../../utils/useTypedSelector";
 import {useAction} from "../../utils/useAction";
@@ -10,33 +9,28 @@ const DiogramBars: FC = () => {
 
   const salesProduct = useTypedSelector(state => state.sellProductReducer)
   const {fetchSellProducts} = useAction()
-  //todo Спросить у димы
 
   useEffect(() => {
     fetchSellProducts()
   }, [])
 
   const salesProductInDay =
-    salesProduct && salesProduct?.length
-      ?
-      salesProduct?.map((item: TypeProduct) => item.soldItems)
-      :
-      ['No sales']
+    salesProduct?.map((item) => item.soldItems || 0)
+
 
   return (
     <div>
-      {/*@ts-ignore*/}
       <Chart
         type='bar'
         width={920}
         height={480}
         series={[{
           name: 'sales',
-          data: salesProductInDay?.length && salesProductInDay,
+          data: salesProductInDay,
           color: salesProductInDay ? '#5B6ACD' : '#b1b4b9'
         }, {
           name: '',
-          data: salesProductInDay?.length && salesProductInDay.map(() => -30),
+          data: salesProductInDay.map(() => -30),
           color: '#EFF1FF'
         }]
         }
@@ -44,6 +38,10 @@ const DiogramBars: FC = () => {
           grid: {
             show: true,
             borderColor: '#E8EBEF66',
+          },
+          noData: {
+            text: 'No Data',
+            align: 'center',
           },
           tooltip: {
             enabledOnSeries: [0],

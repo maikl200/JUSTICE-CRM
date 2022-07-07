@@ -14,6 +14,7 @@ import {regEx} from "../../assets/regEx";
 import {useAction} from "../../utils/useAction";
 import {changeCurrentPassword, deleteAvatar} from "../../redux/action-creater/user";
 import {useTypedSelector} from "../../utils/useTypedSelector";
+import {TypeUser} from "../../types/types";
 
 
 interface InitialTouchedTypes {
@@ -38,23 +39,23 @@ const initialTouched: InitialTouchedTypes = {
 }
 
 const PersonalCabinet: FC = () => {
-
   const [errorOldPassword, setErrorOldPassword] = useState<string>('')
   const [errorNewPassword, setErrorNewPassword] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [isValid, setIsValid] = useState<boolean>(false)
-  const [form, changeForm, setFormEdit] = useHandleChange()
+  const [form, changeForm, setFormEdit] = useHandleChange<TypeUser>({})
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [inputOldPassword, setInputOldPassword] = useState<string>()
   const [inputNewPassword, setInputNewPassword] = useState<string>()
 
-  const user = useTypedSelector(state => state.userReducer)
+  const user = useTypedSelector(state => state.user)
+
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = () => {
-    changeCurrentPassword(setCurrentPassword, setErrorOldPassword, {payload: form.oldPassword})
+    changeCurrentPassword(setCurrentPassword, setErrorOldPassword, {payload: form.oldPassword as string})
   }
 
   const profileChanges = () => {
@@ -80,20 +81,20 @@ const PersonalCabinet: FC = () => {
   }
 
   useEffect(() => {
-    fetchUsers(setFormEdit)
+    fetchUsers()
   }, [])
 
   const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
     switch (e.target.name) {
       case 'oldPassword':
-        if (regEx.password.test(form.oldPassword)) {
+        if (regEx.password.test(form.oldPassword as string)) {
           setErrorOldPassword('')
         } else {
           setErrorOldPassword('Invalid password')
         }
         break
       case 'password':
-        if (regEx.password.test(form.password)) {
+        if (regEx.password.test(form.password as string)) {
           setErrorNewPassword('')
         } else {
           setErrorNewPassword('Invalid password')
@@ -151,9 +152,7 @@ const PersonalCabinet: FC = () => {
                 {
                   previewAvatarState
                     ?
-                    //@ts-ignore
-                    <img src={previewAvatarState} alt='preview Avatar'/>
-                    // todo Спросить у димы про ArrayBuffer
+                    <img src={previewAvatarState as string} alt='preview Avatar'/>
                     :
                     <img src={previewAvatar} alt='preview Avatar'/>
                 }

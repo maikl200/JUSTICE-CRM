@@ -41,7 +41,7 @@ const initialTouched: InitialTouchedTypes = {
 
 
 const MyProduct: FC = () => {
-  const [soldItems, setSoldItems] = useState<number | string>()
+  const [soldItems, setSoldItems] = useState<number | null>(null)
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [valueDate, setValueDate] = useState<string>('')
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
@@ -58,7 +58,7 @@ const MyProduct: FC = () => {
   const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
   const [editId, setEditId] = useState<string>('')
   const [sellId, setSellId] = useState<string>('')
-  const [form, changeForm] = useHandleChange()
+  const [form, changeForm] = useHandleChange<TypeProduct>({} as TypeProduct)
   const [dataProduct, setDataProduct] = useState<TypeProduct[]>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
 
@@ -83,12 +83,12 @@ const MyProduct: FC = () => {
   const sellButton = (sellId: string) => {
     const discriminant = Number(quantityGoods) - Number(soldItems)
     const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
-    // @ts-ignore
+
     sellGoods(sellId, {payload: newProduct})
 
     setTouched(initialTouched)
     setValueDate('')
-    setSoldItems('')
+    setSoldItems(null)
     setSellModalActive(false)
   }
 
@@ -111,7 +111,7 @@ const MyProduct: FC = () => {
         }
         break
       case 'store':
-        if (regEx.name.test(form.store)) {
+        if (regEx.name.test(form.store as string)) {
           setErrorValueStore('')
         } else {
           setErrorValueStore('Invalid store')
@@ -176,7 +176,7 @@ const MyProduct: FC = () => {
     return
   }
   const editButton = (editId: string) => {
-    // @ts-ignore
+
     editProduct(editId, {payload: form})
     setTouched(initialTouched)
     setEditModalActive(false)
@@ -208,28 +208,27 @@ const MyProduct: FC = () => {
             products
               ?
               <div className={style.main_productBar_productCard_productData}>
-                {/*@ts-ignore*/}
-                {products?.map(product => (
-                    <div key={product?._id} className={style.main_productBar_productCard_productData_product}>
-                      <p>{product?.productName}</p>
-                      <p>{product?.store}</p>
-                      <p>{product?.address ? product.address : '15 Krylatskaya st...'}</p>
-                      <p>{product?.productCategory}</p>
-                      <p>{product?.dateNow}</p>
-                      <p>${product?.price}</p>
-                      <p>{product?.quantityGoods}</p>
-                      <p>{product?.weightVolumeOneItem}kg</p>
+                {products?.map((product) => (
+                    <div key={product._id} className={style.main_productBar_productCard_productData_product}>
+                      <p>{product.productName}</p>
+                      <p>{product.store}</p>
+                      <p>{product.address ? product.address : '15 Krylatskaya st...'}</p>
+                      <p>{product.productCategory}</p>
+                      <p>{product.dateNow}</p>
+                      <p>${product.price}</p>
+                      <p>{product.quantityGoods}</p>
+                      <p>{product.weightVolumeOneItem}kg</p>
                       <div style={{width: '11.1%'}}
                            className={style.main_productBar_productCard_productData_product_btn}>
                         <ButtonUI
-                          onClick={() => sellProduct(product._id)}
+                          onClick={() => sellProduct(product._id!)}
                           coloring='#5382E7'
                           bc='#E9EDF7FF'
                           height='28px' title='Sell'
                           mw='53px'
                           width='53px'/>
                         <ButtonUI
-                          onClick={() => editElem(product._id)}
+                          onClick={() => editElem(product._id!)}
                           bc='#E9EDF7FF'
                           jc='center'
                           height='28px'
@@ -237,7 +236,7 @@ const MyProduct: FC = () => {
                           leftAlt='pencilIcon'
                           mw='46px'
                           width='46px'/>
-                        <img onClick={() => deleteElem(product._id)} src={deleteIcon} alt='deleteIcon'/>
+                        <img onClick={() => deleteElem(product._id!)} src={deleteIcon} alt='deleteIcon'/>
                       </div>
                     </div>
                   )
@@ -254,7 +253,6 @@ const MyProduct: FC = () => {
           title='Editing a product'
           setModalActive={setEditModalActive}>
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.store}
             onChange={(e) => {
               setTouched({...touched, store: true})
@@ -267,8 +265,7 @@ const MyProduct: FC = () => {
             width='300px'
           />
           <Input
-            /*@ts-ignore*/
-            defaultValue={dataEditProduct?.price}
+            defaultValue={dataEditProduct?.price!}
             onChange={(e) => {
               setTouched({...touched, price: true})
               changeForm(e)
@@ -280,7 +277,6 @@ const MyProduct: FC = () => {
             error={touched.price ? errorValuePrice : undefined}
           />
           <Input
-            /*@ts-ignore*/
             defaultValue={dataEditProduct?.productCategory}
             onChange={(e) => {
               setTouched({...touched, category: true})
@@ -292,8 +288,7 @@ const MyProduct: FC = () => {
             name='productCategory'
             width='300px'/>
           <Input
-            /*@ts-ignore*/
-            defaultValue={dataEditProduct?.quantityGoods}
+            defaultValue={dataEditProduct?.quantityGoods!}
             onChange={(e) => {
               setTouched({...touched, remains: true})
               changeForm(e)
@@ -305,8 +300,7 @@ const MyProduct: FC = () => {
             error={touched.remains ? errorValueQuantityGoods : undefined}
           />
           <Input
-            /*@ts-ignore*/
-            defaultValue={dataEditProduct?.weightVolumeOneItem}
+            defaultValue={dataEditProduct?.weightVolumeOneItem!}
             onChange={(e) => {
               setTouched({...touched, weightVolume: true})
               changeForm(e)
@@ -337,7 +331,7 @@ const MyProduct: FC = () => {
             <Input
               errorBorder={errorValueNumberProduct && '1px solid red'}
               name='numberProduct'
-              defaultValue={soldItems}
+              defaultValue={soldItems!}
               onChange={(e) => {
                 setSoldItems(e.target.valueAsNumber)
                 setTouched({...touched, numberProduct: true})
