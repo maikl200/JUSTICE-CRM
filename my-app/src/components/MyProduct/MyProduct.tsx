@@ -62,7 +62,7 @@ const MyProduct: FC = () => {
   const [dataProduct, setDataProduct] = useState<TypeProduct[]>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
 
-  const products = useTypedSelector(state => state.productReducer)
+  const products = useTypedSelector(state => state.product)
 
   const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
 
@@ -205,7 +205,7 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           {
-            products
+            products.length > 0
               ?
               <div className={style.main_productBar_productCard_productData}>
                 {products?.map((product) => (
@@ -243,7 +243,7 @@ const MyProduct: FC = () => {
                 ).reverse()}
               </div>
               :
-              <CircularIndeterminate/>
+              <h1 style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>No products</h1>
           }
         </div>
       </div>

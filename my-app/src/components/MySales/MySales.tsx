@@ -10,7 +10,7 @@ import {useAction} from "../../utils/useAction";
 
 
 const MySales: FC = () => {
-  const sellProduct = useTypedSelector(state => state.sellProductReducer)
+  const sellProduct = useTypedSelector(state => state.sellProduct)
   const {fetchSellProducts} = useAction()
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const MySales: FC = () => {
             <p>Last sale</p>
           </div>
           {
-            sellProduct
+            sellProduct.length > 0
               ?
               <div className={style.main_salesBar_salesCard_salesData}>
                 {sellProduct?.map((product) => {
@@ -57,7 +57,7 @@ const MySales: FC = () => {
                 }).reverse()}
               </div>
               :
-              <CircularIndeterminate/>
+              <h1 style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>No goods sold</h1>
           }
         </div>
       </div>

@@ -7,7 +7,7 @@ import {useAction} from "../../utils/useAction";
 
 const DiogramBars: FC = () => {
 
-  const salesProduct = useTypedSelector(state => state.sellProductReducer)
+  const salesProduct = useTypedSelector(state => state.sellProduct)
   const {fetchSellProducts} = useAction()
 
   useEffect(() => {
