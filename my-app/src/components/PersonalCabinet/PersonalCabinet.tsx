@@ -234,8 +234,7 @@ const PersonalCabinet: FC = () => {
             />
           </div>
           {
-            // @ts-ignore
-            width < 1590
+            width! < 1590
               ?
               <div className={style.main_personalCabinetBar_userSettings_row_downAvatarContainer}>
                 {
