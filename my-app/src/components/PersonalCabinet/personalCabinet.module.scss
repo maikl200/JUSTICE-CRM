@@ -18,13 +18,32 @@
       align-items: flex-start;
       flex-direction: column;
       border-top: 1px solid #2B384414;
-      gap: 33px;
+      gap: 20px;
       padding-top: 53px;
       width: 90%;
 
       &_row {
         display: flex;
         gap: 32px;
+
+        &_downAvatarContainer {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          max-width: 300px;
+
+          &_imgPreviewContainer {
+            width: 100%;
+            height: 50px;
+            box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
+          }
+
+          & img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
 
         &_avatarContainer {
           display: flex;
@@ -33,6 +52,10 @@
           position: absolute;
           right: 150px;
           max-width: 300px;
+
+          @media only screen and (max-width: 1590px) {
+            display: none;
+          }
 
 
           &_imgPreviewContainer {

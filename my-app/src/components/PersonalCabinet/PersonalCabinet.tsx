@@ -6,7 +6,6 @@ import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 
 import style from './personalCabinet.module.scss'
-import previewAvatar from '../../assets/previeAvatar.jpg'
 
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
@@ -15,6 +14,7 @@ import {useAction} from "../../utils/useAction";
 import {changeCurrentPassword, deleteAvatar} from "../../redux/action-creater/user";
 import {useTypedSelector} from "../../utils/useTypedSelector";
 import {TypeUser} from "../../types/types";
+import {useWindowSize} from "../../utils/useWindowSize";
 
 
 interface InitialTouchedTypes {
@@ -51,19 +51,22 @@ const PersonalCabinet: FC = () => {
   const [inputNewPassword, setInputNewPassword] = useState<string>()
 
   const user = useTypedSelector(state => state.user)
+  const {width} = useWindowSize()
+
 
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = () => {
     changeCurrentPassword(setCurrentPassword, setErrorOldPassword, {payload: form.oldPassword as string})
   }
-
   const profileChanges = () => {
 
     changeProfile({payload: form})
 
     setInputOldPassword('')
     setInputNewPassword('')
+    setPreviewAvatarState('')
+
 
     if (!image) return
     uploadAvatar({payload: image[0]})
@@ -102,7 +105,6 @@ const PersonalCabinet: FC = () => {
         break
     }
   }
-
   const deleteAvatarFunk = () => {
     deleteAvatar()
   }
@@ -114,12 +116,12 @@ const PersonalCabinet: FC = () => {
       setIsValid(true)
     }
   }, [errorNewPassword, form.newPassword])
-
+  console.log(user)
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header avatar={user.avatar} title='Personal Cabinet'
+        <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
         <form
           className={style.main_personalCabinetBar_userSettings}
@@ -131,13 +133,23 @@ const PersonalCabinet: FC = () => {
 
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
-              value={form.firstName}
               name='firstName'
-              onChange={changeForm}
               placeholder='First name'
               title='First name'
               type='text'
               width='380px'/>
+            {
+              previewAvatarState
+                ?
+                <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
+                  <span>Avatar preview</span>
+                  <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
+                    <img src={previewAvatarState as string} alt='preview Avatar'/>
+                  </div>
+                </div>
+                :
+                ''
+            }
             <Input
               value={form.lastName}
               name='lastName'
@@ -146,19 +158,6 @@ const PersonalCabinet: FC = () => {
               title='Last name'
               type='text'
               width='380px'/>
-            <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer}>
-              <span>Avatar preview</span>
-              <div className={style.main_personalCabinetBar_userSettings_row_avatarContainer_imgPreviewContainer}>
-                {
-                  previewAvatarState
-                    ?
-                    <img src={previewAvatarState as string} alt='preview Avatar'/>
-                    :
-                    <img src={previewAvatar} alt='preview Avatar'/>
-                }
-              </div>
-            </div>
-
           </div>
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
@@ -217,7 +216,6 @@ const PersonalCabinet: FC = () => {
               title='Avatar'
               type='file'
               width='380px'/>
-
             <Input
               readOnly={!currentPassword}
               defaultValue={inputNewPassword}
@@ -235,6 +233,27 @@ const PersonalCabinet: FC = () => {
               width='380px'
             />
           </div>
+          {
+            // @ts-ignore
+            width < 1590
+              ?
+              <div className={style.main_personalCabinetBar_userSettings_row_downAvatarContainer}>
+                {
+                  previewAvatarState
+                    ?
+                    <>
+                      <span>Avatar preview</span>
+                      <div
+                        className={style.main_personalCabinetBar_userSettings_row_downAvatarContainer_imgPreviewContainer}>
+                        <img src={previewAvatarState as string} alt='preview Avatar'/>
+                      </div>
+                    </>
+                    : ''
+                }
+              </div>
+              :
+              ''
+          }
           <div className={style.main_personalCabinetBar_btns}>
             <ButtonUI
               onClick={() => profileChanges()}

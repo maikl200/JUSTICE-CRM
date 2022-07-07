@@ -10,7 +10,6 @@ const usersSchema = new Schema({
   },
   avatar: {
     type: String,
-    default: 'images/image-1656925193112.jpeg'
   },
   password: {
     type: String,

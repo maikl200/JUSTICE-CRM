@@ -14,6 +14,7 @@ interface Props {
   errorBorder?: string
   error?: string
   readOnly?: boolean
+  ref?: any
   value?: string | number | undefined
 }
 
@@ -30,7 +31,8 @@ const Input: FC<Props> = (
     errorBorder,
     error,
     value,
-    readOnly
+    readOnly,
+    ref
   }
 ) => {
   return (
@@ -38,6 +40,7 @@ const Input: FC<Props> = (
       <label className={style.label}>
         {title}
         <input
+          ref={ref}
           name={name}
           readOnly={readOnly}
           defaultValue={defaultValue}

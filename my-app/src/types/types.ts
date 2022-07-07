@@ -15,6 +15,7 @@ export interface TypeProduct {
 }
 
 export interface TypeUser {
+  image?: string;
   address?: string
   avatar?: string
   companyName?: string

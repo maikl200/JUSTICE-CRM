@@ -65,10 +65,9 @@ const Header: FC<HeaderProps> =
     const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
 
     const user = useTypedSelector(state => state.user)
-
     const {addProduct, fetchUsers} = useAction()
     const {pathname} = useLocation();
-    console.log(user.firstName)
+
     const onSubmit = () => {
       const product: TypeProduct = {
         store: valueStore,
@@ -186,12 +185,12 @@ const Header: FC<HeaderProps> =
           <div className={style.topBar_containerInfoPerson}>
             <div className={style.topBar_containerInfoPerson_avatar}>
               {
-                user?.avatar
+                user.avatar
                 &&
-                <img src={'http://localhost:5100/' + user?.avatar} alt='avatar'/>
+                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
               }
             </div>
-            {user?.firstName}
+            {user.firstName}
           </div>
         </div>
         {
