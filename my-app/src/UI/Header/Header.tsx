@@ -11,9 +11,9 @@ import {TypeProduct} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
-import {useAction} from "../../utils/useAction";
+import {useAction} from '../../hooks/useAction'
 import {addProduct} from "../../redux/action-creater/product";
-import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 interface HeaderProps {
   title: string
@@ -187,7 +187,7 @@ const Header: FC<HeaderProps> =
               {
                 user.avatar
                 &&
-                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
               }
             </div>
             {user.firstName}

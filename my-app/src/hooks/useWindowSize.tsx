@@ -16,6 +16,9 @@ export const useWindowSize = (() =>
           })
         }
         window.addEventListener('resize', handler)
+        return () => {
+          window.removeEventListener('resize', handler)
+        }
       }, [])
       return value
     } : () => ({width: null, height: null}))()

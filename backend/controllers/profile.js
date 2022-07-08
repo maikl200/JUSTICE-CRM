@@ -63,9 +63,9 @@ module.exports.changeProfile = async (req, res) => {
               password: bcrypt.hashSync(password, salt),
             }
           })
-        const updatedUser = await User.findOne({_id: req.user.id})
-        res.status(201).json(updatedUser)
       }
+      const updatedUser = await User.findOne({_id: req.user.id})
+      res.status(201).json(updatedUser)
     } catch (e) {
       errorHandler(res, e)
     }

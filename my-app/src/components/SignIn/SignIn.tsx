@@ -7,7 +7,7 @@ import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 import Cookies from "js-cookie";
-import {useAction} from "../../utils/useAction";
+import {useAction} from "../../hooks/useAction";
 import {AuthActionEnum} from "../../redux/types/auth";
 import {TypeUser} from "../../types/types";
 

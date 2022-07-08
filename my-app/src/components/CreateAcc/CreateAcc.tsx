@@ -8,7 +8,10 @@ import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 
 import Cookies from "js-cookie";
-import {useAction} from "../../utils/useAction";
+import {useAction} from "../../hooks/useAction";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {TypeUser} from "../../types/types";
+import {TextField} from "@mui/material";
 
 
 const initialTouched: InitialTouchedTypes = {
@@ -49,57 +52,72 @@ const CreateAcc: FC = () => {
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
 
+  const {
+    register,
+    formState: {
+      errors,
+      isValid,
+      isDirty
+    },
+    handleSubmit,
+    reset,
+    getValues,
+    watch
+  } = useForm({
+    mode: 'onBlur'
+  })
+
   const {regUser} = useAction()
 
-  const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
-    switch (e.target.name) {
-      case 'firstName':
-        if (regEx.name.test(e.target.value) && valueFirstName !== '') {
-          setErrorFirstName('')
-        } else {
-          setErrorFirstName('Invalid first name')
-        }
-        break
-      case 'lastName':
-        if (regEx.name.test(e.target.value) && valueLastName !== '') {
-          setErrorLastName('')
-        } else {
-          setErrorLastName('Invalid last name')
-        }
-        break
-      case 'companyName':
-        if (regEx.name.test(e.target.value) && valueCompanyName !== '') {
-          setErrorCompanyName('')
-        } else {
-          setErrorCompanyName('Invalid company name')
-        }
-        break
-      case 'email':
-        if (regEx.email.test(e.target.value) && valueEmail !== '') {
-          setErrorEmail('')
-        } else {
-          setErrorEmail('Invalid Email')
-        }
-        break
-      case 'password':
-        if (regEx.password.test(e.target.value) && valuePassword !== '') {
-          setErrorPassword('')
-        } else {
-          setErrorPassword('Invalid password')
-        }
-        break
-      case 'repeatPassword':
-        if (valueRepeatPassword === valuePassword && valueRepeatPassword !== '') {
-          setErrorRepeatPassword('')
-        } else {
-          setErrorRepeatPassword('Password does not match')
-        }
-        break
-    }
-  }
+  // const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
+  //   switch (e.target.name) {
+  //     case 'firstName':
+  //       if (regEx.name.test(e.target.value) && valueFirstName !== '') {
+  //         setErrorFirstName('')
+  //       } else {
+  //         setErrorFirstName('Invalid first name')
+  //       }
+  //       break
+  //     case 'lastName':
+  //       if (regEx.name.test(e.target.value) && valueLastName !== '') {
+  //         setErrorLastName('')
+  //       } else {
+  //         setErrorLastName('Invalid last name')
+  //       }
+  //       break
+  //     case 'companyName':
+  //       if (regEx.name.test(e.target.value) && valueCompanyName !== '') {
+  //         setErrorCompanyName('')
+  //       } else {
+  //         setErrorCompanyName('Invalid company name')
+  //       }
+  //       break
+  //     case 'email':
+  //       if (regEx.email.test(e.target.value) && valueEmail !== '') {
+  //         setErrorEmail('')
+  //       } else {
+  //         setErrorEmail('Invalid Email')
+  //       }
+  //       break
+  //     case 'password':
+  //       if (regEx.password.test(e.target.value) && valuePassword !== '') {
+  //         setErrorPassword('')
+  //       } else {
+  //         setErrorPassword('Invalid password')
+  //       }
+  //       break
+  //     case 'repeatPassword':
+  //       if (valueRepeatPassword === valuePassword && valueRepeatPassword !== '') {
+  //         setErrorRepeatPassword('')
+  //       } else {
+  //         setErrorRepeatPassword('Password does not match')
+  //       }
+  //       break
+  //   }
+  // }
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onSubmit = (data: TypeUser) => {
+    console.log(data)
     const user = {
       firstName: valueFirstName,
       lastName: valueLastName,
@@ -107,8 +125,8 @@ const CreateAcc: FC = () => {
       password: valuePassword,
       email: valueEmail,
     }
-
     regUser(setShowError, navigate, {payload: user})
+    reset()
   }
 
   useEffect(() => {
@@ -129,30 +147,25 @@ const CreateAcc: FC = () => {
   return (
     <main className={style.main}>
       <div className={style.main_regBlock}>
-        <form className={style.main_regBlock_form} onSubmit={(e) => onSubmit(e)}
-              onBlur={(e) => BlurHandler(e)}>
+        <form className={style.main_regBlock_form} onSubmit={handleSubmit(onSubmit)}>
           <span className={style.main_regBlock_title}>Create an account</span>
           <span className={style.main_regBlock_errorTop}>{showError}</span>
           <div className={style.main_regBlock_inputsRow}>
             <div className={style.main_regBlock_errorBlock}>
+              {/*@ts-ignore*/}
               <Input
-                name='firstName'
-                errorBorder={errorFirstName && '1px solid red'}
-                defaultValue={valueFirstName}
-                onChange={(e) => {
-                  setValueFirstName(e.target.value)
-                  setTouched({...touched, firstName: true})
-                }}
+                {...register("nativeName")}
                 title='First name'
                 placeholder='First name'
                 type='text'
                 width='100%'
-                error={touched.firstName ? errorFirstName : undefined}/>
+              />
             </div>
             <div className={style.main_regBlock_errorBlock}>
+              {/*@ts-ignore*/}
               <Input
+                {...register('lastName')}
                 errorBorder={errorLastName && '1px solid red'}
-                name='lastName'
                 defaultValue={valueLastName}
                 onChange={(e) => {
                   setValueLastName(e.target.value)
@@ -207,7 +220,6 @@ const CreateAcc: FC = () => {
             type='password'
             width='100%'
             error={touched.password ? errorPassword : undefined}/>
-
           <Input
             errorBorder={errorRepeatPassword && '1px solid red'}
             name='repeatPassword'
@@ -223,8 +235,8 @@ const CreateAcc: FC = () => {
             error={touched.repeatPassword ? errorRepeatPassword : undefined}/>
 
           <ButtonUI
-            type={'submit'}
-            disabled={!formIsValid}
+            type='submit'
+            // disabled={!formIsValid}
             height='56px'
             title='Create account'
             padding='6px 12px'

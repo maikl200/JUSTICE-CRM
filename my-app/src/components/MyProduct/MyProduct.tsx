@@ -11,12 +11,12 @@ import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import Input from "../../UI/Input/Input";
 import {regEx} from "../../assets/regEx";
-import {useHandleChange} from "../../utils/useHandleChange";
+import {useHandleChange} from "../../hooks/useHandleChange";
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 import {TypeProduct} from "../../types/types";
-import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {fetchProducts, sellGoods} from "../../redux/action-creater/product";
-import {useAction} from "../../utils/useAction";
+import {useAction} from "../../hooks/useAction";
 
 interface InitialTouchedTypes {
   numberProduct: boolean

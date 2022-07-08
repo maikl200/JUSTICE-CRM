@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 
 import style from './mainPage.module.scss'
 
@@ -8,11 +8,17 @@ import DiogramPie from "../Diogram/DiogramPie";
 import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
-import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useAction} from "../../hooks/useAction";
 
 const MainPage: FC = () => {
 
+  const {fetchSellProducts} = useAction()
   const sellProduct = useTypedSelector(state => state.sellProduct)
+
+  useEffect(() => {
+    fetchSellProducts()
+  }, [])
 
   return (
     <main className={style.main}>

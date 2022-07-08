@@ -30,7 +30,6 @@ export const addProduct = (action: { payload: TypeProduct }) => {
       },
     })
       .then((res) => {
-        console.log(res.data)
         dispatch({type: ProductActionEnum.ADD_PRODUCT, payload: res.data})
       })
       .catch((e) => {

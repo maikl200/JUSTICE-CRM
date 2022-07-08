@@ -1,8 +1,8 @@
 import React, {FC, useEffect} from 'react';
 import Chart from "react-apexcharts";
 
-import {useTypedSelector} from "../../utils/useTypedSelector";
-import {useAction} from "../../utils/useAction";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useAction} from "../../hooks/useAction";
 
 
 const DiogramBars: FC = () => {

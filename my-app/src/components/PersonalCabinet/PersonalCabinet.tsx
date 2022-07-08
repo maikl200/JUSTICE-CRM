@@ -1,6 +1,6 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 
-import {useHandleChange} from "../../utils/useHandleChange";
+import {useHandleChange} from "../../hooks/useHandleChange";
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
@@ -10,11 +10,11 @@ import style from './personalCabinet.module.scss'
 import Input from "../../UI/Input/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {regEx} from "../../assets/regEx";
-import {useAction} from "../../utils/useAction";
+import {useAction} from "../../hooks/useAction";
 import {changeCurrentPassword, deleteAvatar} from "../../redux/action-creater/user";
-import {useTypedSelector} from "../../utils/useTypedSelector";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeUser} from "../../types/types";
-import {useWindowSize} from "../../utils/useWindowSize";
+import {useWindowSize} from "../../hooks/useWindowSize";
 
 
 interface InitialTouchedTypes {
@@ -43,16 +43,16 @@ const PersonalCabinet: FC = () => {
   const [errorNewPassword, setErrorNewPassword] = useState<string>('')
   const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [isValid, setIsValid] = useState<boolean>(false)
-  const [form, changeForm, setFormEdit] = useHandleChange<TypeUser>({})
+  const [form, changeForm, setForm] = useHandleChange<TypeUser>({})
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
   const [currentPassword, setCurrentPassword] = useState<boolean>(false)
   const [inputOldPassword, setInputOldPassword] = useState<string>()
   const [inputNewPassword, setInputNewPassword] = useState<string>()
+  const [fileName, setFileName] = useState('')
 
   const user = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
-
 
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
@@ -66,6 +66,7 @@ const PersonalCabinet: FC = () => {
     setInputOldPassword('')
     setInputNewPassword('')
     setPreviewAvatarState('')
+    setFileName('')
 
 
     if (!image) return
@@ -116,7 +117,11 @@ const PersonalCabinet: FC = () => {
       setIsValid(true)
     }
   }, [errorNewPassword, form.newPassword])
-  console.log(user)
+
+  useEffect(() => {
+    setForm(user)
+  }, [user])
+
   return (
     <main className={style.main}>
       <NavBar/>
@@ -130,10 +135,11 @@ const PersonalCabinet: FC = () => {
           encType='multipart/form-data'
           onBlur={(e) => onBlurHandler(e)}
         >
-
           <div className={style.main_personalCabinetBar_userSettings_row}>
             <Input
               name='firstName'
+              value={form.firstName}
+              onChange={changeForm}
               placeholder='First name'
               title='First name'
               type='text'
@@ -151,8 +157,8 @@ const PersonalCabinet: FC = () => {
                 ''
             }
             <Input
-              value={form.lastName}
               name='lastName'
+              value={form.lastName}
               onChange={changeForm}
               placeholder='Last name'
               title='Last name'
@@ -210,8 +216,10 @@ const PersonalCabinet: FC = () => {
               name='image'
               onChange={(e) => {
                 imageHandler(e)
+                setFileName(e.target.value)
                 setImage(e.target.files)
               }}
+              value={fileName}
               placeholder='Avatar'
               title='Avatar'
               type='file'

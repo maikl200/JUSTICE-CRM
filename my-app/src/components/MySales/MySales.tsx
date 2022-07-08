@@ -5,8 +5,8 @@ import style from './mySales.module.scss'
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
-import {useTypedSelector} from "../../utils/useTypedSelector";
-import {useAction} from "../../utils/useAction";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useAction} from "../../hooks/useAction";
 
 
 const MySales: FC = () => {

@@ -30,7 +30,8 @@ const Input: FC<Props> = (
     errorBorder,
     error,
     value,
-    readOnly
+    readOnly,
+    ...props
   }
 ) => {
   return (
@@ -47,6 +48,7 @@ const Input: FC<Props> = (
           type={type}
           value={value}
           placeholder={placeholder}
+          {...props}
         />
         {error && <span className={style.label_error}>{error}</span>}
       </label>
