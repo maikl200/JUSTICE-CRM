@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, forwardRef, useImperativeHandle, useRef} from 'react';
 
 import style from './input.module.scss'
 
@@ -9,45 +9,55 @@ interface Props {
   width: string
   name?: string
   defaultValue?: string | number
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onBlur?: () => void
   errorBorder?: string
-  error?: string
+  error?: any
+  onBlur?: any
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   readOnly?: boolean
-  value?: string | number | undefined
+  value?: string | number
 }
 
-const Input: FC<Props> = (
+
+const InputUI: FC<Props> = (
   {
     title,
     placeholder,
     name,
     type,
+    onBlur,
     width,
     defaultValue,
-    onChange,
-    onBlur,
     errorBorder,
     error,
+    onChange,
     value,
     readOnly,
     ...props
-  }
+  },
+  ref
 ) => {
+
+  const inputRef = useRef(null)
+
+  useImperativeHandle(ref, () => {
+    return inputRef.current
+  })
+
   return (
     <>
       <label className={style.label}>
         {title}
         <input
           name={name}
-          readOnly={readOnly}
-          defaultValue={defaultValue}
           onChange={onChange}
+          readOnly={readOnly}
           onBlur={onBlur}
+          defaultValue={defaultValue}
           style={{width: width, border: errorBorder}}
           type={type}
           value={value}
           placeholder={placeholder}
+          ref={inputRef}
           {...props}
         />
         {error && <span className={style.label_error}>{error}</span>}
@@ -56,4 +66,5 @@ const Input: FC<Props> = (
   );
 };
 
-export default Input;
+// @ts-ignore
+export const Input = forwardRef(InputUI);

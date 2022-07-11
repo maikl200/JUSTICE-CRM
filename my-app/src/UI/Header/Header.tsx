@@ -3,7 +3,7 @@ import style from "./header.module.scss";
 import ButtonUI from "../ButtonTS/ButtonUI";
 import file from "../../assets/file.svg";
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
-import Input from "../Input/Input";
+import {Input} from "../InputUI/Input";
 import plus from "../../assets/Plus.svg";
 
 
@@ -14,6 +14,7 @@ import {PathEnum} from "../AppRouter/AppRouter";
 import {useAction} from '../../hooks/useAction'
 import {addProduct} from "../../redux/action-creater/product";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useForm} from "react-hook-form";
 
 interface HeaderProps {
   title: string
@@ -25,149 +26,40 @@ interface HeaderProps {
   formFirstName?: string
 }
 
-interface InitialTouchedTypes {
-  price: boolean
-  store: boolean
-  productName: boolean
-  productCategory: boolean
-  quantityGoods: boolean
-  weightVolumeItem: boolean
-}
-
-const initialTouched: InitialTouchedTypes = {
-  price: false,
-  store: false,
-  productName: false,
-  productCategory: false,
-  quantityGoods: false,
-  weightVolumeItem: false
-}
-
 const Header: FC<HeaderProps> =
   ({
      title,
      subTitle = []
    }) => {
+
     const [modalActive, setModalActive] = useState<boolean>(false)
-    const [valueStore, setValueStore] = useState<string>('')
-    const [valuePrice, setValuePrice] = useState<number | null>()
-    const [valueProductName, setValueProductName] = useState<string>('')
-    const [valueProductCategory, setValueProductCategory] = useState<string>('')
-    const [valueQuantityGoods, setValueQuantityGoods] = useState<number | null>(null)
-    const [valueWeightVolumeOneItem, setValueWeightVolumeOneItem] = useState<number | null>(null)
-    const [errorStore, setErrorStore] = useState<string>('')
-    const [errorPrice, setErrorPrice] = useState<string>('')
-    const [errorProductName, setErrorProductName] = useState<string>('')
-    const [errorProductCategory, setErrorProductCategory] = useState<string>('')
-    const [errorQuantityGoods, setErrorQuantityGoods] = useState<string>('')
-    const [errorWeightVolumeItem, setErrorWeightVolumeItem] = useState<string>('')
-    const [isFormValid, setIsFormValid] = useState<boolean>(false)
-    const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
 
     const user = useTypedSelector(state => state.user)
     const {addProduct, fetchUsers} = useAction()
     const {pathname} = useLocation();
 
-    const onSubmit = () => {
-      const product: TypeProduct = {
-        store: valueStore,
-        price: valuePrice,
-        productName: valueProductName,
-        productCategory: valueProductCategory,
-        quantityGoods: valueQuantityGoods,
-        weightVolumeOneItem: valueWeightVolumeOneItem,
-      }
+    const {
+      register,
+      reset,
+      formState: {
+        errors,
+        isValid,
+      },
+      handleSubmit
+    } = useForm({
+      mode: 'all'
+    })
 
-      addProduct({payload: product})
-
-      setValuePrice(null)
-      setValueProductCategory('')
-      setValueProductName('')
-      setValueWeightVolumeOneItem(null)
-      setValueQuantityGoods(null)
-      setValueStore('')
-
-      setTouched(initialTouched)
-      setIsFormValid(false)
+    const onSubmit = (data: TypeProduct) => {
+      addProduct({payload: data})
+      reset()
       setModalActive(false)
-    }
-
-    const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
-      switch (e.target.name) {
-        case 'store': {
-          if (regEx.name.test(e.target.value) && valueStore !== '') {
-            setErrorStore('')
-          } else {
-            setErrorStore('blank field')
-          }
-          break
-
-        }
-        case 'price':
-          if (!valuePrice) return
-          if (valuePrice !== 0 && valuePrice <= 5100) {
-            setErrorPrice('')
-          } else {
-            setErrorPrice('blank field')
-          }
-          break
-        case 'productName':
-          if (regEx.name.test(e.target.value) && valueProductName !== '') {
-            setErrorProductName('')
-          } else {
-            setErrorProductName('blank field')
-          }
-          break
-        case 'productCategory':
-          if (regEx.name.test(e.target.value) && valueProductCategory !== '') {
-            setErrorProductCategory('')
-          } else {
-            setErrorProductCategory('blank field')
-          }
-          break
-        case 'quantityGoods':
-          if (valueQuantityGoods !== null && valueQuantityGoods <= 200 && valueQuantityGoods > 0) {
-            setErrorQuantityGoods('')
-          } else {
-            setErrorQuantityGoods('blank field')
-          }
-          break
-        case 'weightVolumeItem':
-          if (valueWeightVolumeOneItem !== null && Number(valueWeightVolumeOneItem) <= 20 && Number(valueWeightVolumeOneItem) > 0) {
-            setErrorWeightVolumeItem('')
-          } else {
-            setErrorWeightVolumeItem('blank field')
-          }
-          break
-      }
     }
 
     useEffect(() => {
       fetchUsers()
     }, [])
 
-    useEffect(() => {
-      if (touched.price && touched.store && touched.productName && touched.productCategory && touched.quantityGoods && touched.weightVolumeItem) {
-        if (
-          !errorStore &&
-          !errorPrice &&
-          !errorQuantityGoods &&
-          !errorProductName &&
-          !errorProductCategory &&
-          !errorWeightVolumeItem &&
-          touched.price &&
-          touched.store &&
-          touched.productName &&
-          touched.productCategory &&
-          touched.quantityGoods &&
-          touched.weightVolumeItem
-        ) {
-          setIsFormValid(true)
-        } else {
-          setIsFormValid(false)
-        }
-      }
-    }, [errorStore, errorPrice, errorQuantityGoods, errorProductName, errorProductCategory, errorWeightVolumeItem, touched])
     return (
       <div className={style.topBar}>
         <div className={style.topBar_titleBar}>
@@ -187,7 +79,7 @@ const Header: FC<HeaderProps> =
               {
                 user.avatar
                 &&
-                <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
               }
             </div>
             {user.firstName}
@@ -197,98 +89,106 @@ const Header: FC<HeaderProps> =
           modalActive
             ?
             <ModalWindow
-              onBlur={(e: React.FocusEvent<HTMLFormElement>) => BlurHandler(e)}
+              onSubmit={handleSubmit(onSubmit)}
               title='Creating a product'
               setModalActive={setModalActive}>
               <Input
-                name='store'
-                onChange={(e) => {
-                  setValueStore(e.target.value)
-                }}
-                onBlur={() => setTouched({...touched, store: true})}
+                {...register('store', {
+                  required: 'Required field',
+                  pattern: {
+                    value: regEx.name,
+                    message: 'Invalid store'
+                  },
+                })}
+                errorBorder={errors.store && '1px solid red'}
+                error={errors.store && errors.store.message}
                 placeholder='Store'
                 type='text'
-                value={valueStore}
                 defaultValue={''}
                 width='300px'
-                error={touched.store ? errorStore : undefined}
-                errorBorder={errorStore && '1px solid red'}
               />
               <Input
-                name='price'
-                value={valuePrice!}
-                onChange={(e) => {
-                  setValuePrice(e.target.valueAsNumber)
-                  setTouched({...touched, price: true})
-                }}
-                defaultValue={''}
+                {...register('price', {
+                  required: 'Required field',
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    return value <= 5000 && value > 0
+                      ||
+                      'No more than 5,000 or no less than 1'
+                  }
+                })}
+                errorBorder={errors.price && '1px solid red'}
+                error={errors.price && errors.price.message}
                 placeholder='Price'
                 type='number'
                 width='300px'
-                error={touched.price ? errorPrice : undefined}
-                errorBorder={errorPrice && '1px solid red'}
               />
               <Input
-                value={valueProductName}
-                name='productName'
-                onChange={(e) => {
-                  setValueProductName(e.target.value)
-                }}
-                onBlur={() => setTouched({...touched, productName: true})}
+                {...register('productName', {
+                  required: 'Required field',
+                  pattern: {
+                    value: regEx.name,
+                    message: 'Invalid product name'
+                  },
+                })}
+                errorBorder={errors.productName && '1px solid red'}
+                error={errors.productName && errors.productName.message}
                 placeholder='Product name'
                 type='text'
                 width='300px'
                 defaultValue={''}
-                errorBorder={errorProductName && '1px solid red'}
-                error={touched.productName ? errorProductName : undefined}
               />
               <Input
-                value={valueProductCategory}
-                name='productCategory'
-                onChange={(e) => {
-                  setValueProductCategory(e.target.value)
-                }}
-                defaultValue={''}
-                onBlur={() => setTouched({...touched, productCategory: true})}
+                {...register('productCategory', {
+                  required: 'Required field',
+                  pattern: {
+                    value: regEx.name,
+                    message: 'Invalid category'
+                  },
+                })}
+                errorBorder={errors.productCategory && '1px solid red'}
+                error={errors.productCategory && errors.productCategory.message}
                 placeholder='Product Category'
                 type='text'
                 width='300px'
-                errorBorder={errorProductCategory && '1px solid red'}
-                error={touched.productCategory ? errorProductCategory : undefined}
               />
               <Input
-                value={valueQuantityGoods!}
-                name='quantityGoods'
-                onChange={(e) => {
-                  setValueQuantityGoods(e.target.valueAsNumber)
-                }}
-                defaultValue={''}
-                onBlur={() => setTouched({...touched, quantityGoods: true})}
+                {...register('quantityGoods', {
+                  required: 'Required field',
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    return value <= 200 && value > 0
+                      ||
+                      'No more than 200 or no less than 1'
+                  }
+                })}
+                errorBorder={errors.quantityGoods && '1px solid red'}
+                error={errors.quantityGoods && errors.quantityGoods.message}
                 placeholder='Quantity of goods'
                 type='number'
                 width='300px'
-                errorBorder={errorQuantityGoods && '1px solid red'}
-                error={touched.quantityGoods ? errorQuantityGoods : undefined}
               />
               <Input
-                value={valueWeightVolumeOneItem!}
-                name='weightVolumeItem'
-                onChange={(e) => {
-                  setValueWeightVolumeOneItem(e.target.valueAsNumber)
-                }}
-                defaultValue={''}
-                onBlur={() => setTouched({...touched, weightVolumeItem: true})}
+                {...register('weightVolumeOneItem', {
+                  required: 'Required field',
+                  valueAsNumber: true,
+                  validate: (value) => {
+                    return value <= 20 && value > 0
+                      ||
+                      'No more than 20 or no less than 1'
+                  }
+                })}
+                errorBorder={errors.weightVolumeOneItem && '1px solid red'}
+                error={errors.weightVolumeOneItem && errors.weightVolumeOneItem.message}
                 placeholder='Weight / Volume of one item'
                 type='number'
                 width='300px'
-                errorBorder={errorWeightVolumeItem && '1px solid red'}
-                error={touched.weightVolumeItem ? errorWeightVolumeItem : undefined}
               />
               <ButtonUI
-                disabled={!isFormValid}
-                onClick={() => onSubmit()}
+                disabled={!isValid}
                 height='52px'
                 title='Add Product'
+                type='submit'
                 width='300px'
                 rightSrc={plus}
                 rightAlt='plusIcon'/>

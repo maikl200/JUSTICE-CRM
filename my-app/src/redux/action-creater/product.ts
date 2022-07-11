@@ -38,7 +38,7 @@ export const addProduct = (action: { payload: TypeProduct }) => {
   }
 }
 
-export const sellGoods = (sellId: string, action: { payload: { valueDate: string; soldItems: number | null; quantityGoods: number | null } }) => {
+export const sellGoods = (sellId: string, action: { payload: { weightVolumeOneItem?: number | null; address?: string | null; valueDate?: string; store?: string; soldItems?: number | null; userId?: string; dateNow?: string; productName?: string; quantityGoods: number | null; productCategory?: string; price?: number | null; _id?: string; lastSale?: string } }) => {
   return (dispatch: Dispatch<ProductAction>) => {
     axios.post('http://localhost:5100/sellProduct/sellProduct', {
       ...action.payload

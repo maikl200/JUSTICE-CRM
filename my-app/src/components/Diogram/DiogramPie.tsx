@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 
 import Chart from 'react-apexcharts'
-import {TypeProduct} from '../../types/types'
 
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
@@ -15,13 +14,9 @@ const DiogramPie = () => {
     fetchSellProducts()
   }, [])
 
-  const productsCategoryInDay =
-    salesProduct && salesProduct?.length
-      ?
-      salesProduct?.map((product: TypeProduct) => product.productCategory)
-      :
-      null
 
+  const productsCategoryInDay =
+    salesProduct?.map((product) => product.productCategory || 'no sales')
 
   const salesProductInDay =
     salesProduct?.map((item) => item.soldItems || 1)
@@ -53,7 +48,7 @@ const DiogramPie = () => {
               fontFamily: 'Inter',
             }
           },
-          labels: productsCategoryInDay?.length ? productsCategoryInDay : ['No sales'],
+          labels: productsCategoryInDay,
           colors: productsCategoryInDay?.length ? ['#5B6ACD', '#5182E7', '#F4AE43', '#1CAF7F'] : ['#b1b4b9']
         }}
       >

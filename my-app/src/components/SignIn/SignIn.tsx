@@ -1,7 +1,7 @@
-import React, {FC, FormEvent, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import style from './signIn.module.scss'
-import Input from "../../UI/Input/Input";
+import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
@@ -10,58 +10,27 @@ import Cookies from "js-cookie";
 import {useAction} from "../../hooks/useAction";
 import {AuthActionEnum} from "../../redux/types/auth";
 import {TypeUser} from "../../types/types";
-
-interface InitialTouchedTypes {
-  email: boolean
-  password: boolean
-}
-
-const initialTouched: InitialTouchedTypes = {
-  email: false,
-  password: false,
-}
+import {useForm} from "react-hook-form";
 
 const SignIn: FC = () => {
+
   const navigate = useNavigate()
-
-  const [valuePassword, setValuePassword] = useState<string>('')
-  const [valueEmail, setValueEmail] = useState<string>('')
-  const [formIsValid, setFormIsValid] = useState<boolean>(false)
-  const [errorPassword, setErrorPassword] = useState<string>('')
-  const [errorEmail, setErrorEmail] = useState<string>('')
-  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
   const [showError, setShowError] = useState<string>('')
-
   const {loginUser} = useAction()
 
-  const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
-    switch (e.target.name) {
-      case 'email': {
-        if (regEx.email.test(e.target.value) && valueEmail !== '') {
-          setErrorEmail('')
-        } else {
-          setErrorEmail('Invalid Email')
-        }
-        break
+  const {
+    register,
+    formState: {
+      errors,
+      isValid,
+    },
+    handleSubmit
+  } = useForm({
+    mode: 'all'
+  })
 
-      }
-      case 'password':
-        if (regEx.password.test(e.target.value) && valuePassword !== '') {
-          setErrorPassword('')
-        } else {
-          setErrorPassword('Invalid password')
-        }
-        break
-    }
-  }
-
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const candidate = {
-      email: valueEmail,
-      password: valuePassword
-    }
-    loginUser(setShowError, navigate, {type: AuthActionEnum.LOGIN_USER, payload: candidate})
+  const onSubmit = (data: TypeUser) => {
+    loginUser(setShowError, navigate, {type: AuthActionEnum.LOGIN_USER, payload: data})
   }
 
   const token = Cookies.get('token')
@@ -69,53 +38,47 @@ const SignIn: FC = () => {
     if (token) navigate('/mainPage')
   }, [token])
 
-  useEffect(() => {
-    if (touched.email && touched.password) {
-      if (!!errorPassword || !!errorEmail) {
-        setFormIsValid(false)
-      } else {
-        setFormIsValid(true)
-      }
-    }
-  }, [errorPassword, errorEmail, touched])
-
   return (
     <main className={style.main}>
       <div className={style.main_logInBlock}>
         <form className={style.main_logInBlock_form}
-              onSubmit={(e) => onSubmit(e)}
-              onBlur={(e) => BlurHandler(e)}>
+              onSubmit={handleSubmit(onSubmit)}
+        >
           <span className={style.main_logInBlock_title}>Sign in</span>
           <span className={style.main_logInBlock_errorTop}>{showError}</span>
           <Input
-            errorBorder={errorEmail && '1px solid red'}
-            defaultValue={valueEmail}
+            {...register('email', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.email,
+                message: 'Invalid email'
+              }
+            })}
+            errorBorder={errors.email && '1px solid red'}
+            error={errors.email && errors.email.message}
             name='email'
-            onChange={(e) => {
-              setValueEmail(e.target.value)
-              setTouched({...touched, email: true})
-            }}
             title='Email'
             placeholder='Email'
             type='email'
             width='100%'
-            error={touched.email ? errorEmail : undefined}
           />
           <Input
-            errorBorder={errorPassword && '1px solid red'}
+            {...register('password', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.password,
+                message: 'Invalid password'
+              },
+            })}
+            errorBorder={errors.password && '1px solid red'}
+            error={errors.password && errors.password.message}
             name='password'
-            defaultValue={valuePassword}
-            onChange={(e) => {
-              setValuePassword(e.target.value)
-              setTouched({...touched, password: true})
-            }}
             title='Password'
             placeholder='Password'
             type='password'
             width='100%'
-            error={touched.password ? errorPassword : undefined}
           />
-          <ButtonUI type={'submit'} disabled={!formIsValid} height='56px' title='Log in' padding='6px 12px'
+          <ButtonUI type={'submit'} disabled={!isValid} height='56px' title='Log in' padding='6px 12px'
                     width='100%'/>
           <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
         </form>

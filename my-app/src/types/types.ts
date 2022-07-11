@@ -5,7 +5,7 @@ export interface TypeProduct {
   lastSale?: string
   valueDate?: string
   price?: number | null
-  productCategory: string
+  productCategory?: string
   productName?: string
   quantityGoods?: number | null
   soldItems?: number | null

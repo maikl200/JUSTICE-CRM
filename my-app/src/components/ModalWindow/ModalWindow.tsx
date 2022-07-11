@@ -8,17 +8,18 @@ interface ModalCreatingProductProps {
   setModalActive: (isActive: boolean) => void
   children: React.ReactNode
   title: string
+  onSubmit?: any
   onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
 }
 
-const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children, title, onBlur}) => {
+const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children, title, onBlur, onSubmit}) => {
   return (
     <>
       <div className={style.modal}>
         <div className={style.modal_wrapper}>
           <div className={style.modal_wrapper_modalContent}>
             <span className={style.modal_wrapper_modalContent_title}>{title}</span>
-            <form className={style.modal_wrapper_modalContent_form} onBlur={onBlur}>
+            <form className={style.modal_wrapper_modalContent_form} onSubmit={onSubmit} onBlur={onBlur}>
               {children}
             </form>
           </div>

@@ -9,62 +9,39 @@ import deleteIcon from '../../assets/Delete.svg'
 
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../ModalWindow/ModalWindow";
-import Input from "../../UI/Input/Input";
+import {Input} from "../../UI/InputUI/Input";
 import {regEx} from "../../assets/regEx";
-import {useHandleChange} from "../../hooks/useHandleChange";
-import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 import {TypeProduct} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {fetchProducts, sellGoods} from "../../redux/action-creater/product";
 import {useAction} from "../../hooks/useAction";
-
-interface InitialTouchedTypes {
-  numberProduct: boolean
-  date: boolean
-  store: boolean
-  price: boolean
-  category: boolean
-  remains: boolean
-  weightVolume: boolean
-
-}
-
-const initialTouched: InitialTouchedTypes = {
-  numberProduct: false,
-  date: false,
-  store: false,
-  price: false,
-  category: false,
-  remains: false,
-  weightVolume: false
-}
-
+import {useForm} from "react-hook-form";
 
 const MyProduct: FC = () => {
-  const [soldItems, setSoldItems] = useState<number | null>(null)
-  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-  const [valueDate, setValueDate] = useState<string>('')
+
   const [sellModalActive, setSellModalActive] = useState<boolean>(false)
   const [editModalActive, setEditModalActive] = useState<boolean>(false)
   const [productSell, setProductSell] = useState<TypeProduct>()
-  const [isSellValid, setIsSellValid] = useState<boolean>(false)
-  const [isEditValid, setIsEditValid] = useState<boolean>(false)
-  const [errorValueNumberProduct, setErrorValueProduct] = useState('')
-  const [errorValueDate, setErrorValueDate] = useState('')
-  const [errorValueStore, setErrorValueStore] = useState('')
-  const [errorValuePrice, setErrorValuePrice] = useState('')
-  const [errorValueCategory, setErrorValueCategory] = useState('')
-  const [errorValueQuantityGoods, setErrorValueQuantityGoods] = useState('')
-  const [errorValueWeightVolumeOneItem, setErrorValueWeightVolumeOneItem] = useState('')
   const [editId, setEditId] = useState<string>('')
   const [sellId, setSellId] = useState<string>('')
-  const [form, changeForm] = useHandleChange<TypeProduct>({} as TypeProduct)
   const [dataProduct, setDataProduct] = useState<TypeProduct[]>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
 
   const products = useTypedSelector(state => state.product)
 
   const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
+
+  const {
+    register,
+    reset,
+    formState: {
+      errors,
+      isValid,
+    },
+    handleSubmit
+  } = useForm({
+    mode: 'all'
+  })
 
   useEffect(() => {
     fetchProducts()
@@ -80,89 +57,17 @@ const MyProduct: FC = () => {
     setProductSell(filterProduct)
   }
 
-  const sellButton = (sellId: string) => {
-    const discriminant = Number(quantityGoods) - Number(soldItems)
-    const newProduct = {...productSell, quantityGoods: discriminant, soldItems, valueDate}
-
+  const sellButton = (data: TypeProduct) => {
+    const discriminant = quantityGoods! - data.soldItems!
+    const newProduct = {
+      ...productSell,
+      quantityGoods: discriminant,
+      ...data
+    }
     sellGoods(sellId, {payload: newProduct})
-
-    setTouched(initialTouched)
-    setValueDate('')
-    setSoldItems(null)
+    reset()
     setSellModalActive(false)
   }
-
-  const onBlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
-    switch (e.target.name) {
-      case 'numberProduct':
-        if (!quantityGoods) return
-        if (Number(e.target.value) <= quantityGoods && Number(e.target.value) !== 0) {
-
-          Number(e.target.value) <= quantityGoods && setErrorValueProduct('')
-        } else {
-          setErrorValueProduct('Incorrect filled')
-        }
-        break
-      case 'dateSale':
-        if (regEx.date.test(e.target.value) && e.target.value !== '') {
-          setErrorValueDate('')
-        } else {
-          setErrorValueDate('Date entered incorrectly')
-        }
-        break
-      case 'store':
-        if (regEx.name.test(form.store as string)) {
-          setErrorValueStore('')
-        } else {
-          setErrorValueStore('Invalid store')
-        }
-        break
-      case 'price':
-        if (e.target.value <= 5100 && e.target.value > 0) {
-          setErrorValuePrice('')
-        } else {
-          setErrorValuePrice('No more than 1,000 or no less than 1')
-        }
-        break
-      case 'productCategory':
-        if (regEx.name.test(form.productCategory)) {
-          setErrorValueCategory('')
-        } else {
-          setErrorValueCategory('Invalid category')
-        }
-        break
-      case 'quantityGoods':
-        if (e.target.value < 201 && e.target.value > 0) {
-          setErrorValueQuantityGoods('')
-        } else {
-          setErrorValueQuantityGoods('Invalid remain')
-        }
-        break
-      case 'weightVolumeOneItem':
-        if (e.target.value <= 20 && e.target.value > 0) {
-          setErrorValueWeightVolumeOneItem('')
-        } else {
-          setErrorValueWeightVolumeOneItem('Invalid remain')
-        }
-        break
-    }
-  }
-
-  useEffect(() => {
-    if (!!errorValueDate || !!errorValueNumberProduct || !touched.numberProduct || !touched.date) {
-      setIsSellValid(false)
-    } else {
-      setIsSellValid(true)
-    }
-  }, [errorValueNumberProduct, errorValueDate, valueDate])
-
-  useEffect(() => {
-    if (!!errorValueStore || !!errorValuePrice || !!errorValueCategory || !!errorValueQuantityGoods || !!errorValueWeightVolumeOneItem) {
-      setIsEditValid(false)
-    } else {
-      setIsEditValid(true)
-    }
-  }, [errorValueStore, errorValuePrice, errorValueCategory, errorValueQuantityGoods, errorValueWeightVolumeOneItem])
 
   const deleteElem = (id: string) => {
     deleteProduct(id, products)
@@ -175,10 +80,9 @@ const MyProduct: FC = () => {
     setEditId(id)
     return
   }
-  const editButton = (editId: string) => {
 
-    editProduct(editId, {payload: form})
-    setTouched(initialTouched)
+  const editButton = (data: TypeProduct) => {
+    editProduct(editId, {payload: data})
     setEditModalActive(false)
   }
 
@@ -249,71 +153,89 @@ const MyProduct: FC = () => {
       </div>
       {editModalActive ?
         <ModalWindow
-          onBlur={onBlurHandler}
+          onSubmit={handleSubmit(editButton)}
           title='Editing a product'
           setModalActive={setEditModalActive}>
           <Input
+            {...register('store', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.name,
+                message: 'Invalid store'
+              },
+            })}
+            errorBorder={errors.store && '1px solid red'}
+            error={errors.store && errors.store.message}
             defaultValue={dataEditProduct?.store}
-            onChange={(e) => {
-              setTouched({...touched, store: true})
-              changeForm(e)
-            }}
             placeholder='Store'
-            error={touched.store ? errorValueStore : undefined}
             type='text'
-            name='store'
             width='300px'
           />
           <Input
+            {...register('price', {
+              valueAsNumber: true,
+              validate: (value) => {
+                return value <= 5000 && value > 0
+                  ||
+                  'No more than 5,000 or no less than 1'
+              }
+            })}
+            errorBorder={errors.price && '1px solid red'}
+            error={errors.price && errors.price.message}
             defaultValue={dataEditProduct?.price!}
-            onChange={(e) => {
-              setTouched({...touched, price: true})
-              changeForm(e)
-            }}
             placeholder='Price'
             type='number'
-            name='price'
             width='300px'
-            error={touched.price ? errorValuePrice : undefined}
           />
           <Input
+            {...register('productCategory', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.name,
+                message: 'Invalid category'
+              },
+            })}
+            errorBorder={errors.productCategory && '1px solid red'}
+            error={errors.productCategory && errors.productCategory.message}
             defaultValue={dataEditProduct?.productCategory}
-            onChange={(e) => {
-              setTouched({...touched, category: true})
-              changeForm(e)
-            }}
             placeholder='Category'
             type='text'
-            error={touched.category ? errorValueCategory : undefined}
-            name='productCategory'
             width='300px'/>
           <Input
+            {...register('quantityGoods', {
+              valueAsNumber: true,
+              validate: (value) => {
+                return value <= 200 && value > 0
+                  ||
+                  'No more than 200 or no less than 1'
+              }
+            })}
+            errorBorder={errors.quantityGoods && '1px solid red'}
+            error={errors.quantityGoods && errors.quantityGoods.message}
             defaultValue={dataEditProduct?.quantityGoods!}
-            onChange={(e) => {
-              setTouched({...touched, remains: true})
-              changeForm(e)
-            }}
             placeholder='Remains'
             type='number'
-            name='quantityGoods'
             width='300px'
-            error={touched.remains ? errorValueQuantityGoods : undefined}
           />
           <Input
+            {...register('weightVolumeOneItem', {
+              valueAsNumber: true,
+              validate: (value) => {
+                return value <= 20 && value > 0
+                  ||
+                  'No more than 20 or no less than 1'
+              }
+            })}
+            errorBorder={errors.weightVolumeOneItem && '1px solid red'}
+            error={errors.weightVolumeOneItem && errors.weightVolumeOneItem.message}
             defaultValue={dataEditProduct?.weightVolumeOneItem!}
-            onChange={(e) => {
-              setTouched({...touched, weightVolume: true})
-              changeForm(e)
-            }}
-            error={touched.weightVolume ? errorValueWeightVolumeOneItem : undefined}
             placeholder='Weight / Volume'
             type='number'
-            name='weightVolumeOneItem'
             width='300px'
           />
           <ButtonUI
-            disabled={!isEditValid}
-            onClick={() => editButton(editId)}
+            type='submit'
+            disabled={!isValid}
             width='300px'
             title='Edit product'
             height='52px'/>
@@ -325,41 +247,43 @@ const MyProduct: FC = () => {
         sellModalActive
           ?
           <ModalWindow
-            onBlur={onBlurHandler}
+            onSubmit={handleSubmit(sellButton)}
             title='Sell the product'
             setModalActive={setSellModalActive}>
             <Input
-              errorBorder={errorValueNumberProduct && '1px solid red'}
-              name='numberProduct'
-              defaultValue={soldItems!}
-              onChange={(e) => {
-                setSoldItems(e.target.valueAsNumber)
-                setTouched({...touched, numberProduct: true})
-                changeForm(e)
-              }}
+              {...register('soldItems', {
+                required: 'Required field',
+                valueAsNumber: true,
+                validate: (value) => {
+                  return value <= quantityGoods! && value > 0
+                    ||
+                    'That quantity is out of stock or you are trying to sell a zero quantity'
+                }
+              })}
+              errorBorder={errors.soldItems && '1px solid red'}
+              error={errors.soldItems && errors.soldItems.message}
               placeholder='Number of products'
               type='number'
               width='300px'
-              error={touched.numberProduct ? errorValueNumberProduct : undefined}
             />
             <Input
-              defaultValue={valueDate}
-              errorBorder={errorValueDate && '1px solid red'}
-              name='dateSale'
-              onChange={(e) => {
-                setValueDate(e.target.value)
-                setTouched({...touched, date: true})
-                changeForm(e)
-              }}
+              {...register('lastSale', {
+                required: 'Required field',
+                pattern: {
+                  value: regEx.date,
+                  message: 'Invalid date'
+                }
+              })}
+              errorBorder={errors.lastSale && '1px solid red'}
+              error={errors.lastSale && errors.lastSale.message}
               placeholder='Date of sale'
               type='text'
               width='300px'
-              error={touched.date ? errorValueDate : undefined}
             />
             <ButtonUI
-              disabled={!isSellValid}
-              onClick={() => sellButton(sellId)}
+              disabled={!isValid}
               width='300px'
+              type='submit'
               title='Sell product'
               height='52px'/>
           </ModalWindow>

@@ -19,7 +19,7 @@ export const fetchUsers = () => {
   }
 }
 
-export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateAction<boolean>>, setErrorOldPassword: Dispatch<SetStateAction<string>>, action: { payload: string }) => {
+export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateAction<boolean>>, action: { payload: string }) => {
   return (dispatch: Dispatch<UserAction>) => {
     axios.post('http://localhost:5100/profile/changePassword', {
       oldPassword: action.payload
@@ -29,11 +29,11 @@ export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateActio
       }
     })
       .then((res) => {
+        console.log(123)
         dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
-        setErrorOldPassword('')
         setCurrentPassword(true)
       }).catch(() => {
-      setErrorOldPassword('invalid password')
+      console.log(321)
       setCurrentPassword(false)
     })
   }

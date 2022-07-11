@@ -77,8 +77,10 @@ module.exports.changePassword = async (req, res) => {
     const candidate = await User.findOne({_id: req.user.id})
     if (candidate) {
       const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
+      console.log('old', req.body.oldPassword)
       if (passwordResult) {
         res.status(201).json({isValid: true})
+        console.log(123)
       } else {
         res.status(404).json({
           message: "User not found"
@@ -88,5 +90,4 @@ module.exports.changePassword = async (req, res) => {
   } catch (e) {
     errorHandler(res, e)
   }
-
 }

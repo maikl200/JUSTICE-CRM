@@ -4,7 +4,6 @@ import style from './mySales.module.scss'
 
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
-import CircularIndeterminate from "../../UI/Loader/CircularIndeterminate";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
 
@@ -16,7 +15,7 @@ const MySales: FC = () => {
   useEffect(() => {
     fetchSellProducts()
   }, [])
-
+  console.log(sellProduct)
   return (
     <main className={style.main}>
       <NavBar/>

@@ -20,7 +20,7 @@ export const regUser = (setShowError: Dispatch<SetStateAction<string>>, navigate
   }
 }
 
-export const loginUser = (setShowError: Dispatch<SetStateAction<string>>, navigate: NavigateFunction, action: { payload: { password: string; email: string }; type: AuthActionEnum }) => {
+export const loginUser = (setShowError: Dispatch<SetStateAction<string>>, navigate: NavigateFunction, action: { payload: TypeUser; type: AuthActionEnum }) => {
   return (dispatch: Dispatch<AuthAction>) => {
     axios.post('http://localhost:5100/auth/login', {
       ...action.payload

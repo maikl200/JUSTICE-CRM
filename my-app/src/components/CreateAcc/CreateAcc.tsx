@@ -2,147 +2,42 @@ import React, {FC, useEffect, useState} from 'react';
 
 import style from './createAcc.module.scss'
 import imgReg from '../../assets/img_at_registration.png'
-import Input from "../../UI/Input/Input";
+import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {useNavigate} from "react-router-dom";
-import {regEx} from "../../assets/regEx";
 
 import Cookies from "js-cookie";
 import {useAction} from "../../hooks/useAction";
-import {SubmitHandler, useForm} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {TypeUser} from "../../types/types";
-import {TextField} from "@mui/material";
-
-
-const initialTouched: InitialTouchedTypes = {
-  firstName: false,
-  lastName: false,
-  companyName: false,
-  email: false,
-  password: false,
-  repeatPassword: false,
-}
-
-interface InitialTouchedTypes {
-  firstName: boolean
-  lastName: boolean
-  companyName: boolean
-  email: boolean
-  password: boolean
-  repeatPassword: boolean
-}
+import {regEx} from "../../assets/regEx";
 
 const CreateAcc: FC = () => {
-  const navigate = useNavigate()
 
-  const [valueFirstName, setValueFirstName] = useState<string>('')
-  const [touched, setTouched] = useState<InitialTouchedTypes>(initialTouched)
-  const [formIsValid, setFormIsValid] = useState<boolean>(false)
-  const [valueLastName, setValueLastName] = useState<string>('')
-  const [valueCompanyName, setValueCompanyName] = useState<string>('')
-  const [valueEmail, setValueEmail] = useState<string>('')
-  const [valuePassword, setValuePassword] = useState<string>('')
-  const [valueRepeatPassword, setValueRepeatPassword] = useState<string>('')
-  const [errorCompanyName, setErrorCompanyName] = useState<string>('')
-  const [errorPassword, setErrorPassword] = useState<string>('')
-  const [errorRepeatPassword, setErrorRepeatPassword] = useState<string>('')
-  const [errorEmail, setErrorEmail] = useState<string>('')
-  const [errorFirstName, setErrorFirstName] = useState<string>('')
-  const [errorLastName, setErrorLastName] = useState<string>('')
+  const navigate = useNavigate()
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
+  const {regUser} = useAction()
 
   const {
     register,
     formState: {
       errors,
       isValid,
-      isDirty
     },
     handleSubmit,
-    reset,
-    getValues,
-    watch
+    getValues
   } = useForm({
-    mode: 'onBlur'
+    mode: 'all'
   })
 
-  const {regUser} = useAction()
-
-  // const BlurHandler = (e: React.FocusEvent<HTMLFormElement>) => {
-  //   switch (e.target.name) {
-  //     case 'firstName':
-  //       if (regEx.name.test(e.target.value) && valueFirstName !== '') {
-  //         setErrorFirstName('')
-  //       } else {
-  //         setErrorFirstName('Invalid first name')
-  //       }
-  //       break
-  //     case 'lastName':
-  //       if (regEx.name.test(e.target.value) && valueLastName !== '') {
-  //         setErrorLastName('')
-  //       } else {
-  //         setErrorLastName('Invalid last name')
-  //       }
-  //       break
-  //     case 'companyName':
-  //       if (regEx.name.test(e.target.value) && valueCompanyName !== '') {
-  //         setErrorCompanyName('')
-  //       } else {
-  //         setErrorCompanyName('Invalid company name')
-  //       }
-  //       break
-  //     case 'email':
-  //       if (regEx.email.test(e.target.value) && valueEmail !== '') {
-  //         setErrorEmail('')
-  //       } else {
-  //         setErrorEmail('Invalid Email')
-  //       }
-  //       break
-  //     case 'password':
-  //       if (regEx.password.test(e.target.value) && valuePassword !== '') {
-  //         setErrorPassword('')
-  //       } else {
-  //         setErrorPassword('Invalid password')
-  //       }
-  //       break
-  //     case 'repeatPassword':
-  //       if (valueRepeatPassword === valuePassword && valueRepeatPassword !== '') {
-  //         setErrorRepeatPassword('')
-  //       } else {
-  //         setErrorRepeatPassword('Password does not match')
-  //       }
-  //       break
-  //   }
-  // }
-
   const onSubmit = (data: TypeUser) => {
-    console.log(data)
-    const user = {
-      firstName: valueFirstName,
-      lastName: valueLastName,
-      companyName: valueCompanyName,
-      password: valuePassword,
-      email: valueEmail,
-    }
-    regUser(setShowError, navigate, {payload: user})
-    reset()
+    regUser(setShowError, navigate, {payload: data})
   }
 
   useEffect(() => {
     if (token) navigate('/mainPage')
   }, [token])
-
-  useEffect(() => {
-    if (touched.repeatPassword && touched.password && touched.email && touched.companyName && touched.lastName && touched.firstName) {
-      if (!errorPassword && !errorLastName && !errorFirstName && !errorEmail && !errorCompanyName && !errorRepeatPassword) {
-        setFormIsValid(true)
-      } else {
-        setFormIsValid(false)
-      }
-    }
-  }, [errorPassword, errorLastName, errorFirstName, errorEmail, errorCompanyName, errorRepeatPassword, touched])
-
 
   return (
     <main className={style.main}>
@@ -152,91 +47,114 @@ const CreateAcc: FC = () => {
           <span className={style.main_regBlock_errorTop}>{showError}</span>
           <div className={style.main_regBlock_inputsRow}>
             <div className={style.main_regBlock_errorBlock}>
-              {/*@ts-ignore*/}
               <Input
-                {...register("nativeName")}
+                {...register("firstName", {
+                  required: 'Required field',
+                  pattern: {
+                    value: /^[a-zA-Z]+$/,
+                    message: 'Invalid first name'
+                  }
+                })}
+                errorBorder={errors.firstName && '1px solid red'}
                 title='First name'
+                error={errors.firstName && errors.firstName.message}
                 placeholder='First name'
                 type='text'
                 width='100%'
               />
             </div>
             <div className={style.main_regBlock_errorBlock}>
-              {/*@ts-ignore*/}
               <Input
-                {...register('lastName')}
-                errorBorder={errorLastName && '1px solid red'}
-                defaultValue={valueLastName}
-                onChange={(e) => {
-                  setValueLastName(e.target.value)
-                  setTouched({...touched, lastName: true})
-                }}
+                {...register('lastName', {
+                  required: 'Required field',
+                  pattern: {
+                    value: regEx.name,
+                    message: 'Invalid last name'
+                  }
+                })}
+                errorBorder={errors.lastName && '1px solid red'}
+                error={errors.lastName && errors.lastName.message}
                 title='Last name'
                 placeholder='Last name'
                 type='text'
                 width='100%'
-                error={touched.lastName ? errorLastName : undefined}
               />
             </div>
           </div>
           <Input
-            errorBorder={errorCompanyName && '1px solid red'}
+            {...register('companyName', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.name,
+                message: 'This is not the name of the company'
+              },
+              maxLength: {
+                value: 10,
+                message: 'The name of the organization can not be more than 10 characters'
+              }
+            })}
+            errorBorder={errors.companyName && '1px solid red'}
+            error={errors.companyName && errors.companyName.message}
             name='companyName'
-            defaultValue={valueCompanyName}
-            onChange={(e) => {
-              setValueCompanyName(e.target.value)
-              setTouched({...touched, companyName: true})
-            }}
             title='Company name'
             placeholder='Company name'
             type='text'
             width='100%'
-            error={touched.companyName ? errorCompanyName : undefined}/>
+          />
 
           <Input
-            errorBorder={errorEmail && '1px solid red'}
+            {...register('email', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.email,
+                message: 'Invalid email'
+              }
+            })}
+            errorBorder={errors.email && '1px solid red'}
+            error={errors.email && errors.email.message}
             name='email'
-            defaultValue={valueEmail}
-            onChange={(e) => {
-              setValueEmail(e.target.value)
-              setTouched({...touched, email: true})
-            }}
             title='Email'
             placeholder='Email'
             type='email'
             width='100%'
-            error={touched.email ? errorEmail : undefined}/>
+          />
 
           <Input
-            errorBorder={errorPassword && '1px solid red'}
+            {...register('password', {
+              required: 'Required field',
+              pattern: {
+                value: regEx.password,
+                message: 'Invalid password'
+              },
+            })}
+            errorBorder={errors.password && '1px solid red'}
+            error={errors.password && errors.password.message}
             name='password'
-            defaultValue={valuePassword}
-            onChange={(e) => {
-              setValuePassword(e.target.value)
-              setTouched({...touched, password: true})
-            }}
             title='Password'
             placeholder='Password'
             type='password'
             width='100%'
-            error={touched.password ? errorPassword : undefined}/>
+          />
           <Input
-            errorBorder={errorRepeatPassword && '1px solid red'}
+            {...register('repeatPassword', {
+              required: 'Required field',
+              validate: (value) => {
+                const password = getValues("password")
+                return value === password || 'Password does not match'
+              }
+            })}
+            errorBorder={errors.repeatPassword && '1px solid red'}
+            error={errors.repeatPassword && errors.repeatPassword.message}
             name='repeatPassword'
-            defaultValue={valueRepeatPassword}
-            onChange={(e) => {
-              setValueRepeatPassword(e.target.value)
-              setTouched({...touched, repeatPassword: true})
-            }}
             title='Repeat password'
             placeholder='Repeat password'
             type='password'
             width='100%'
-            error={touched.repeatPassword ? errorRepeatPassword : undefined}/>
+          />
 
           <ButtonUI
             type='submit'
-            // disabled={!formIsValid}
+            disabled={!isValid}
             height='56px'
             title='Create account'
             padding='6px 12px'

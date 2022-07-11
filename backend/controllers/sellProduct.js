@@ -27,7 +27,7 @@ module.exports.sellProduct = async function (req, res) {
       price: newProduct.price,
       weightVolumeOneItem: newProduct.weightVolumeOneItem,
       soldItems: newProduct.soldItems,
-      lastSale: newProduct.valueDate,
+      lastSale: newProduct.lastSale,
       userId: req.user.id
     })
     await sellProduct.save()
