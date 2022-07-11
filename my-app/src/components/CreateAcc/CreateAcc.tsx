@@ -60,7 +60,6 @@ const CreateAcc: FC = () => {
                 error={errors.firstName && errors.firstName.message}
                 placeholder='First name'
                 type='text'
-                width='100%'
               />
             </div>
             <div className={style.main_regBlock_errorBlock}>
@@ -77,7 +76,6 @@ const CreateAcc: FC = () => {
                 title='Last name'
                 placeholder='Last name'
                 type='text'
-                width='100%'
               />
             </div>
           </div>
@@ -99,7 +97,6 @@ const CreateAcc: FC = () => {
             title='Company name'
             placeholder='Company name'
             type='text'
-            width='100%'
           />
 
           <Input
@@ -116,7 +113,6 @@ const CreateAcc: FC = () => {
             title='Email'
             placeholder='Email'
             type='email'
-            width='100%'
           />
 
           <Input
@@ -133,7 +129,6 @@ const CreateAcc: FC = () => {
             title='Password'
             placeholder='Password'
             type='password'
-            width='100%'
           />
           <Input
             {...register('repeatPassword', {
@@ -149,7 +144,6 @@ const CreateAcc: FC = () => {
             title='Repeat password'
             placeholder='Repeat password'
             type='password'
-            width='100%'
           />
 
           <ButtonUI
@@ -158,7 +152,7 @@ const CreateAcc: FC = () => {
             height='56px'
             title='Create account'
             padding='6px 12px'
-            width='100%'/>
+           />
           <span className={style.main_regBlock_logInPage}>Already have an account? <span
             onClick={() => navigate('/signIn')}>Log in</span></span>
         </form>

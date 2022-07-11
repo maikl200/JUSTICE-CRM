@@ -15,7 +15,7 @@ const MySales: FC = () => {
   useEffect(() => {
     fetchSellProducts()
   }, [])
-  console.log(sellProduct)
+
   return (
     <main className={style.main}>
       <NavBar/>

@@ -169,7 +169,7 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.store}
             placeholder='Store'
             type='text'
-            width='300px'
+
           />
           <Input
             {...register('price', {
@@ -185,7 +185,6 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.price!}
             placeholder='Price'
             type='number'
-            width='300px'
           />
           <Input
             {...register('productCategory', {
@@ -200,7 +199,7 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.productCategory}
             placeholder='Category'
             type='text'
-            width='300px'/>
+            />
           <Input
             {...register('quantityGoods', {
               valueAsNumber: true,
@@ -215,7 +214,7 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.quantityGoods!}
             placeholder='Remains'
             type='number'
-            width='300px'
+
           />
           <Input
             {...register('weightVolumeOneItem', {
@@ -231,7 +230,6 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.weightVolumeOneItem!}
             placeholder='Weight / Volume'
             type='number'
-            width='300px'
           />
           <ButtonUI
             type='submit'
@@ -264,7 +262,6 @@ const MyProduct: FC = () => {
               error={errors.soldItems && errors.soldItems.message}
               placeholder='Number of products'
               type='number'
-              width='300px'
             />
             <Input
               {...register('lastSale', {
@@ -278,7 +275,6 @@ const MyProduct: FC = () => {
               error={errors.lastSale && errors.lastSale.message}
               placeholder='Date of sale'
               type='text'
-              width='300px'
             />
             <ButtonUI
               disabled={!isValid}

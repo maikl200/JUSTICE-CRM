@@ -60,7 +60,6 @@ const SignIn: FC = () => {
             title='Email'
             placeholder='Email'
             type='email'
-            width='100%'
           />
           <Input
             {...register('password', {
@@ -76,7 +75,6 @@ const SignIn: FC = () => {
             title='Password'
             placeholder='Password'
             type='password'
-            width='100%'
           />
           <ButtonUI type={'submit'} disabled={!isValid} height='56px' title='Log in' padding='6px 12px'
                     width='100%'/>

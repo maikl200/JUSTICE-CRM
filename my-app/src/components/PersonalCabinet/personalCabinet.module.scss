@@ -13,69 +13,72 @@
       gap: 60px;
     }
 
-    &_userSettings {
-      display: flex;
-      align-items: flex-start;
-      flex-direction: column;
-      border-top: 1px solid #2B384414;
-      gap: 20px;
-      padding-top: 53px;
-      width: 90%;
+    &_wrapper {
+      width: 100%;
 
-      &_row {
-        display: flex;
-        gap: 32px;
+      &_userSettings {
+        padding-left: 30px;
+        border-top: 1px solid #2B384414;
+        padding-top: 53px;
+        width: 60%;
 
-        &_downAvatarContainer {
+        &_row {
           display: flex;
-          flex-direction: column;
-          align-items: center;
-          max-width: 300px;
+          gap: 32px;
 
-          &_imgPreviewContainer {
-            width: 100%;
-            height: 50px;
-            box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
+          &_downAvatarContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 300px;
+
+            &_imgPreviewContainer {
+              width: 100%;
+              height: 50px;
+              box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
+            }
+
+            & img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
           }
 
-          & img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+          &_avatarContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            right: 150px;
+            max-width: 300px;
+
+            @media only screen and (max-width: 1590px) {
+              display: none;
+            }
+
+
+            &_imgPreviewContainer {
+              width: 100%;
+              height: 300px;
+              box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
+            }
+
+            & img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
           }
-        }
 
-        &_avatarContainer {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: absolute;
-          right: 150px;
-          max-width: 300px;
-
-          @media only screen and (max-width: 1590px) {
-            display: none;
+          & span {
+            margin-bottom: 10px;
           }
-
-
-          &_imgPreviewContainer {
-            width: 100%;
-            height: 300px;
-            box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.25)
-          }
-
-          & img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-
-        & span {
-          margin-bottom: 10px;
         }
       }
     }
+
+
   }
 }
 

@@ -6,8 +6,9 @@ interface Props {
   title?: string
   placeholder: string
   type: string
-  width: string
+  width?: string
   name?: string
+  className?: any
   defaultValue?: string | number
   errorBorder?: string
   error?: any
@@ -31,6 +32,7 @@ const InputUI: FC<Props> = (
     error,
     onChange,
     value,
+    className,
     readOnly,
     ...props
   },
@@ -48,12 +50,13 @@ const InputUI: FC<Props> = (
       <label className={style.label}>
         {title}
         <input
+          className={className}
           name={name}
           onChange={onChange}
           readOnly={readOnly}
           onBlur={onBlur}
           defaultValue={defaultValue}
-          style={{width: width, border: errorBorder}}
+          style={{border: errorBorder}}
           type={type}
           value={value}
           placeholder={placeholder}

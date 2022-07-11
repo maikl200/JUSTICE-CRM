@@ -105,7 +105,6 @@ const Header: FC<HeaderProps> =
                 placeholder='Store'
                 type='text'
                 defaultValue={''}
-                width='300px'
               />
               <Input
                 {...register('price', {
@@ -121,7 +120,6 @@ const Header: FC<HeaderProps> =
                 error={errors.price && errors.price.message}
                 placeholder='Price'
                 type='number'
-                width='300px'
               />
               <Input
                 {...register('productName', {
@@ -135,7 +133,6 @@ const Header: FC<HeaderProps> =
                 error={errors.productName && errors.productName.message}
                 placeholder='Product name'
                 type='text'
-                width='300px'
                 defaultValue={''}
               />
               <Input
@@ -150,7 +147,6 @@ const Header: FC<HeaderProps> =
                 error={errors.productCategory && errors.productCategory.message}
                 placeholder='Product Category'
                 type='text'
-                width='300px'
               />
               <Input
                 {...register('quantityGoods', {
@@ -166,7 +162,6 @@ const Header: FC<HeaderProps> =
                 error={errors.quantityGoods && errors.quantityGoods.message}
                 placeholder='Quantity of goods'
                 type='number'
-                width='300px'
               />
               <Input
                 {...register('weightVolumeOneItem', {
@@ -182,7 +177,6 @@ const Header: FC<HeaderProps> =
                 error={errors.weightVolumeOneItem && errors.weightVolumeOneItem.message}
                 placeholder='Weight / Volume of one item'
                 type='number'
-                width='300px'
               />
               <ButtonUI
                 disabled={!isValid}
