@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useLayoutEffect, useState} from 'react';
 
 import {useHandleChange} from "../../hooks/useHandleChange";
 
@@ -21,9 +21,9 @@ import {useWindowSize} from "../../hooks/useWindowSize";
 
 const validationSchema = yup.object({
   firstName: yup.string()
-    .required('fefef')
+    .required('need')
+    .min(1, 'ada')
     .max(15, 'The first name is too long')
-
     .matches(regEx.name, 'invalid first name'),
   lastName: yup.string()
     .min(2, 'The last name is too short')
@@ -35,6 +35,7 @@ const validationSchema = yup.object({
     .matches(regEx.name, 'invalid company name'),
   productCategory: yup.string()
     .min(2, 'The company name is too short')
+    .nullable()
     .max(10, 'The product category is too long')
     .matches(regEx.name, 'invalid product category'),
   oldPassword: yup.string()
@@ -91,19 +92,19 @@ const PersonalCabinet: FC = () => {
   useEffect(() => {
     setForm(user)
   }, [user])
-
+  console.log('123', user)
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
         <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
-        <Formik
+        {!!Object.keys(user).length && <Formik
           initialValues={{
-            firstName: '',
-            lastName: '',
-            companyName: '',
-            productCategory: '',
+            firstName: user.firstName,
+            lastName: user.lastName,
+            companyName: user.companyName,
+            productCategory: user.productCategory,
             address: '',
             oldPassword: '',
             password: ''
@@ -144,11 +145,11 @@ const PersonalCabinet: FC = () => {
                       }}
                       value={form.firstName}
                       errorBorder={errors.firstName && '1px solid red'}
-                      error={touched.firstName && errors.firstName && errors.firstName}
+                      error={errors.firstName && errors.firstName}
                       placeholder='First name'
                       title='First name'
                       type='text'
-                   />
+                    />
 
                     {
                       previewAvatarState
@@ -296,7 +297,7 @@ const PersonalCabinet: FC = () => {
               </div>
             </>
           )}
-        </Formik>
+        </Formik>}
       </div>
     </main>
   );
