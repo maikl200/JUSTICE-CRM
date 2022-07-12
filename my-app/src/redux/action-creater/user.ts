@@ -30,8 +30,10 @@ export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateActio
     })
       .then((res) => {
         dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
+        console.log('good')
         setCurrentPassword(true)
       }).catch(() => {
+      console.log('not good')
       setCurrentPassword(false)
     })
   }
