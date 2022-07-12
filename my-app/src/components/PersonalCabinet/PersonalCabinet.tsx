@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useLayoutEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import {useHandleChange} from "../../hooks/useHandleChange";
 
@@ -7,7 +7,7 @@ import Header from "../../UI/Header/Header";
 
 import style from './personalCabinet.module.scss'
 
-import {Formik} from 'formik'
+import {Form, Formik} from 'formik'
 import * as yup from 'yup'
 import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
@@ -18,22 +18,72 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeUser} from "../../types/types";
 import {useWindowSize} from "../../hooks/useWindowSize";
 
+const validationSchema = yup.object({
+  isPassword: yup.boolean(),
+  firstName: yup.string()
+    .required('Required field')
+    .max(15, 'The first name is too long')
+    .matches(regEx.name, 'invalid first name'),
+  lastName: yup.string()
+    .required('Required field')
+    .max(20, 'The last name is too long')
+    .matches(regEx.name, 'invalid last name'),
+  companyName: yup.string()
+    .required('Required field')
+    .max(10, 'The company name is too long')
+    .matches(regEx.name, 'invalid company name'),
+  productCategory: yup.string()
+    .nullable()
+    .max(10, 'The product category is too long')
+    .matches(regEx.name, 'invalid product category'),
+  address: yup.string()
+    .required('Required field')
+    .max(15, 'The address is too long'),
+  oldPassword: yup.string()
+    // .test('oldPassword', 'COCK', function (value, data) {
+    //   console.log(yup.ref())
+    //  // if (yup.ref('isPassword')) {
+    //  //
+    //  // }
+    // })
+    .test('oldPassword', 'Fill in this field', function (value, data) {
+      if (data.parent.password) {
+        return data.parent.oldPassword
+      }
+      return true
+    })
+    .matches(regEx.password, 'invalid password'),
+  password: yup.string()
+    .test('oldPassword', "Fill in this field", function (value, data) {
+      if (data.parent.oldPassword) {
+        return data.parent.password
+      }
+      return true
+    })
+    .matches(regEx.password, 'invalid password'),
+})
 
 const PersonalCabinet: FC = () => {
   const [form, changeForm, setForm] = useHandleChange<TypeUser>({})
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
-  const [currentPassword, setCurrentPassword] = useState<boolean>(false)
+  const [currentPassword, setCurrentPassword] = useState<{ oldPassword: boolean, newPassword: boolean }>({
+    oldPassword: false,
+    newPassword: false
+  })
   const [fileName, setFileName] = useState('')
-
   const user = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
-
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = () => {
-    changeCurrentPassword(setCurrentPassword, {payload: form.oldPassword as string})
+    const dataPassword = {
+      oldPassword: form.oldPassword,
+      newPassword: form.password
+    }
+    changeCurrentPassword(setCurrentPassword, {payload: dataPassword})
   }
+
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -56,43 +106,6 @@ const PersonalCabinet: FC = () => {
     setForm(user)
   }, [user])
 
-  const validationSchema = yup.object({
-    firstName: yup.string()
-      .required('Required field')
-      .max(15, 'The first name is too long')
-      .matches(regEx.name, 'invalid first name'),
-    lastName: yup.string()
-      .required('Required field')
-      .max(20, 'The last name is too long')
-      .matches(regEx.name, 'invalid last name'),
-    companyName: yup.string()
-      .required('Required field')
-      .max(10, 'The company name is too long')
-      .matches(regEx.name, 'invalid company name'),
-    productCategory: yup.string()
-      .nullable()
-      .max(10, 'The product category is too long')
-      .matches(regEx.name, 'invalid product category'),
-    address: yup.string()
-      .required('Required field')
-      .max(15, 'The address is too long'),
-    oldPassword: yup.string()
-      .test('password', 'Fill in this field', function (value, data) {
-        if (data.parent.password) {
-          return data.parent.oldPassword
-        }
-        return true
-      })
-      .matches(regEx.password, 'invalid password'),
-    password: yup.string()
-      .test('oldPassword', "Fill in this field", function (value, data) {
-        if (data.parent.oldPassword) {
-          return data.parent.password
-        }
-        return true
-      })
-      .matches(regEx.password, 'invalid password'),
-  })
   return (
     <main className={style.main}>
       <NavBar/>
@@ -100,60 +113,53 @@ const PersonalCabinet: FC = () => {
         <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
         {!!Object.keys(user).length && <Formik
-            initialValues={{
-              firstName: user.firstName,
-              lastName: user.lastName,
-              companyName: user.companyName,
-              productCategory: user.productCategory ?? '',
-              address: user.address ?? '15 Krylatskaya',
-              oldPassword: user.oldPassword,
-              password: user.newPassword,
-            }}
-
-            validationSchema={validationSchema}
-            onSubmit={(data) => {
-              changeProfile({payload: data})
-              setPreviewAvatarState('')
-              setFileName('')
-              console.log(data)
-              if (!image) return
-              uploadAvatar({payload: image[0]})
-            }}>
+          initialValues={{
+            firstName: user.firstName,
+            lastName: user.lastName,
+            companyName: user.companyName,
+            productCategory: user.productCategory ?? '',
+            address: user.address ?? '15 Krylatskaya',
+            oldPassword: '',
+            password: '',
+            isPassword: currentPassword
+          }}
+          validationSchema={validationSchema}
+          onSubmit={(data, values) => {
+            changePassword()
+            changeProfile({payload: data})
+            setPreviewAvatarState('')
+            setFileName('')
+            if (!image) return
+            uploadAvatar({payload: image[0]})
+          }}>
           {({
               values,
               errors,
               isValid,
-              handleSubmit,
-              handleBlur,
               handleChange,
+              handleBlur,
               touched,
-              dirty
-
             }) => (
             <>
               <div className={style.main_personalCabinetBar_wrapper}>
-                <form
+                <Form
                   className={style.main_personalCabinetBar_wrapper_userSettings}
                   method='POST'
                   action='/upload'
                   encType='multipart/form-data'
-                  onSubmit={handleSubmit}
                 >
                   <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
                     <Input
                       name='firstName'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      value={form.firstName}
-                      errorBorder={errors.firstName && '1px solid red'}
-                      error={errors.firstName && errors.firstName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.firstName}
+                      errorBorder={touched.firstName && errors.firstName && '1px solid red'}
+                      error={touched.firstName && errors.firstName && errors.firstName}
                       placeholder='First name'
                       title='First name'
                       type='text'
                     />
-
                     {
                       previewAvatarState
                         ?
@@ -169,13 +175,11 @@ const PersonalCabinet: FC = () => {
                     }
                     <Input
                       name='lastName'
-                      value={form.lastName}
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      errorBorder={errors.lastName && '1px solid red'}
-                      error={errors.lastName && errors.lastName}
+                      value={values.lastName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errorBorder={touched.lastName && errors.lastName && '1px solid red'}
+                      error={touched.lastName && errors.lastName && errors.lastName}
                       placeholder='Last name'
                       title='Last name'
                       type='text'/>
@@ -183,25 +187,21 @@ const PersonalCabinet: FC = () => {
                   <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
                     <Input
                       name='companyName'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      errorBorder={errors.companyName && '1px solid red'}
-                      error={errors.companyName && errors.companyName}
-                      value={form.companyName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errorBorder={touched.companyName && errors.companyName && '1px solid red'}
+                      error={touched.companyName && errors.companyName && errors.companyName}
+                      value={values.companyName}
                       placeholder='Company name'
                       title='Company name'
                       type='text'/>
                     <Input
-                      value={form.productCategory}
+                      value={values.productCategory}
                       name='productCategory'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      errorBorder={errors.productCategory && '1px solid red'}
-                      error={errors.productCategory && errors.productCategory}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      errorBorder={touched.productCategory && errors.productCategory && '1px solid red'}
+                      error={touched.productCategory && errors.productCategory && errors.productCategory}
                       placeholder='Product Category'
                       title='Product Category'
                       type='text'/>
@@ -210,12 +210,10 @@ const PersonalCabinet: FC = () => {
                     <Input
                       value={values.address}
                       name='address'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      error={errors.address && errors.address}
-                      errorBorder={errors.address && '1px solid red'}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.address && errors.address && errors.address}
+                      errorBorder={touched.address && errors.address && '1px solid red'}
                       placeholder='Address'
                       title='Address'
                       type='text'
@@ -223,21 +221,14 @@ const PersonalCabinet: FC = () => {
 
                     <Input
                       name='oldPassword'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      onBlur={(e: any) => {
-                        changePassword()
-                        handleBlur(e)
-                      }}
-                      error={errors.oldPassword && errors.oldPassword}
-                      errorBorder={errors.oldPassword && '1px solid red'}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.oldPassword && errors.oldPassword && errors.oldPassword}
+                      errorBorder={touched.oldPassword && errors.oldPassword && '1px solid red'}
                       placeholder='Enter old password'
                       title='Enter old password'
                       type='password'
                     />
-
                   </div>
                   <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
                     <Input
@@ -253,12 +244,10 @@ const PersonalCabinet: FC = () => {
                       type='file'/>
                     <Input
                       name='password'
-                      onChange={(e) => {
-                        changeForm(e)
-                        handleChange(e)
-                      }}
-                      error={errors.password && errors.password}
-                      errorBorder={errors.password && '1px solid red'}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.password && errors.password && errors.password}
+                      errorBorder={touched.password && errors.password && '1px solid red'}
                       placeholder='Enter a new password'
                       title='Enter a new password'
                       type='password'
@@ -299,7 +288,7 @@ const PersonalCabinet: FC = () => {
                       title='Delete avatar'
                       height='52px'/>
                   </div>
-                </form>
+                </Form>
               </div>
             </>
           )}

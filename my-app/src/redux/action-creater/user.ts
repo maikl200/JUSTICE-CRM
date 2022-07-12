@@ -19,25 +19,44 @@ export const fetchUsers = () => {
   }
 }
 
-export const changeCurrentPassword = (setCurrentPassword: Dispatch<SetStateAction<boolean>>, action: { payload: string }) => {
-  return (dispatch: Dispatch<UserAction>) => {
-    axios.post('http://localhost:5100/profile/changePassword', {
-      oldPassword: action.payload
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    })
-      .then((res) => {
-        dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
-        console.log('good')
-        setCurrentPassword(true)
-      }).catch(() => {
-      console.log('not good')
-      setCurrentPassword(false)
-    })
+export const changeCurrentPassword =
+  (
+    setCurrentPassword:
+      Dispatch<SetStateAction<{
+        oldPassword:
+          boolean;
+        newPassword:
+          boolean
+      }>>,
+    action:
+      {
+        payload:
+          {
+            oldPassword:
+              string | undefined;
+            newPassword:
+              string | undefined
+          }
+      }) => {
+    return (dispatch: Dispatch<UserAction>) => {
+      axios.post('http://localhost:5100/profile/changePassword', {
+        ...action.payload
+      }, {
+        headers: {
+          Authorization: `${Cookies.get("token")}`,
+        }
+      })
+        .then((res) => {
+          dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
+          console.log('res',res.data)
+          console.log('good')
+          setCurrentPassword({newPassword: false, oldPassword: true})
+        }).catch(() => {
+        console.log('not good')
+        setCurrentPassword({newPassword: true, oldPassword: false})
+      })
+    }
   }
-}
 
 export const changeProfile = (action: { payload: TypeUser }) => {
   return (dispatch: Dispatch<UserAction>) => {
