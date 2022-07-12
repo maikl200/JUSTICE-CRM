@@ -19,7 +19,6 @@ import {TypeUser} from "../../types/types";
 import {useWindowSize} from "../../hooks/useWindowSize";
 
 const validationSchema = yup.object({
-  isPassword: yup.boolean(),
   firstName: yup.string()
     .required('Required field')
     .max(15, 'The first name is too long')
@@ -40,12 +39,12 @@ const validationSchema = yup.object({
     .required('Required field')
     .max(15, 'The address is too long'),
   oldPassword: yup.string()
-    // .test('oldPassword', 'COCK', function (value, data) {
-    //   console.log(yup.ref())
-    //  // if (yup.ref('isPassword')) {
-    //  //
-    //  // }
-    // })
+    .test('checkPassword', function (value, data) {
+      if (data.parent.isPassword.oldPassword) {
+        return data.createError({message: 'ad'})
+      }
+      return true
+    })
     .test('oldPassword', 'Fill in this field', function (value, data) {
       if (data.parent.password) {
         return data.parent.oldPassword
@@ -54,6 +53,12 @@ const validationSchema = yup.object({
     })
     .matches(regEx.password, 'invalid password'),
   password: yup.string()
+    .test('checkPassword', function (value, data) {
+      if (data.parent.isPassword.newPassword) {
+        return data.createError({message: "fff"})
+      }
+      return true
+    })
     .test('oldPassword', "Fill in this field", function (value, data) {
       if (data.parent.oldPassword) {
         return data.parent.password
@@ -83,7 +88,7 @@ const PersonalCabinet: FC = () => {
     }
     changeCurrentPassword(setCurrentPassword, {payload: dataPassword})
   }
-
+  console.log(currentPassword)
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -113,25 +118,25 @@ const PersonalCabinet: FC = () => {
         <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
         {!!Object.keys(user).length && <Formik
-          initialValues={{
-            firstName: user.firstName,
-            lastName: user.lastName,
-            companyName: user.companyName,
-            productCategory: user.productCategory ?? '',
-            address: user.address ?? '15 Krylatskaya',
-            oldPassword: '',
-            password: '',
-            isPassword: currentPassword
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(data, values) => {
-            changePassword()
-            changeProfile({payload: data})
-            setPreviewAvatarState('')
-            setFileName('')
-            if (!image) return
-            uploadAvatar({payload: image[0]})
-          }}>
+            initialValues={{
+              firstName: user.firstName,
+              lastName: user.lastName,
+              companyName: user.companyName,
+              productCategory: user.productCategory ?? '',
+              address: user.address ?? '15 Krylatskaya',
+              oldPassword: '',
+              password: '',
+              isPassword: currentPassword
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(data, values) => {
+              changePassword()
+              changeProfile({payload: data})
+              setPreviewAvatarState('')
+              setFileName('')
+              if (!image) return
+              uploadAvatar({payload: image[0]})
+            }}>
           {({
               values,
               errors,
@@ -222,7 +227,9 @@ const PersonalCabinet: FC = () => {
                     <Input
                       name='oldPassword'
                       onChange={handleChange}
-                      onBlur={handleBlur}
+                      onBlur={(e: any) => {
+                        handleBlur(e)
+                      }}
                       error={touched.oldPassword && errors.oldPassword && errors.oldPassword}
                       errorBorder={touched.oldPassword && errors.oldPassword && '1px solid red'}
                       placeholder='Enter old password'
@@ -245,7 +252,9 @@ const PersonalCabinet: FC = () => {
                     <Input
                       name='password'
                       onChange={handleChange}
-                      onBlur={handleBlur}
+                      onBlur={(e: any) => {
+                        handleBlur(e)
+                      }}
                       error={touched.password && errors.password && errors.password}
                       errorBorder={touched.password && errors.password && '1px solid red'}
                       placeholder='Enter a new password'

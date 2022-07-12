@@ -48,12 +48,12 @@ export const changeCurrentPassword =
       })
         .then((res) => {
           dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
-          console.log('res',res.data)
           console.log('good')
-          setCurrentPassword({newPassword: false, oldPassword: true})
+          console.log(res.data)
+          setCurrentPassword({newPassword: true, oldPassword: true})
         }).catch(() => {
         console.log('not good')
-        setCurrentPassword({newPassword: true, oldPassword: false})
+        setCurrentPassword({newPassword: false, oldPassword: false})
       })
     }
   }
