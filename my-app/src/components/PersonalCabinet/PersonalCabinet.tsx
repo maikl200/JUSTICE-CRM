@@ -18,7 +18,7 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeUser} from "../../types/types";
 import {useWindowSize} from "../../hooks/useWindowSize";
 
-const validationSchema = yup.object({
+const validationSchema = (currentPassword: undefined | boolean) => yup.object().shape({
   firstName: yup.string()
     .required('Required field')
     .max(15, 'The first name is too long')
@@ -39,9 +39,9 @@ const validationSchema = yup.object({
     .required('Required field')
     .max(15, 'The address is too long'),
   oldPassword: yup.string()
-    .test('checkPassword', function (value, data) {
-      if (data.parent.isPassword.oldPassword) {
-        return data.createError({message: 'ad'})
+    .test('checkPassword', 'dada', function (value, data) {
+      if (!currentPassword) {
+        return false
       }
       return true
     })
@@ -53,9 +53,9 @@ const validationSchema = yup.object({
     })
     .matches(regEx.password, 'invalid password'),
   password: yup.string()
-    .test('checkPassword', function (value, data) {
-      if (data.parent.isPassword.newPassword) {
-        return data.createError({message: "fff"})
+    .test('checkPassword', 'Passwords must not match', function (value, data) {
+      if (value === data.parent.oldPassword) {
+        return false
       }
       return true
     })
@@ -72,23 +72,16 @@ const PersonalCabinet: FC = () => {
   const [form, changeForm, setForm] = useHandleChange<TypeUser>({})
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
-  const [currentPassword, setCurrentPassword] = useState<{ oldPassword: boolean, newPassword: boolean }>({
-    oldPassword: false,
-    newPassword: false
-  })
+  const [currentPassword, setCurrentPassword] = useState<boolean>(true)
   const [fileName, setFileName] = useState('')
   const user = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = () => {
-    const dataPassword = {
-      oldPassword: form.oldPassword,
-      newPassword: form.password
-    }
-    changeCurrentPassword(setCurrentPassword, {payload: dataPassword})
+    changeCurrentPassword(setCurrentPassword, {payload: form.oldPassword})
   }
-  console.log(currentPassword)
+
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -118,25 +111,25 @@ const PersonalCabinet: FC = () => {
         <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
         {!!Object.keys(user).length && <Formik
-            initialValues={{
-              firstName: user.firstName,
-              lastName: user.lastName,
-              companyName: user.companyName,
-              productCategory: user.productCategory ?? '',
-              address: user.address ?? '15 Krylatskaya',
-              oldPassword: '',
-              password: '',
-              isPassword: currentPassword
-            }}
-            validationSchema={validationSchema}
-            onSubmit={(data, values) => {
-              changePassword()
-              changeProfile({payload: data})
-              setPreviewAvatarState('')
-              setFileName('')
-              if (!image) return
-              uploadAvatar({payload: image[0]})
-            }}>
+          initialValues={{
+            firstName: user.firstName,
+            lastName: user.lastName,
+            companyName: user.companyName,
+            productCategory: user.productCategory ?? '',
+            address: user.address ?? '15 Krylatskaya',
+            oldPassword: '',
+            password: '',
+          }}
+          validationSchema={validationSchema(currentPassword)}
+          onSubmit={(data, values) => {
+            changePassword()
+            console.log('===>data', data)
+            // changeProfile({payload: data})
+            // setPreviewAvatarState('')
+            // setFileName('')
+            // if (!image) return
+            // uploadAvatar({payload: image[0]})
+          }}>
           {({
               values,
               errors,
@@ -144,6 +137,7 @@ const PersonalCabinet: FC = () => {
               handleChange,
               handleBlur,
               touched,
+              handleSubmit
             }) => (
             <>
               <div className={style.main_personalCabinetBar_wrapper}>
@@ -228,7 +222,7 @@ const PersonalCabinet: FC = () => {
                       name='oldPassword'
                       onChange={handleChange}
                       onBlur={(e: any) => {
-                        handleBlur(e)
+                        changeForm(e)
                       }}
                       error={touched.oldPassword && errors.oldPassword && errors.oldPassword}
                       errorBorder={touched.oldPassword && errors.oldPassword && '1px solid red'}
@@ -253,7 +247,7 @@ const PersonalCabinet: FC = () => {
                       name='password'
                       onChange={handleChange}
                       onBlur={(e: any) => {
-                        handleBlur(e)
+                        changeForm(e)
                       }}
                       error={touched.password && errors.password && errors.password}
                       errorBorder={touched.password && errors.password && '1px solid red'}

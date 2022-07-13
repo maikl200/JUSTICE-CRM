@@ -21,39 +21,24 @@ export const fetchUsers = () => {
 
 export const changeCurrentPassword =
   (
-    setCurrentPassword:
-      Dispatch<SetStateAction<{
-        oldPassword:
-          boolean;
-        newPassword:
-          boolean
-      }>>,
-    action:
-      {
-        payload:
-          {
-            oldPassword:
-              string | undefined;
-            newPassword:
-              string | undefined
-          }
-      }) => {
+    setCurrentPassword: any, action: { payload: string | undefined }) => {
+    console.log(action.payload)
     return (dispatch: Dispatch<UserAction>) => {
       axios.post('http://localhost:5100/profile/changePassword', {
-        ...action.payload
+        oldPassword: action.payload
       }, {
         headers: {
           Authorization: `${Cookies.get("token")}`,
         }
       })
         .then((res) => {
+          console.log('===>res.data', res.data)
+          setCurrentPassword(true)
           dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
-          console.log('good')
-          console.log(res.data)
-          setCurrentPassword({newPassword: true, oldPassword: true})
-        }).catch(() => {
-        console.log('not good')
-        setCurrentPassword({newPassword: false, oldPassword: false})
+        }).catch((e) => {
+        console.log(e)
+        setCurrentPassword(false)
+        console.error(e)
       })
     }
   }

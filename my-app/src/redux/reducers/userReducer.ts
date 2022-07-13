@@ -13,6 +13,7 @@ export const userReducer = (state = initialState, action: UserAction): TypeUser 
       return {
         ...state, oldPassword: action.payload
       }
+
     case UserActionEnum.PROFILE_CHANGE:
       return {
         ...state, ...action.payload

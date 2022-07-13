@@ -76,23 +76,17 @@ module.exports.changePassword = async (req, res) => {
   try {
 
     const candidate = await User.findOne({_id: req.user.id})
-
     if (candidate) {
       const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
       if (passwordResult) {
-        if (req.body.oldPassword === req.body.newPassword) {
-          res.status(400).json({
-            message: "password hasn't been old"
-          })
-        }
-        res.status(201).json({
-          message: 'good'
-        })
+        res.status(200).json(true)
       } else {
-        res.status(400).json({
-          message: "password don't match"
-        })
+        res.status(200).json(false)
       }
+    } else {
+      res.status(404).json({
+        message: 'user not found'
+      })
     }
   } catch (e) {
     console.log('error')
