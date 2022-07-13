@@ -18,7 +18,7 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeUser} from "../../types/types";
 import {useWindowSize} from "../../hooks/useWindowSize";
 
-const validationSchema = (currentPassword: undefined | boolean) => yup.object().shape({
+const validationSchema = () => yup.object().shape({
   firstName: yup.string()
     .required('Required field')
     .max(15, 'The first name is too long')
@@ -39,12 +39,6 @@ const validationSchema = (currentPassword: undefined | boolean) => yup.object().
     .required('Required field')
     .max(15, 'The address is too long'),
   oldPassword: yup.string()
-    .test('checkPassword', 'dada', function (value, data) {
-      if (!currentPassword) {
-        return false
-      }
-      return true
-    })
     .test('oldPassword', 'Fill in this field', function (value, data) {
       if (data.parent.password) {
         return data.parent.oldPassword
@@ -54,6 +48,9 @@ const validationSchema = (currentPassword: undefined | boolean) => yup.object().
     .matches(regEx.password, 'invalid password'),
   password: yup.string()
     .test('checkPassword', 'Passwords must not match', function (value, data) {
+      if (!value && !data.parent.oldPassword) {
+        return true
+      }
       if (value === data.parent.oldPassword) {
         return false
       }
@@ -68,18 +65,18 @@ const validationSchema = (currentPassword: undefined | boolean) => yup.object().
     .matches(regEx.password, 'invalid password'),
 })
 
+
 const PersonalCabinet: FC = () => {
   const [form, changeForm, setForm] = useHandleChange<TypeUser>({})
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
-  const [currentPassword, setCurrentPassword] = useState<boolean>(true)
   const [fileName, setFileName] = useState('')
   const user = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
   const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
-  const changePassword = () => {
-    changeCurrentPassword(setCurrentPassword, {payload: form.oldPassword})
+  const changePassword = (validateError: any) => {
+    changeCurrentPassword(validateError, {payload: form.oldPassword})
   }
 
   const imageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +98,7 @@ const PersonalCabinet: FC = () => {
   }
 
   useEffect(() => {
-    setForm(user)
+    setForm({...form, ...user})
   }, [user])
 
   return (
@@ -110,192 +107,194 @@ const PersonalCabinet: FC = () => {
       <div className={style.main_personalCabinetBar}>
         <Header title='Personal Cabinet'
                 subTitle='Information about your account'/>
-        {!!Object.keys(user).length && <Formik
-          initialValues={{
-            firstName: user.firstName,
-            lastName: user.lastName,
-            companyName: user.companyName,
-            productCategory: user.productCategory ?? '',
-            address: user.address ?? '15 Krylatskaya',
-            oldPassword: '',
-            password: '',
-          }}
-          validationSchema={validationSchema(currentPassword)}
-          onSubmit={(data, values) => {
-            changePassword()
-            console.log('===>data', data)
-            // changeProfile({payload: data})
-            // setPreviewAvatarState('')
-            // setFileName('')
-            // if (!image) return
-            // uploadAvatar({payload: image[0]})
-          }}>
-          {({
-              values,
-              errors,
-              isValid,
-              handleChange,
-              handleBlur,
-              touched,
-              handleSubmit
-            }) => (
-            <>
-              <div className={style.main_personalCabinetBar_wrapper}>
-                <Form
-                  className={style.main_personalCabinetBar_wrapper_userSettings}
-                  method='POST'
-                  action='/upload'
-                  encType='multipart/form-data'
-                >
-                  <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
-                    <Input
-                      name='firstName'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.firstName}
-                      errorBorder={touched.firstName && errors.firstName && '1px solid red'}
-                      error={touched.firstName && errors.firstName && errors.firstName}
-                      placeholder='First name'
-                      title='First name'
-                      type='text'
-                    />
-                    {
-                      previewAvatarState
-                        ?
-                        <div className={style.main_personalCabinetBar_wrapper_userSettings_row_avatarContainer}>
-                          <span>Avatar preview</span>
-                          <div
-                            className={style.main_personalCabinetBar_wrapper_userSettings_row_avatarContainer_imgPreviewContainer}>
-                            <img src={previewAvatarState as string} alt='preview Avatar'/>
-                          </div>
-                        </div>
-                        :
-                        ''
-                    }
-                    <Input
-                      name='lastName'
-                      value={values.lastName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errorBorder={touched.lastName && errors.lastName && '1px solid red'}
-                      error={touched.lastName && errors.lastName && errors.lastName}
-                      placeholder='Last name'
-                      title='Last name'
-                      type='text'/>
-                  </div>
-                  <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
-                    <Input
-                      name='companyName'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errorBorder={touched.companyName && errors.companyName && '1px solid red'}
-                      error={touched.companyName && errors.companyName && errors.companyName}
-                      value={values.companyName}
-                      placeholder='Company name'
-                      title='Company name'
-                      type='text'/>
-                    <Input
-                      value={values.productCategory}
-                      name='productCategory'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      errorBorder={touched.productCategory && errors.productCategory && '1px solid red'}
-                      error={touched.productCategory && errors.productCategory && errors.productCategory}
-                      placeholder='Product Category'
-                      title='Product Category'
-                      type='text'/>
-                  </div>
-                  <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
-                    <Input
-                      value={values.address}
-                      name='address'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.address && errors.address && errors.address}
-                      errorBorder={touched.address && errors.address && '1px solid red'}
-                      placeholder='Address'
-                      title='Address'
-                      type='text'
-                    />
-
-                    <Input
-                      name='oldPassword'
-                      onChange={handleChange}
-                      onBlur={(e: any) => {
-                        changeForm(e)
-                      }}
-                      error={touched.oldPassword && errors.oldPassword && errors.oldPassword}
-                      errorBorder={touched.oldPassword && errors.oldPassword && '1px solid red'}
-                      placeholder='Enter old password'
-                      title='Enter old password'
-                      type='password'
-                    />
-                  </div>
-                  <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
-                    <Input
-                      name='image'
-                      onChange={(e) => {
-                        imageHandler(e)
-                        setFileName(e.target.value)
-                        setImage(e.target.files)
-                      }}
-                      value={fileName}
-                      placeholder='Avatar'
-                      title='Avatar'
-                      type='file'/>
-                    <Input
-                      name='password'
-                      onChange={handleChange}
-                      onBlur={(e: any) => {
-                        changeForm(e)
-                      }}
-                      error={touched.password && errors.password && errors.password}
-                      errorBorder={touched.password && errors.password && '1px solid red'}
-                      placeholder='Enter a new password'
-                      title='Enter a new password'
-                      type='password'
-                    />
-                  </div>
-                  {
-                    width! < 1590
-                      ?
-                      <div className={style.main_personalCabinetBar_wrapper_userSettings_row_downAvatarContainer}>
+        {!!Object.keys(user).length &&
+            <Formik
+                initialValues={{
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  companyName: user.companyName,
+                  productCategory: user.productCategory ?? '',
+                  address: user.address ?? '15 Krylatskaya',
+                  oldPassword: '',
+                  password: '',
+                }}
+                validationSchema={validationSchema()}
+                onSubmit={(data, values) => {
+                  if (data.oldPassword) {
+                    changePassword(values.setFieldError)
+                  }
+                  changeProfile({payload: data})
+                  setPreviewAvatarState('')
+                  setFileName('')
+                  if (!image) return
+                  uploadAvatar({payload: image[0]})
+                }}
+            >
+              {({
+                  values,
+                  errors,
+                  isValid,
+                  handleChange,
+                  handleBlur,
+                  touched,
+                }) => (
+                <>
+                  <div className={style.main_personalCabinetBar_wrapper}>
+                    <Form
+                      className={style.main_personalCabinetBar_wrapper_userSettings}
+                      method='POST'
+                      action='/upload'
+                      encType='multipart/form-data'
+                    >
+                      <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
+                        <Input
+                          name='firstName'
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.firstName}
+                          errorBorder={touched.firstName && errors.firstName && '1px solid red'}
+                          error={touched.firstName && errors.firstName && errors.firstName}
+                          placeholder='First name'
+                          title='First name'
+                          type='text'
+                        />
                         {
                           previewAvatarState
                             ?
-                            <>
+                            <div className={style.main_personalCabinetBar_wrapper_userSettings_row_avatarContainer}>
                               <span>Avatar preview</span>
                               <div
-                                className={style.main_personalCabinetBar_wrapper_userSettings_row_downAvatarContainer_imgPreviewContainer}>
+                                className={style.main_personalCabinetBar_wrapper_userSettings_row_avatarContainer_imgPreviewContainer}>
                                 <img src={previewAvatarState as string} alt='preview Avatar'/>
                               </div>
-                            </>
-                            : ''
+                            </div>
+                            :
+                            ''
                         }
+                        <Input
+                          name='lastName'
+                          value={values.lastName}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          errorBorder={touched.lastName && errors.lastName && '1px solid red'}
+                          error={touched.lastName && errors.lastName && errors.lastName}
+                          placeholder='Last name'
+                          title='Last name'
+                          type='text'/>
                       </div>
-                      :
-                      ''
-                  }
-                  <div className={style.main_personalCabinetBar_btns}>
-                    <ButtonUI
-                      type='submit'
-                      disabled={!isValid}
-                      width='158px'
-                      title='Save changes'
-                      height='52px'/>
-                    <ButtonUI
-                      bch='#c23616'
-                      bc='#e84118'
-                      onClick={() => deleteAvatarFunk()}
-                      width='158px'
-                      title='Delete avatar'
-                      height='52px'/>
+                      <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
+                        <Input
+                          name='companyName'
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          errorBorder={touched.companyName && errors.companyName && '1px solid red'}
+                          error={touched.companyName && errors.companyName && errors.companyName}
+                          value={values.companyName}
+                          placeholder='Company name'
+                          title='Company name'
+                          type='text'/>
+                        <Input
+                          value={values.productCategory}
+                          name='productCategory'
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          errorBorder={touched.productCategory && errors.productCategory && '1px solid red'}
+                          error={touched.productCategory && errors.productCategory && errors.productCategory}
+                          placeholder='Product Category'
+                          title='Product Category'
+                          type='text'/>
+                      </div>
+                      <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
+                        <Input
+                          value={values.address}
+                          name='address'
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          error={touched.address && errors.address && errors.address}
+                          errorBorder={touched.address && errors.address && '1px solid red'}
+                          placeholder='Address'
+                          title='Address'
+                          type='text'
+                        />
+
+                        <Input
+                          name='oldPassword'
+                          onChange={handleChange}
+                          onBlur={(e: any) => {
+                            changeForm(e)
+                          }}
+                          error={touched.oldPassword && errors.oldPassword && errors.oldPassword}
+                          errorBorder={touched.oldPassword && errors.oldPassword && '1px solid red'}
+                          placeholder='Enter old password'
+                          title='Enter old password'
+                          type='password'
+                        />
+                      </div>
+                      <div className={style.main_personalCabinetBar_wrapper_userSettings_row}>
+                        <Input
+                          name='image'
+                          onChange={(e) => {
+                            imageHandler(e)
+                            setFileName(e.target.value)
+                            setImage(e.target.files)
+                          }}
+                          value={fileName}
+                          placeholder='Avatar'
+                          title='Avatar'
+                          type='file'/>
+                        <Input
+                          name='password'
+                          onChange={handleChange}
+                          onBlur={(e: any) => {
+                            changeForm(e)
+                          }}
+                          error={touched.password && errors.password && errors.password}
+                          errorBorder={touched.password && errors.password && '1px solid red'}
+                          placeholder='Enter a new password'
+                          title='Enter a new password'
+                          type='password'
+                        />
+                      </div>
+                      {
+                        width! < 1590
+                          ?
+                          <div className={style.main_personalCabinetBar_wrapper_userSettings_row_downAvatarContainer}>
+                            {
+                              previewAvatarState
+                                ?
+                                <>
+                                  <span>Avatar preview</span>
+                                  <div
+                                    className={style.main_personalCabinetBar_wrapper_userSettings_row_downAvatarContainer_imgPreviewContainer}>
+                                    <img src={previewAvatarState as string} alt='preview Avatar'/>
+                                  </div>
+                                </>
+                                : ''
+                            }
+                          </div>
+                          :
+                          ''
+                      }
+                      <div className={style.main_personalCabinetBar_btns}>
+                        <ButtonUI
+                          type='submit'
+                          disabled={!isValid}
+                          width='158px'
+                          title='Save changes'
+                          height='52px'/>
+                        <ButtonUI
+                          bch='#c23616'
+                          bc='#e84118'
+                          onClick={() => deleteAvatarFunk()}
+                          width='158px'
+                          title='Delete avatar'
+                          height='52px'/>
+                      </div>
+                    </Form>
                   </div>
-                </Form>
-              </div>
-            </>
-          )}
-        </Formik>}
+                </>
+              )}
+            </Formik>}
       </div>
     </main>
   );

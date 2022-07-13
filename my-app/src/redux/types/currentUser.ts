@@ -2,7 +2,7 @@ import {TypeUser} from "../../types/types";
 
 export enum UserActionEnum {
   SET_USER = 'SET_USER',
-  CHANGE_PASSWORD = 'CHANGE_PASSWORD',
+  CHANGE_IS_VALID_PASSWORD = 'CHANGE_IS_VALID_PASSWORD',
   PROFILE_CHANGE = 'PROFILE_CHANGE',
   UPLOAD_AVATAR = 'UPLOAD_AVATAR',
   DELETE_AVATAR = 'DELETE_AVATAR',
@@ -14,7 +14,7 @@ export interface SetUser {
 }
 
 export interface changePassword {
-  type: UserActionEnum.CHANGE_PASSWORD
+  type: UserActionEnum.CHANGE_IS_VALID_PASSWORD
   payload: string
 }
 

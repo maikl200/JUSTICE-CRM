@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction} from "react";
+import {Dispatch} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {TypeUser} from "../../types/types";
@@ -21,8 +21,7 @@ export const fetchUsers = () => {
 
 export const changeCurrentPassword =
   (
-    setCurrentPassword: any, action: { payload: string | undefined }) => {
-    console.log(action.payload)
+    validateError: any, action: { payload: string | undefined }) => {
     return (dispatch: Dispatch<UserAction>) => {
       axios.post('http://localhost:5100/profile/changePassword', {
         oldPassword: action.payload
@@ -32,12 +31,12 @@ export const changeCurrentPassword =
         }
       })
         .then((res) => {
-          console.log('===>res.data', res.data)
-          setCurrentPassword(true)
-          dispatch({type: UserActionEnum.CHANGE_PASSWORD, payload: res.data})
+          if (!res.data) {
+            validateError('oldPassword', 'The password doesnt match')
+          }
+          dispatch({type: UserActionEnum.CHANGE_IS_VALID_PASSWORD, payload: res.data})
         }).catch((e) => {
         console.log(e)
-        setCurrentPassword(false)
         console.error(e)
       })
     }

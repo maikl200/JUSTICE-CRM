@@ -29,7 +29,6 @@ module.exports.mockData = async function (req, res) {
 
 module.exports.getMock = async function (req,res) {
   const allMock = await mockScheme.find()
-  console.log(allMock)
   try {
     return res.status(200).json(allMock)
   } catch (e) {

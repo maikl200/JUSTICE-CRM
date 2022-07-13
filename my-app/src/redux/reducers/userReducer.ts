@@ -9,9 +9,9 @@ export const userReducer = (state = initialState, action: UserAction): TypeUser 
       return {
         ...state, ...action.payload
       }
-    case UserActionEnum.CHANGE_PASSWORD:
+    case UserActionEnum.CHANGE_IS_VALID_PASSWORD:
       return {
-        ...state, oldPassword: action.payload
+        ...state, isValidOldPassword: !!action.payload
       }
 
     case UserActionEnum.PROFILE_CHANGE:

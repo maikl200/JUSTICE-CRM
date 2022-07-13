@@ -22,7 +22,6 @@ module.exports.changeProfile = async (req, res) => {
       email: candidate.email,
       firstName: req.body.firstName ? req.body.firstName : candidate.firstName,
       lastName: req.body.lastName ? req.body.lastName : candidate.lastName,
-      password: req.body.password ? req.body.password : candidate.password,
       oldPassword: req.body.oldPassword ? req.body.oldPassword : '',
       companyName: req.body.companyName ? req.body.companyName : candidate.companyName,
       productCategory: req.body.productCategory ? req.body.productCategory : candidate.productCategory,
@@ -45,7 +44,7 @@ module.exports.changeProfile = async (req, res) => {
     try {
       await User.updateOne({_id: req.user.id}, {
         $set: {
-          ...profile
+          ...profile,
         }
       })
       let passwordResult = null
@@ -54,8 +53,8 @@ module.exports.changeProfile = async (req, res) => {
       }
 
       if (passwordResult) {
+        const password = req.body.password ? req.body.password : candidate.password
         const salt = bcrypt.genSaltSync(10)
-        const password = req.body.password
         await User.updateOne(
           {_id: req.user.id},
           {
@@ -89,7 +88,6 @@ module.exports.changePassword = async (req, res) => {
       })
     }
   } catch (e) {
-    console.log('error')
     errorHandler(res, e)
   }
 }

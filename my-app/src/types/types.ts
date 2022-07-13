@@ -23,6 +23,7 @@ export interface TypeUser {
   firstName?: string
   lastName?: string
   oldPassword?: string
+  isValidOldPassword?: boolean
   newPassword?: string
   password?: string
   productCategory?: string
