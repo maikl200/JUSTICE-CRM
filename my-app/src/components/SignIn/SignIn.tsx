@@ -31,12 +31,11 @@ const SignIn: FC = () => {
   } = useForm({
     mode: 'all'
   })
-  console.log(LogInError)
+
   const onSubmit = (data: TypeUser) => {
     logInUser(data)
     if (!LogInError && !LogInError !== undefined) {
       setShowError('')
-      navigate('/mainPage')
     } else {
       setShowError('Such a user exists')
     }

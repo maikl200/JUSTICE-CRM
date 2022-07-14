@@ -13,7 +13,7 @@ import {Input} from "../../UI/InputUI/Input";
 import {regEx} from "../../assets/regEx";
 import {TypeProduct} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {fetchProducts, sellGoods} from "../../redux/action-creater/product";
+import {sellGoods} from "../../redux/action-creater/product";
 import {useAction} from "../../hooks/useAction";
 import {useForm} from "react-hook-form";
 
@@ -28,9 +28,7 @@ const MyProduct: FC = () => {
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
 
   const products = useTypedSelector(state => state.product)
-
-  // const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
-
+  const {fetchProducts} = useAction()
   const {
     register,
     reset,
@@ -42,7 +40,7 @@ const MyProduct: FC = () => {
   } = useForm({
     mode: 'all'
   })
-
+  console.log(products)
   useEffect(() => {
     fetchProducts()
   }, [])
@@ -109,7 +107,7 @@ const MyProduct: FC = () => {
             <p>Actions</p>
           </div>
           {
-            products.length > 0
+            products?.length > 0
               ?
               <div className={style.main_productBar_productCard_productData}>
                 {products?.map((product) => (
@@ -199,7 +197,7 @@ const MyProduct: FC = () => {
             defaultValue={dataEditProduct?.productCategory}
             placeholder='Category'
             type='text'
-            />
+          />
           <Input
             {...register('quantityGoods', {
               valueAsNumber: true,

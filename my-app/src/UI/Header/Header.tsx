@@ -15,6 +15,7 @@ import {useAction} from '../../hooks/useAction'
 import {addProduct} from "../../redux/action-creater/product";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
+import {useDispatch} from "react-redux";
 
 interface HeaderProps {
   title: string
@@ -33,9 +34,8 @@ const Header: FC<HeaderProps> =
    }) => {
 
     const [modalActive, setModalActive] = useState<boolean>(false)
-
     const user = useTypedSelector(state => state.user)
-    // const {addProduct, fetchUsers} = useAction()
+    const {addProduct, fetchProducts} = useAction()
     const {pathname} = useLocation();
 
     const {
@@ -51,13 +51,13 @@ const Header: FC<HeaderProps> =
     })
 
     const onSubmit = (data: TypeProduct) => {
-      addProduct({payload: data})
+      addProduct(data)
       reset()
       setModalActive(false)
     }
 
     useEffect(() => {
-      // fetchUsers()
+      fetchProducts()
     }, [])
 
     return (

@@ -1,6 +1,7 @@
 import {TypeProduct} from "../../types/types";
 
 export enum ProductActionEnum {
+  FETCH_PRODUCT = 'FETCH_PRODUCT',
   SET_PRODUCT = 'SET_PRODUCT',
   ADD_PRODUCT = 'ADD_PRODUCT',
   SELL_PRODUCT = 'SELL_PRODUCT',
@@ -8,14 +9,19 @@ export enum ProductActionEnum {
   DELETE_PRODUCT = 'DELETE_PRODUCT'
 }
 
-export interface SetProduct {
+export interface FetchProduct {
+  type: ProductActionEnum.FETCH_PRODUCT
+  payload: TypeProduct[]
+}
+
+export interface setProduct {
   type: ProductActionEnum.SET_PRODUCT
   payload: TypeProduct[]
 }
 
 export interface AddProduct {
   type: ProductActionEnum.ADD_PRODUCT
-  payload: TypeProduct
+  payload: TypeProduct[]
 }
 
 export interface sellProduct {
@@ -33,4 +39,4 @@ export interface deleteProduct {
   payload: TypeProduct[]
 }
 
-export type ProductAction = SetProduct | AddProduct | sellProduct | editProduct | deleteProduct
+export type ProductAction = FetchProduct | AddProduct | sellProduct | editProduct | deleteProduct | setProduct

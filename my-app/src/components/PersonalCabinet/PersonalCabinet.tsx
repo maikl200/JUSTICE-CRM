@@ -73,7 +73,7 @@ const PersonalCabinet: FC = () => {
   const [fileName, setFileName] = useState('')
   const user = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
-  const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
+  // const {fetchUsers, changeCurrentPassword, changeProfile, uploadAvatar, deleteAvatar} = useAction()
 
   const changePassword = (validateError: (field: string, message: (string | undefined)) => void) => {
     changeCurrentPassword(validateError, {payload: form.oldPassword})
@@ -89,9 +89,9 @@ const PersonalCabinet: FC = () => {
     reader.readAsDataURL(e.target.files![0])
   }
 
-  useEffect(() => {
-    fetchUsers()
-  }, [])
+  // useEffect(() => {
+  //   fetchUsers()
+  // }, [])
 
   const deleteAvatarFunk = () => {
     deleteAvatar()
@@ -123,11 +123,11 @@ const PersonalCabinet: FC = () => {
               if (data.oldPassword) {
                 changePassword(values.setFieldError)
               }
-              changeProfile({payload: data})
+              // changeProfile({payload: data})
               setPreviewAvatarState('')
               setFileName('')
               if (!image) return
-              uploadAvatar({payload: image[0]})
+              // uploadAvatar({payload: image[0]})
             }}
           >
             {({

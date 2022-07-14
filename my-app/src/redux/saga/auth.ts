@@ -24,11 +24,12 @@ export function* regUserWorker(data: any) {
 
 export function* loggInUserWorker(user: any) {
   try {
-   const {data} = yield call(axios.post, ('http://localhost:5100/auth/login'), {
+    const {data} = yield call(axios.post, ('http://localhost:5100/auth/login'), {
       email: user.payload?.email,
       password: user.payload?.password,
     })
     Cookies.set("token", data.token)
+    console.log(LogInError(false))
     yield put(LogInError(false))
   } catch (e) {
     yield put(LogInError(true))

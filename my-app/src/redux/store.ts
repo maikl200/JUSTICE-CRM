@@ -7,6 +7,8 @@ import {authReducer} from "./reducers/authReducer";
 import {userReducer} from "./reducers/userReducer";
 import createSagaMiddleware from 'redux-saga'
 import {regUserWatcher} from "./saga/auth";
+import {UserWatcher} from "./saga/user";
+import {ProductsWatcher} from "./saga/products";
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -22,6 +24,8 @@ export default function* rootSaga() {
   yield all(
     [
       regUserWatcher(),
+      UserWatcher(),
+      ProductsWatcher()
     ])
 }
 

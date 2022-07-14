@@ -16,9 +16,9 @@ const MainPage: FC = () => {
   const {fetchSellProducts} = useAction()
   const sellProduct = useTypedSelector(state => state.sellProduct)
 
-  useEffect(() => {
-    fetchSellProducts()
-  }, [])
+  // useEffect(() => {
+  //   fetchSellProducts()
+  // }, [])
 
   return (
     <main className={style.main}>

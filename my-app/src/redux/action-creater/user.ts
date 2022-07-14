@@ -4,20 +4,20 @@ import Cookies from "js-cookie";
 import {TypeUser} from "../../types/types";
 import {UserAction, UserActionEnum} from "../types/currentUser";
 
-export const fetchUsers = () => {
-  return (dispatch: Dispatch<UserAction>) => {
-    axios.get<TypeUser[]>('http://localhost:5100/profile/myProfile', {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    }).then((res) => {
-      const currentProfile = res.data.find(user => user)
-      dispatch({type: UserActionEnum.SET_USER, payload: currentProfile!})
-    }).catch((e) => {
-      console.error(e)
-    })
-  }
-}
+// export const fetchUsers = () => {
+//   return (dispatch: Dispatch<UserAction>) => {
+//     axios.get<TypeUser[]>('http://localhost:5100/profile/myProfile', {
+//       headers: {
+//         Authorization: `${Cookies.get("token")}`,
+//       }
+//     }).then((res) => {
+//       const currentProfile = res.data.find(user => user)
+//       dispatch({type: UserActionEnum.SET_USER, payload: currentProfile!})
+//     }).catch((e) => {
+//       console.error(e)
+//     })
+//   }
+// }
 
 export const changeCurrentPassword =
   (
