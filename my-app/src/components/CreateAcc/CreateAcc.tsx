@@ -7,10 +7,12 @@ import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {useNavigate} from "react-router-dom";
 
 import Cookies from "js-cookie";
-import {useAction} from "../../hooks/useAction";
+import {regUser} from "../../redux/action/auth";
 import {useForm} from "react-hook-form";
 import {TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
+import {useAction} from "../../hooks/useAction";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 const CreateAcc: FC = () => {
 
@@ -18,7 +20,8 @@ const CreateAcc: FC = () => {
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
   const {regUser} = useAction()
-
+  // @ts-ignore
+  const {RegError} = useTypedSelector(state => state.auth)
   const {
     register,
     formState: {
@@ -30,10 +33,19 @@ const CreateAcc: FC = () => {
   } = useForm({
     mode: 'all'
   })
-
+  console.log(RegError)
   const onSubmit = (data: TypeUser) => {
-    regUser(setShowError, navigate, {payload: data})
+    regUser(data)
+// todo Фиксануть баг
+    if (!RegError && RegError !== undefined) {
+      navigate('/singIn')
+      setShowError('')
+    } else {
+      setShowError('Such a user exists')
+    }
+
   }
+
 
   useEffect(() => {
     if (token) navigate('/mainPage')
@@ -152,7 +164,7 @@ const CreateAcc: FC = () => {
             height='56px'
             title='Create account'
             padding='6px 12px'
-           />
+          />
           <span className={style.main_regBlock_logInPage}>Already have an account? <span
             onClick={() => navigate('/signIn')}>Log in</span></span>
         </form>

@@ -29,7 +29,7 @@ const MyProduct: FC = () => {
 
   const products = useTypedSelector(state => state.product)
 
-  const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
+  // const {fetchProducts, sellGoods, editProduct, deleteProduct} = useAction()
 
   const {
     register,
@@ -70,7 +70,7 @@ const MyProduct: FC = () => {
   }
 
   const deleteElem = (id: string) => {
-    deleteProduct(id, products)
+    // deleteProduct(id, products)
   }
 
   const editElem = (id: string) => {
@@ -82,7 +82,7 @@ const MyProduct: FC = () => {
   }
 
   const editButton = (data: TypeProduct) => {
-    editProduct(editId, {payload: data})
+    // editProduct(editId, {payload: data})
     setEditModalActive(false)
   }
 

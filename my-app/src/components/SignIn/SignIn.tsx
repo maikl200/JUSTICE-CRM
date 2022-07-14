@@ -11,12 +11,15 @@ import {useAction} from "../../hooks/useAction";
 import {AuthActionEnum} from "../../redux/types/auth";
 import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
+import {logInUser, regUser} from "../../redux/action/auth";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 const SignIn: FC = () => {
 
   const navigate = useNavigate()
   const [showError, setShowError] = useState<string>('')
-  const {loginUser} = useAction()
+  const {logInUser} = useAction()
+  const {LogInError} = useTypedSelector(state => state.auth)
 
   const {
     register,
@@ -28,9 +31,15 @@ const SignIn: FC = () => {
   } = useForm({
     mode: 'all'
   })
-
+  console.log(LogInError)
   const onSubmit = (data: TypeUser) => {
-    loginUser(setShowError, navigate, {type: AuthActionEnum.LOGIN_USER, payload: data})
+    logInUser(data)
+    if (!LogInError && !LogInError !== undefined) {
+      setShowError('')
+      navigate('/mainPage')
+    } else {
+      setShowError('Such a user exists')
+    }
   }
 
   const token = Cookies.get('token')

@@ -15,6 +15,8 @@ export interface TypeProduct {
 }
 
 export interface TypeUser {
+  LogInError?: boolean
+  error?: boolean
   image?: string;
   address?: string
   avatar?: string

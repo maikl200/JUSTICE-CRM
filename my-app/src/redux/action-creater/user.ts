@@ -21,7 +21,7 @@ export const fetchUsers = () => {
 
 export const changeCurrentPassword =
   (
-    validateError: any, action: { payload: string | undefined }) => {
+    validateError: (field: string, message: (string | undefined)) => void, action: { payload: string | undefined }) => {
     return (dispatch: Dispatch<UserAction>) => {
       axios.post('http://localhost:5100/profile/changePassword', {
         oldPassword: action.payload

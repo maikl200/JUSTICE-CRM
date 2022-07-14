@@ -1,8 +1,10 @@
 import {TypeUser} from "../../types/types";
 
 export enum AuthActionEnum {
+  LOG_IN_ERROR = 'LOG_IN_ERROR',
   REG_USER = 'REG_USER',
-  LOGIN_USER = 'LOGIN_USER'
+  LOGIN_USER = 'LOGIN_USER',
+  REG_ERROR = 'REG_ERROR'
 }
 
 export interface RegUser {
@@ -15,4 +17,14 @@ export interface LoginUser {
   payload: TypeUser
 }
 
-export type AuthAction = RegUser | LoginUser
+export interface RegError {
+  type: AuthActionEnum.REG_ERROR
+  payload: boolean
+}
+
+export interface LogInError {
+  type: AuthActionEnum.LOG_IN_ERROR
+  payload: boolean
+}
+
+export type AuthAction = RegUser | LoginUser | RegError | LogInError

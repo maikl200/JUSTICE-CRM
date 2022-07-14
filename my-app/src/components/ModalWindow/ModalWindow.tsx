@@ -2,13 +2,14 @@ import React, {FC} from 'react';
 
 import style from './modalWindow.module.scss'
 import cross from '../../assets/Cross.svg'
+import {SubmitHandler} from "react-hook-form";
 
 
 interface ModalCreatingProductProps {
   setModalActive: (isActive: boolean) => void
   children: React.ReactNode
   title: string
-  onSubmit?: any
+  onSubmit?: React.FormEventHandler<HTMLFormElement>
   onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
 }
 

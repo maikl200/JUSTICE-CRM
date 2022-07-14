@@ -35,7 +35,7 @@ const Header: FC<HeaderProps> =
     const [modalActive, setModalActive] = useState<boolean>(false)
 
     const user = useTypedSelector(state => state.user)
-    const {addProduct, fetchUsers} = useAction()
+    // const {addProduct, fetchUsers} = useAction()
     const {pathname} = useLocation();
 
     const {
@@ -57,7 +57,7 @@ const Header: FC<HeaderProps> =
     }
 
     useEffect(() => {
-      fetchUsers()
+      // fetchUsers()
     }, [])
 
     return (

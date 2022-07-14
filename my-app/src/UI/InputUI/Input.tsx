@@ -1,6 +1,7 @@
-import React, {FC, forwardRef, useImperativeHandle, useRef} from 'react';
+import React, {ChangeEvent, FC, forwardRef, useImperativeHandle, useRef} from 'react';
 
 import style from './input.module.scss'
+import {DeepRequired, FieldError, FieldErrorsImpl, Merge} from "react-hook-form";
 
 interface Props {
   title?: string
@@ -8,11 +9,11 @@ interface Props {
   type: string
   width?: string
   name?: string
-  className?: any
+  className?: string
   defaultValue?: string | number
   errorBorder?: any
   error?: any
-  onBlur?: any
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   readOnly?: boolean
   value?: string | number
@@ -68,6 +69,7 @@ const InputUI: FC<Props> = (
     </>
   );
 };
+
 
 // @ts-ignore
 export const Input = forwardRef(InputUI);
