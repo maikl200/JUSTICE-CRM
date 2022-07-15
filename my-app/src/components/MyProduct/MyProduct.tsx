@@ -16,6 +16,8 @@ import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {sellGoods} from "../../redux/action-creater/product";
 import {useAction} from "../../hooks/useAction";
 import {useForm} from "react-hook-form";
+import {useDispatch} from "react-redux";
+import {deleteProductSaga} from "../../redux/action/products";
 
 const MyProduct: FC = () => {
 
@@ -29,6 +31,7 @@ const MyProduct: FC = () => {
 
   const products = useTypedSelector(state => state.product)
   const {fetchProducts} = useAction()
+  const dispatch = useDispatch()
   const {
     register,
     reset,
@@ -40,7 +43,7 @@ const MyProduct: FC = () => {
   } = useForm({
     mode: 'all'
   })
-  console.log(products)
+
   useEffect(() => {
     fetchProducts()
   }, [])
@@ -68,7 +71,8 @@ const MyProduct: FC = () => {
   }
 
   const deleteElem = (id: string) => {
-    // deleteProduct(id, products)
+    dispatch(deleteProductSaga(id))
+    // deleteProduct(id,products)
   }
 
   const editElem = (id: string) => {
@@ -83,7 +87,6 @@ const MyProduct: FC = () => {
     // editProduct(editId, {payload: data})
     setEditModalActive(false)
   }
-
   return (
     <main className={style.main}>
       <NavBar/>
@@ -116,7 +119,7 @@ const MyProduct: FC = () => {
                       <p>{product.store}</p>
                       <p>{product.address ? product.address : '15 Krylatskaya st...'}</p>
                       <p>{product.productCategory}</p>
-                      <p>{product.dateNow}</p>
+                      <p>{product.dateNow && product.dateNow}</p>
                       <p>${product.price}</p>
                       <p>{product.quantityGoods}</p>
                       <p>{product.weightVolumeOneItem}kg</p>

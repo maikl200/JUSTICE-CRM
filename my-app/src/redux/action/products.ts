@@ -20,3 +20,24 @@ export const addProduct = (payload: TypeProduct) => {
     payload
   }
 }
+
+export const deleteProduct = (payload: string) => {
+  return {
+    type: ProductActionEnum.DELETE_PRODUCT,
+    payload
+  }
+}
+
+export const deleteProductSaga = (id: string) => {
+  return {
+    type: ProductActionEnum.DELETE_ASYNC_PRODUCT,
+    id
+  }
+}
+
+export const addProductSaga = (payload: TypeProduct) => {
+  return {
+    type: ProductActionEnum.ADD_ASYNC_PRODUCT,
+    payload
+  }
+}

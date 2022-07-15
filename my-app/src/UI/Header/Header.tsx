@@ -12,10 +12,11 @@ import {regEx} from "../../assets/regEx";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
 import {useAction} from '../../hooks/useAction'
-import {addProduct} from "../../redux/action-creater/product";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
+import {ProductActionEnum} from "../../redux/types/product";
+import {addProduct, addProductSaga} from "../../redux/action/products";
 
 interface HeaderProps {
   title: string
@@ -35,8 +36,9 @@ const Header: FC<HeaderProps> =
 
     const [modalActive, setModalActive] = useState<boolean>(false)
     const user = useTypedSelector(state => state.user)
-    const {addProduct, fetchProducts} = useAction()
+    const {addProduct} = useAction()
     const {pathname} = useLocation();
+    const dispatch = useDispatch();
 
     const {
       register,
@@ -51,14 +53,10 @@ const Header: FC<HeaderProps> =
     })
 
     const onSubmit = (data: TypeProduct) => {
-      addProduct(data)
+      dispatch(addProductSaga(data))
       reset()
       setModalActive(false)
     }
-
-    useEffect(() => {
-      fetchProducts()
-    }, [])
 
     return (
       <div className={style.topBar}>
@@ -79,7 +77,7 @@ const Header: FC<HeaderProps> =
               {
                 user.avatar
                 &&
-                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
               }
             </div>
             {user.firstName}
