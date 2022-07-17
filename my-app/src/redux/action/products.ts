@@ -1,5 +1,5 @@
 import {TypeProduct} from "../../types/types";
-import {ProductAction, ProductActionEnum} from "../types/product";
+import {ProductActionEnum} from "../types/product";
 
 export const fetchProducts = () => {
   return {
@@ -28,12 +28,27 @@ export const deleteProduct = (payload: string) => {
   }
 }
 
+export const editProduct = (payload: { data: TypeProduct, editId: string }) => {
+  return {
+    type: ProductActionEnum.EDIT_PRODUCT,
+    payload
+  }
+}
+
+export const sellProductSaga = (payload: { newProduct: TypeProduct, sellId: string }) => {
+  return {
+    type: ProductActionEnum.SELL_PRODUCT,
+    payload
+  }
+}
+
 export const deleteProductSaga = (id: string) => {
   return {
     type: ProductActionEnum.DELETE_ASYNC_PRODUCT,
     id
   }
 }
+
 
 export const addProductSaga = (payload: TypeProduct) => {
   return {

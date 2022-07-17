@@ -8,10 +8,10 @@ import {useAction} from "../../hooks/useAction";
 const DiogramBars: FC = () => {
 
   const salesProduct = useTypedSelector(state => state.sellProduct)
-  const {fetchSellProducts} = useAction()
+  const {fetchSellProduct} = useAction()
 
   useEffect(() => {
-    fetchSellProducts()
+    fetchSellProduct()
   }, [])
 
   const salesProductInDay =

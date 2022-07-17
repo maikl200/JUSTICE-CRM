@@ -10,10 +10,11 @@ import {useAction} from "../../hooks/useAction";
 
 const MySales: FC = () => {
   const sellProduct = useTypedSelector(state => state.sellProduct)
-  const {fetchSellProducts} = useAction()
+
+  const {fetchSellProduct} = useAction()
 
   useEffect(() => {
-    fetchSellProducts()
+    fetchSellProduct()
   }, [])
 
   return (

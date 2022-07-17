@@ -13,12 +13,12 @@ import {useAction} from "../../hooks/useAction";
 
 const MainPage: FC = () => {
 
-  const {fetchSellProducts} = useAction()
+  const {fetchSellProduct} = useAction()
   const sellProduct = useTypedSelector(state => state.sellProduct)
 
-  // useEffect(() => {
-  //   fetchSellProducts()
-  // }, [])
+  useEffect(() => {
+    fetchSellProduct()
+  }, [])
 
   return (
     <main className={style.main}>

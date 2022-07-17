@@ -8,6 +8,7 @@ export enum ProductActionEnum {
   SELL_PRODUCT = 'SELL_PRODUCT',
   EDIT_PRODUCT = 'EDIT_PRODUCT',
   DELETE_PRODUCT = 'DELETE_PRODUCT',
+  FETCH_SELL_PRODUCT = 'FETCH_SELL_PRODUCT',
   DELETE_ASYNC_PRODUCT = 'DELETE_ASYNC_PRODUCT'
 
 }
@@ -17,7 +18,7 @@ export interface FetchProduct {
   payload: TypeProduct[]
 }
 
-export interface setProduct {
+export interface SetProduct {
   type: ProductActionEnum.SET_PRODUCT
   payload: TypeProduct[]
 }
@@ -27,17 +28,17 @@ export interface AddProduct {
   payload: TypeProduct
 }
 
-export interface sellProduct {
+export interface SellProduct {
   type: ProductActionEnum.SELL_PRODUCT
   payload: TypeProduct[]
 }
 
-export interface editProduct {
+export interface EditProduct {
   type: ProductActionEnum.EDIT_PRODUCT
   payload: TypeProduct[]
 }
 
-export interface deleteProduct {
+export interface DeleteProduct {
   type: ProductActionEnum.DELETE_PRODUCT
   payload: string
 }
@@ -45,7 +46,8 @@ export interface deleteProduct {
 export type ProductAction =
   FetchProduct
   | AddProduct
-  | sellProduct
-  | editProduct
-  | deleteProduct
-  | setProduct
+  | SellProduct
+  | EditProduct
+  | DeleteProduct
+  | SetProduct
+

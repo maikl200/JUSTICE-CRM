@@ -5,7 +5,7 @@ const initialState = {} as TypeUser
 
 export const userReducer = (state = initialState, action: UserAction): TypeUser => {
   switch (action.type) {
-    case UserActionEnum.SET_USER:
+    case UserActionEnum.FETCH_USER:
       return {
         ...state, ...action.payload
       }
@@ -13,7 +13,8 @@ export const userReducer = (state = initialState, action: UserAction): TypeUser 
       return {
         ...state, isValidOldPassword: !!action.payload
       }
-
+    case UserActionEnum.SET_USER:
+      return action.payload
     case UserActionEnum.PROFILE_CHANGE:
       return {
         ...state, ...action.payload
