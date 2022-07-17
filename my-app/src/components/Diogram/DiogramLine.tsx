@@ -1,6 +1,5 @@
 import React, {FC, useEffect} from 'react';
 import Chart from "react-apexcharts";
-import {TypeProduct} from '../../types/types'
 
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
@@ -9,10 +8,10 @@ import {useAction} from "../../hooks/useAction";
 const DiogramLine: FC = () => {
 
   const salesProduct = useTypedSelector(state => state.sellProduct)
-  const {fetchSellProducts} = useAction()
+  const {fetchSellProduct} = useAction()
 
   useEffect(() => {
-    fetchSellProducts()
+    fetchSellProduct()
   }, [])
 
   const priceProductInDay =

@@ -9,6 +9,7 @@ import createSagaMiddleware from 'redux-saga'
 import {regUserWatcher} from "./saga/auth";
 import {UserWatcher} from "./saga/user";
 import {ProductsWatcher} from "./saga/products";
+import {sellProductsWatcher} from "./saga/sellProducts";
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -25,7 +26,8 @@ export default function* rootSaga() {
     [
       regUserWatcher(),
       UserWatcher(),
-      ProductsWatcher()
+      ProductsWatcher(),
+      sellProductsWatcher()
     ])
 }
 

@@ -11,8 +11,6 @@ export const productReducer = (state = initialState, action: ProductAction): Typ
       return state
     case ProductActionEnum.ADD_PRODUCT:
       return [...state, action.payload]
-    case ProductActionEnum.SELL_PRODUCT:
-    case ProductActionEnum.EDIT_PRODUCT:
     case ProductActionEnum.DELETE_PRODUCT:
       return state.filter(obj => obj._id !== action.payload)
 

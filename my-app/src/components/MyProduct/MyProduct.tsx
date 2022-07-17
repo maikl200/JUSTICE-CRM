@@ -13,11 +13,10 @@ import {Input} from "../../UI/InputUI/Input";
 import {regEx} from "../../assets/regEx";
 import {TypeProduct} from "../../types/types";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {sellGoods} from "../../redux/action-creater/product";
 import {useAction} from "../../hooks/useAction";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
-import {deleteProductSaga} from "../../redux/action/products";
+import {deleteProductSaga, editProduct, sellProductSaga} from "../../redux/action/products";
 
 const MyProduct: FC = () => {
 
@@ -65,14 +64,13 @@ const MyProduct: FC = () => {
       quantityGoods: discriminant,
       ...data
     }
-    sellGoods(sellId, {payload: newProduct})
+    dispatch(sellProductSaga({newProduct, sellId}))
     reset()
     setSellModalActive(false)
   }
 
   const deleteElem = (id: string) => {
     dispatch(deleteProductSaga(id))
-    // deleteProduct(id,products)
   }
 
   const editElem = (id: string) => {
@@ -80,11 +78,10 @@ const MyProduct: FC = () => {
     const filterProduct = products?.find((item: TypeProduct) => item._id === id)
     setDataEditProduct(filterProduct)
     setEditId(id)
-    return
   }
 
   const editButton = (data: TypeProduct) => {
-    // editProduct(editId, {payload: data})
+    dispatch(editProduct({data, editId}))
     setEditModalActive(false)
   }
   return (

@@ -1,4 +1,4 @@
-import {call, takeEvery, put, select} from "redux-saga/effects";
+import {call, takeEvery, put} from "redux-saga/effects";
 import axios from "axios";
 import {ProductActionEnum} from "../types/product";
 import Cookies from "js-cookie";
@@ -51,10 +51,51 @@ export function* deleteProductWorker(payload: { id: string, type: string }) {
   }
 }
 
+export function* editProductWorker(action: { payload: { data: TypeProduct, editId: string } }) {
+  try {
+    const {data} = yield call(axios.patch, 'http://localhost:5100/product/editProduct',
+      {
+        ...action.payload.data
+      }, {
+        headers: {
+          Authorization: `${Cookies.get("token")}`,
+        },
+        params: {
+          id: action.payload.editId
+        }
+      })
+    yield put(setProducts(data))
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function* sellProductWorker(action: { payload: { newProduct: TypeProduct, sellId: string } }) {
+  try {
+    const {data} = yield call(axios.post, 'http://localhost:5100/sellProduct/sellProduct', {
+      ...action.payload.newProduct
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: action.payload.sellId
+      }
+    })
+    yield put(setProducts(data))
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 export function* ProductsWatcher() {
   yield takeEvery(ProductActionEnum.FETCH_PRODUCT, FetchProductsWorker)
   // @ts-ignore
   yield takeEvery(ProductActionEnum.ADD_ASYNC_PRODUCT, addProductWorker)
   // @ts-ignore
   yield takeEvery(ProductActionEnum.DELETE_ASYNC_PRODUCT, deleteProductWorker)
+  // @ts-ignore
+  yield takeEvery(ProductActionEnum.EDIT_PRODUCT, editProductWorker)
+  // @ts-ignore
+  yield takeEvery(ProductActionEnum.SELL_PRODUCT, sellProductWorker)
 }

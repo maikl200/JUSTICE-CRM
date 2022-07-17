@@ -1,27 +1,96 @@
 import {call, put, takeEvery} from "redux-saga/effects";
 import axios from "axios";
-import {RegError} from "../action/auth";
-import {AuthActionEnum} from "../types/auth";
-import {loggInUserWorker, regUserWorker} from "./auth";
 import {UserActionEnum} from "../types/currentUser";
+import Cookies from "js-cookie";
+import {TypeUser} from "../../types/types";
+import {setUser} from "../action/user";
 
-export function* fetchUsersWorker(data: any) {
+export function* fetchUsersWorker() {
   try {
-    yield call(axios.post, ('http://localhost:5100/auth/register'), {
-      firstName: data.payload?.firstName,
-      lastName: data.payload?.lastName,
-      companyName: data.payload?.companyName,
-      email: data.payload?.email,
-      password: data.payload?.password,
-      repeatPassword: data.payload?.repeatPassword
+    const {data} = yield call(axios.get, 'http://localhost:5100/profile/myProfile', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
     })
-
-    yield put(RegError(false))
+    yield put(setUser(data))
   } catch (e) {
-    yield put(RegError(true))
+    console.error(e)
+  }
+}
+
+export function* changeCurrentPasswordWorker(action: { payload: { validateError: (field: string, message: (string | undefined)) => void, valueOldPassword: string } }) {
+  console.log(action.payload.valueOldPassword)
+  try {
+    const {data} = yield call(axios.post, 'http://localhost:5100/profile/changePassword', {
+      oldPassword: action.payload.valueOldPassword
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+    if (!data) {
+      action.payload.validateError('oldPassword', 'The password doesnt match')
+    }
+    //todo после отправки падает приложение
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function* changeProfileWorker(action: { payload: TypeUser }) {
+  try {
+    const {data} = yield call(axios.patch, 'http://localhost:5100/profile/changeProfile', {
+      ...action.payload
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+    yield put(setUser(data))
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function* uploadAvatarWorker(action: { payload: File }) {
+  console.log(action.payload)
+  try {
+    const {data} = yield call(axios.post, 'http://localhost:5100/upload',
+      {
+        image: action.payload
+      },
+      {
+        headers: {
+          Authorization: `${Cookies.get("token")}`,
+          'content-type': 'multipart/form-data'
+        }
+      })
+    yield put(setUser(data))
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+export function* deleteAvatarWorker() {
+  try {
+    const {data} = yield call(axios.delete, 'http://localhost:5100/upload/deleteAvatar', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+    })
+    yield put(setUser(data))
+  } catch (e) {
+    console.error(e)
   }
 }
 
 export function* UserWatcher() {
-  yield takeEvery(UserActionEnum.SET_USER, fetchUsersWorker)
+  yield takeEvery(UserActionEnum.FETCH_USER, fetchUsersWorker)
+  // @ts-ignore
+  yield takeEvery(UserActionEnum.CHANGE_IS_VALID_PASSWORD, changeCurrentPasswordWorker)
+  // @ts-ignore
+  yield takeEvery(UserActionEnum.PROFILE_CHANGE, changeProfileWorker)
+  // @ts-ignore
+  yield takeEvery(UserActionEnum.UPLOAD_AVATAR, uploadAvatarWorker)
+  yield takeEvery(UserActionEnum.DELETE_AVATAR, deleteAvatarWorker)
 }
