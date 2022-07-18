@@ -31,7 +31,7 @@ const usersSchema = new Schema({
   },
   oldPassword: {
     type: String
-},
+  },
   productCategory: {
     type: String
   }

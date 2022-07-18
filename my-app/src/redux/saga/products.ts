@@ -18,15 +18,16 @@ export function* FetchProductsWorker() {
   }
 }
 
-export function* addProductWorker(product: { payload: TypeProduct }) {
+export function* addProductWorker(action: { payload: { close: () => void, data: TypeProduct } }) {
   try {
     const {data} = yield call(axios.post, 'http://localhost:5100/product/addProduct', {
-      ...product.payload
+      ...action.payload.data
     }, {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       }
     })
+    action.payload.close()
     yield put(addProduct(data))
   } catch (e) {
     console.error(e)

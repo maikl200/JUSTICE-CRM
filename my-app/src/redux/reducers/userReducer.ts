@@ -1,9 +1,17 @@
 import {TypeUser} from "../../types/types";
 import {UserAction, UserActionEnum} from "../types/currentUser";
 
-const initialState = {} as TypeUser
+type State = {
+  user: TypeUser;
+  isEditLoading: boolean;
+}
 
-export const userReducer = (state = initialState, action: UserAction): TypeUser => {
+const initialState: State = {
+  user: {},
+  isEditLoading: false
+}
+
+export const userReducer = (state = initialState, action: UserAction): State => {
   switch (action.type) {
     case UserActionEnum.FETCH_USER:
       return {
@@ -11,10 +19,20 @@ export const userReducer = (state = initialState, action: UserAction): TypeUser 
       }
     case UserActionEnum.CHANGE_IS_VALID_PASSWORD:
       return {
-        ...state, isValidOldPassword: !!action.payload
+        ...state, user: {
+          ...state.user,
+          isValidOldPassword: !!action.payload
+        }
+      }
+    case UserActionEnum.SET_EDIT_LOAD:
+      return {
+        ...state, isEditLoading: action.payload
       }
     case UserActionEnum.SET_USER:
-      return action.payload
+      return {
+        ...state,
+        user: action.payload,
+      }
     case UserActionEnum.PROFILE_CHANGE:
       return {
         ...state, ...action.payload

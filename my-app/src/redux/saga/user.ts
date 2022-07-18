@@ -3,7 +3,7 @@ import axios from "axios";
 import {UserActionEnum} from "../types/currentUser";
 import Cookies from "js-cookie";
 import {TypeUser} from "../../types/types";
-import {setUser} from "../action/user";
+import {setEditLoading, setUser} from "../action/user";
 
 export function* fetchUsersWorker() {
   try {
@@ -19,7 +19,6 @@ export function* fetchUsersWorker() {
 }
 
 export function* changeCurrentPasswordWorker(action: { payload: { validateError: (field: string, message: (string | undefined)) => void, valueOldPassword: string } }) {
-  console.log(action.payload.valueOldPassword)
   try {
     const {data} = yield call(axios.post, 'http://localhost:5100/profile/changePassword', {
       oldPassword: action.payload.valueOldPassword
@@ -31,7 +30,6 @@ export function* changeCurrentPasswordWorker(action: { payload: { validateError:
     if (!data) {
       action.payload.validateError('oldPassword', 'The password doesnt match')
     }
-    //todo после отправки падает приложение
   } catch (e) {
     console.error(e)
   }
@@ -49,11 +47,12 @@ export function* changeProfileWorker(action: { payload: TypeUser }) {
     yield put(setUser(data))
   } catch (e) {
     console.error(e)
+  } finally {
+    yield put(setEditLoading(false))
   }
 }
 
 export function* uploadAvatarWorker(action: { payload: File }) {
-  console.log(action.payload)
   try {
     const {data} = yield call(axios.post, 'http://localhost:5100/upload',
       {

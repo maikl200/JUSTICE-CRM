@@ -1,6 +1,7 @@
 import {TypeUser} from "../../types/types";
 
 export enum UserActionEnum {
+  SET_EDIT_LOAD = 'SET_EDIT_LOAD',
   FETCH_USER = 'FETCH_USER',
   SET_USER = 'SET_USER',
   CHANGE_IS_VALID_PASSWORD = 'CHANGE_IS_VALID_PASSWORD',
@@ -12,6 +13,11 @@ export enum UserActionEnum {
 export interface SetUser {
   type: UserActionEnum.SET_USER
   payload: TypeUser
+}
+
+export interface SetEditLoad {
+  type: UserActionEnum.SET_EDIT_LOAD
+  payload: boolean
 }
 
 export interface FetchUser {
@@ -46,3 +52,4 @@ export type UserAction =
   | UploadAvatar
   | DeleteAvatar
   | SetUser
+  | SetEditLoad

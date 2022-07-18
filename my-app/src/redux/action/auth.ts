@@ -1,15 +1,16 @@
 import {TypeUser} from "../../types/types";
 import {AuthActionEnum} from "../types/auth";
 import {NavigateFunction} from "react-router-dom";
+import {Dispatch, SetStateAction} from "react";
 
-export const regUser = (payload: TypeUser) => {
+export const regUser = (payload: { navigate: Dispatch<string>, setShowError: Dispatch<SetStateAction<string>>, data: TypeUser }) => {
   return {
     type: AuthActionEnum.REG_USER,
     payload
   }
 }
 
-export const logInUser = (payload: TypeUser) => {
+export const logInUser = (payload: { navigate: Dispatch<string>, setShowError: Dispatch<SetStateAction<string>>, data: TypeUser }) => {
   return {
     type: AuthActionEnum.LOGIN_USER,
     payload

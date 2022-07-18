@@ -3,17 +3,20 @@ import React, {FC} from 'react';
 import style from './modalWindow.module.scss'
 import cross from '../../assets/Cross.svg'
 import {SubmitHandler} from "react-hook-form";
+import {useAction} from "../../hooks/useAction";
+import {modalWindow} from "../../redux/action/modalWindow";
 
 
 interface ModalCreatingProductProps {
-  setModalActive: (isActive: boolean) => void
   children: React.ReactNode
   title: string
   onSubmit?: React.FormEventHandler<HTMLFormElement>
   onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
+  onClose?: () => void
 }
 
-const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children, title, onBlur, onSubmit}) => {
+const ModalWindow: FC<ModalCreatingProductProps> = ({onClose, children, title, onBlur, onSubmit}) => {
+  const {modalWindow} = useAction()
   return (
     <>
       <div className={style.modal}>
@@ -25,7 +28,7 @@ const ModalWindow: FC<ModalCreatingProductProps> = ({setModalActive, children, t
             </form>
           </div>
           <div className={style.modal_wrapper_close}>
-            <img onClick={() => setModalActive(false)} src={cross} alt='crossIcon'/>
+            <img onClick={onClose} src={cross} alt='crossIcon'/>
           </div>
         </div>
       </div>

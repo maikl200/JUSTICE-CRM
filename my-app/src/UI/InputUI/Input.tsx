@@ -11,7 +11,7 @@ interface Props {
   name?: string
   className?: string
   defaultValue?: string | number
-  errorBorder?: any
+  errorBorder?: string
   error?: any
   onBlur?: (e: ChangeEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,

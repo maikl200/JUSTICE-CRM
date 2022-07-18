@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import style from "./header.module.scss";
 import ButtonUI from "../ButtonTS/ButtonUI";
 import file from "../../assets/file.svg";
@@ -6,7 +6,7 @@ import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import {Input} from "../InputUI/Input";
 import plus from "../../assets/Plus.svg";
 
-
+import previeAvatar from '../../assets/previeAvatar.jpg'
 import {TypeProduct} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useLocation} from "react-router-dom";
@@ -15,14 +15,11 @@ import {useAction} from '../../hooks/useAction'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
-import {ProductActionEnum} from "../../redux/types/product";
 import {addProduct, addProductSaga} from "../../redux/action/products";
 
 interface HeaderProps {
   title: string
   subTitle: string
-  setDataProduct?: React.Dispatch<TypeProduct[]>
-  dataProduct?: TypeProduct[]
   avatar?: string
   btnNone?: string
   formFirstName?: string
@@ -35,7 +32,8 @@ const Header: FC<HeaderProps> =
    }) => {
 
     const [modalActive, setModalActive] = useState<boolean>(false)
-    const user = useTypedSelector(state => state.user)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const {user} = useTypedSelector(state => state.user)
     const {addProduct} = useAction()
     const {pathname} = useLocation();
     const dispatch = useDispatch();
@@ -53,10 +51,16 @@ const Header: FC<HeaderProps> =
     })
 
     const onSubmit = (data: TypeProduct) => {
-      dispatch(addProductSaga(data))
-      reset()
-      setModalActive(false)
+      setIsLoading(true)
+      dispatch(addProductSaga({close, data}))
     }
+
+    const close = useCallback(() => {
+      setModalActive(false)
+        setIsLoading(false)
+        reset()
+
+    }, [])
 
     return (
       <div className={style.topBar}>
@@ -65,19 +69,24 @@ const Header: FC<HeaderProps> =
           <span className={style.topBar_titleBar_downTitle}>{subTitle}</span>
         </div>
         <div className={style.topBar_btn}>
-          {
-            pathname === PathEnum.MY_PRODUCT && (
-              <ButtonUI height='52px' onClick={() => setModalActive(true)} title='Create a product' leftSrc={file}
-                        leftAlt='fileIcon'
-                        bc='#5382E7' width='201px'/>
-            )
-          }
+          {pathname === PathEnum.MY_PRODUCT && (
+            <ButtonUI
+              height='52px'
+              onClick={() => setModalActive(true)}
+              title='Create a product'
+              leftSrc={file}
+              leftAlt='fileIcon'
+              bc='#5382E7'
+              width='201px'/>
+          )}
           <div className={style.topBar_containerInfoPerson}>
             <div className={style.topBar_containerInfoPerson_avatar}>
               {
                 user.avatar
-                &&
-                <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                  ?
+                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                  :
+                  <img src={previeAvatar} alt={'noAvatar'}/>
               }
             </div>
             {user.firstName}
@@ -87,9 +96,9 @@ const Header: FC<HeaderProps> =
           modalActive
             ?
             <ModalWindow
+              onClose={close}
               onSubmit={handleSubmit(onSubmit)}
-              title='Creating a product'
-              setModalActive={setModalActive}>
+              title='Creating a product'>
               <Input
                 {...register('store', {
                   required: 'Required field',
@@ -177,7 +186,7 @@ const Header: FC<HeaderProps> =
                 type='number'
               />
               <ButtonUI
-                disabled={!isValid}
+                disabled={!isValid || isLoading}
                 height='52px'
                 title='Add Product'
                 type='submit'

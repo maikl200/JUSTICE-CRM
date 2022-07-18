@@ -13,6 +13,7 @@ import {TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useAction} from "../../hooks/useAction";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useWindowSize} from "../../hooks/useWindowSize";
 
 const CreateAcc: FC = () => {
 
@@ -20,8 +21,7 @@ const CreateAcc: FC = () => {
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
   const {regUser} = useAction()
-  // @ts-ignore
-  const {RegError} = useTypedSelector(state => state.auth)
+  const {width} = useWindowSize()
   const {
     register,
     formState: {
@@ -33,17 +33,9 @@ const CreateAcc: FC = () => {
   } = useForm({
     mode: 'all'
   })
-  console.log(RegError)
-  const onSubmit = (data: TypeUser) => {
-    regUser(data)
-// todo Фиксануть баг
-    if (!RegError && RegError !== undefined) {
-      navigate('/singIn')
-      setShowError('')
-    } else {
-      setShowError('Such a user exists')
-    }
 
+  const onSubmit = (data: TypeUser) => {
+    regUser({navigate, setShowError, data})
   }
 
 
@@ -67,7 +59,7 @@ const CreateAcc: FC = () => {
                     message: 'Invalid first name'
                   }
                 })}
-                errorBorder={errors.firstName && '1px solid red'}
+                errorBorder={errors.firstName ? '1px solid red' : ''}
                 title='First name'
                 error={errors.firstName && errors.firstName.message}
                 placeholder='First name'
@@ -169,9 +161,15 @@ const CreateAcc: FC = () => {
             onClick={() => navigate('/signIn')}>Log in</span></span>
         </form>
       </div>
-      <div className={style.main_imgBlock}>
-        <img src={imgReg} alt='RegImg'/>
-      </div>
+      {width! > 1548
+        ?
+        <div className={style.main_imgBlock}>
+          <img src={imgReg} alt='RegImg'/>
+        </div>
+        :
+        ''
+      }
+
     </main>
   );
 };

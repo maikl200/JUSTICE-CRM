@@ -10,6 +10,7 @@ import {regUserWatcher} from "./saga/auth";
 import {UserWatcher} from "./saga/user";
 import {ProductsWatcher} from "./saga/products";
 import {sellProductsWatcher} from "./saga/sellProducts";
+import {modalWindowReducer} from "./reducers/modalWindow";
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -18,7 +19,8 @@ const rootReducer = combineReducers(
     product: productReducer,
     sellProduct: sellProductReducer,
     user: userReducer,
-    auth: authReducer
+    auth: authReducer,
+    modalWindow: modalWindowReducer
   })
 
 export default function* rootSaga() {

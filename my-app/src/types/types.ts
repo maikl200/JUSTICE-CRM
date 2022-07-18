@@ -15,6 +15,7 @@ export interface TypeProduct {
 }
 
 export interface TypeUser {
+  repeatPassword?: string
   LogInError?: boolean
   error?: boolean
   image?: string;

@@ -7,6 +7,13 @@ export const fetchUsers = () => {
   }
 }
 
+export const setEditLoading = (payload: boolean) => {
+  return {
+    type: UserActionEnum.SET_EDIT_LOAD,
+    payload
+  }
+}
+
 export const setUser = (payload: TypeUser) => {
   return {
     type: UserActionEnum.SET_USER,

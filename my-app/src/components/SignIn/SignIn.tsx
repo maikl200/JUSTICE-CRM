@@ -13,13 +13,17 @@ import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
 import {logInUser, regUser} from "../../redux/action/auth";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useDispatch} from "react-redux";
+import {useWindowSize} from "../../hooks/useWindowSize";
+
+const token = Cookies.get('token')
 
 const SignIn: FC = () => {
-
   const navigate = useNavigate()
   const [showError, setShowError] = useState<string>('')
   const {logInUser} = useAction()
-  const {LogInError} = useTypedSelector(state => state.auth)
+  const dispatch = useDispatch()
+  const {width} = useWindowSize()
 
   const {
     register,
@@ -33,15 +37,9 @@ const SignIn: FC = () => {
   })
 
   const onSubmit = (data: TypeUser) => {
-    logInUser(data)
-    if (!LogInError && !LogInError !== undefined) {
-      setShowError('')
-    } else {
-      setShowError('Such a user exists')
-    }
+    dispatch(logInUser({navigate, setShowError, data}))
   }
 
-  const token = Cookies.get('token')
   useEffect(() => {
     if (token) navigate('/mainPage')
   }, [token])
@@ -84,14 +82,26 @@ const SignIn: FC = () => {
             placeholder='Password'
             type='password'
           />
-          <ButtonUI type={'submit'} disabled={!isValid} height='56px' title='Log in' padding='6px 12px'
-                    width='100%'/>
-          <span onClick={() => navigate('/createAcc')} className={style.main_logInBlock_regPage}>Forgot password?</span>
+          <ButtonUI
+            type={'submit'}
+            disabled={!isValid}
+            height='56px' title='Log in'
+            padding='6px 12px'
+            width='100%'
+          />
+          <span
+            onClick={() => navigate('/createAcc')}
+            className={style.main_logInBlock_regPage}
+          >
+            Forgot password?
+          </span>
         </form>
       </div>
-      <div className={style.main_imgBlock}>
-        <img src={imgReg} alt='RegImg'/>
-      </div>
+      { width! > 1351 && (
+          <div className={style.main_imgBlock}>
+            <img src={imgReg} alt='RegImg' />
+          </div>
+        )}
     </main>
   );
 };

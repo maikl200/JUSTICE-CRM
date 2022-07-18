@@ -50,7 +50,7 @@ export const deleteProductSaga = (id: string) => {
 }
 
 
-export const addProductSaga = (payload: TypeProduct) => {
+export const addProductSaga = (payload: { close: () => void, data: TypeProduct }) => {
   return {
     type: ProductActionEnum.ADD_ASYNC_PRODUCT,
     payload

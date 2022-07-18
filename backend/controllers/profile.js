@@ -5,7 +5,7 @@ const Product = require('../models/Product')
 const bcrypt = require('bcryptjs')
 
 module.exports.getMyProfile = async (req, res) => {
-  const myProfile = await User.find({_id: req.user._id})
+  const myProfile = await User.findOne({_id: req.user._id})
   try {
     res.status(200).json(myProfile)
   } catch (e) {
