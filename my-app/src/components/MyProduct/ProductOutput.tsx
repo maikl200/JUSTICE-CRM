@@ -8,14 +8,13 @@ import {TypeProduct} from "../../types/types";
 import {deleteProductSaga} from "../../redux/action/products";
 import {useDispatch} from "react-redux";
 import {useForm} from "react-hook-form";
-import {useAction} from "../../hooks/useAction";
 import EditModal from "./ModalWindow/EditModal";
 import SellModal from "./ModalWindow/SellModal";
 
 const ProductOutput = () => {
-  const {sellModalWindow, editModalWindow} = useAction()
+  const [isEditModalActive, setIsEditModalActive] = useState<boolean>(false)
+  const [isSellModalActive, setIsSellModalActive] = useState<boolean>(false)
   const products = useTypedSelector(state => state.product)
-  const {editModalActive, sellModalActive} = useTypedSelector(state => state.modalWindow)
   const dispatch = useDispatch()
   const [productSell, setProductSell] = useState<TypeProduct>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
@@ -25,7 +24,7 @@ const ProductOutput = () => {
   const {reset} = useForm()
 
   const sellProduct = (id: string) => {
-    dispatch(sellModalWindow(true))
+    setIsSellModalActive(true)
     setSellId(id)
     const filterProduct = products?.find((item: TypeProduct) => item._id === id)
     setProductSell(filterProduct)
@@ -36,7 +35,7 @@ const ProductOutput = () => {
   }
 
   const editElem = (id: string) => {
-    dispatch(editModalWindow(true))
+    setIsEditModalActive(true)
     const filterProduct = products?.find((item: TypeProduct) => item._id === id)
     setDataEditProduct(filterProduct)
     setEditId(id)
@@ -78,8 +77,18 @@ const ProductOutput = () => {
           </div>
         )
       ).reverse()}
-      {editModalActive && <EditModal editId={editId} dataEditProduct={dataEditProduct}/>}
-      {sellModalActive && <SellModal sellId={sellId}/>}
+      {isEditModalActive &&
+          <EditModal
+              setIsEditModalActive={setIsEditModalActive}
+              editId={editId}
+              dataEditProduct={dataEditProduct}
+          />}
+      {isSellModalActive &&
+          <SellModal
+              productSell={productSell}
+              setIsSellModalActive={setIsSellModalActive}
+              sellId={sellId}
+          />}
     </div>
   );
 };

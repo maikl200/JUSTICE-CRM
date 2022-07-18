@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
@@ -7,18 +7,16 @@ import {TypeProduct} from "../../../types/types";
 import {sellProductSaga} from "../../../redux/action/products";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
-import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import {useAction} from "../../../hooks/useAction";
 
 interface SellModalProps {
   sellId: string
+  setIsSellModalActive: any
+  productSell: any
 }
 
-const SellModal: FC<SellModalProps> = ({sellId}) => {
-  const {sellModalWindow} = useAction()
+const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSell}) => {
   const {
     register,
-    reset,
     formState: {
       errors,
       isValid,
@@ -28,8 +26,12 @@ const SellModal: FC<SellModalProps> = ({sellId}) => {
     mode: 'all'
   })
   const dispatch = useDispatch()
-  const [productSell, setProductSell] = useState<TypeProduct>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
+  const close = useCallback(() => {
+    setIsSellModalActive(false)
+    setIsLoading(false)
+  }, [])
 
   const quantityGoods = (productSell?.quantityGoods)
 
@@ -40,14 +42,14 @@ const SellModal: FC<SellModalProps> = ({sellId}) => {
       quantityGoods: discriminant,
       ...data
     }
-    dispatch(sellProductSaga({newProduct, sellId}))
-    reset()
-    dispatch(sellModalWindow(false))
+    setIsLoading(true)
+    dispatch(sellProductSaga({close, newProduct, sellId}))
   }
 
   return (
     <div>
       <ModalWindow
+        onClose={close}
         onSubmit={handleSubmit(sellButton)}
         title='Sell the product'>
         <Input
@@ -79,7 +81,7 @@ const SellModal: FC<SellModalProps> = ({sellId}) => {
           type='text'
         />
         <ButtonUI
-          disabled={!isValid}
+          disabled={!isValid || isLoading}
           width='300px'
           type='submit'
           title='Sell product'

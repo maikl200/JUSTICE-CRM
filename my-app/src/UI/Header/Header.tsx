@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import style from "./header.module.scss";
 import ButtonUI from "../ButtonTS/ButtonUI";
 import file from "../../assets/file.svg";
@@ -11,11 +11,10 @@ import {TypeProduct} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
-import {useAction} from '../../hooks/useAction'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
-import {addProduct, addProductSaga} from "../../redux/action/products";
+import {addProductSaga} from "../../redux/action/products";
 
 interface HeaderProps {
   title: string
@@ -34,7 +33,6 @@ const Header: FC<HeaderProps> =
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {user} = useTypedSelector(state => state.user)
-    const {addProduct} = useAction()
     const {pathname} = useLocation();
     const dispatch = useDispatch();
 
@@ -57,9 +55,8 @@ const Header: FC<HeaderProps> =
 
     const close = useCallback(() => {
       setModalActive(false)
-        setIsLoading(false)
-        reset()
-
+      setIsLoading(false)
+      reset()
     }, [])
 
     return (

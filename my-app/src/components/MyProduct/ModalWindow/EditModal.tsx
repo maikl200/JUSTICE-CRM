@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
@@ -6,20 +6,18 @@ import ModalWindow from "../../ModalWindow/ModalWindow";
 import {TypeProduct} from "../../../types/types";
 import {editProduct} from "../../../redux/action/products";
 import {useDispatch} from "react-redux";
-import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import {useAction} from "../../../hooks/useAction";
 import {useForm} from "react-hook-form";
 
 interface EditModalProps {
   editId: string
   dataEditProduct: any
+  setIsEditModalActive: any
 }
 
-const EditModal: FC<EditModalProps> = ({editId,dataEditProduct}) => {
+const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalActive}) => {
 
   const {
     register,
-    reset,
     formState: {
       errors,
       isValid,
@@ -28,17 +26,23 @@ const EditModal: FC<EditModalProps> = ({editId,dataEditProduct}) => {
   } = useForm({
     mode: 'all'
   })
-  const {editModalWindow} = useAction()
-  const modalActive = useTypedSelector(state => state.modalWindow)
   const dispatch = useDispatch()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const close = useCallback(() => {
+    setIsEditModalActive(false)
+    setIsLoading(false)
+  }, [])
 
   const editButton = (data: TypeProduct) => {
-    dispatch(editProduct({data, editId}))
-    dispatch(editModalWindow(false))
+    setIsLoading(true)
+    dispatch(editProduct({close, data, editId}))
   }
+
   return (
     <div>
       <ModalWindow
+        onClose={close}
         onSubmit={handleSubmit(editButton)}
         title='Editing a product'>
         <Input
@@ -118,7 +122,7 @@ const EditModal: FC<EditModalProps> = ({editId,dataEditProduct}) => {
         />
         <ButtonUI
           type='submit'
-          disabled={!isValid}
+          disabled={!isValid || isLoading}
           width='300px'
           title='Edit product'
           height='52px'/>

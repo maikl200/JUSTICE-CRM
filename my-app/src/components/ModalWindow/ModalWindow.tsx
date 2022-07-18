@@ -2,21 +2,16 @@ import React, {FC} from 'react';
 
 import style from './modalWindow.module.scss'
 import cross from '../../assets/Cross.svg'
-import {SubmitHandler} from "react-hook-form";
-import {useAction} from "../../hooks/useAction";
-import {modalWindow} from "../../redux/action/modalWindow";
-
 
 interface ModalCreatingProductProps {
   children: React.ReactNode
   title: string
   onSubmit?: React.FormEventHandler<HTMLFormElement>
   onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
-  onClose?: () => void
+  onClose?: () => void | boolean
 }
 
 const ModalWindow: FC<ModalCreatingProductProps> = ({onClose, children, title, onBlur, onSubmit}) => {
-  const {modalWindow} = useAction()
   return (
     <>
       <div className={style.modal}>

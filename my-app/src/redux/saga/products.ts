@@ -52,7 +52,7 @@ export function* deleteProductWorker(payload: { id: string, type: string }) {
   }
 }
 
-export function* editProductWorker(action: { payload: { data: TypeProduct, editId: string } }) {
+export function* editProductWorker(action: { payload: { close: () => void, data: TypeProduct, editId: string } }) {
   try {
     const {data} = yield call(axios.patch, 'http://localhost:5100/product/editProduct',
       {
@@ -65,13 +65,14 @@ export function* editProductWorker(action: { payload: { data: TypeProduct, editI
           id: action.payload.editId
         }
       })
+    action.payload.close()
     yield put(setProducts(data))
   } catch (e) {
     console.error(e)
   }
 }
 
-export function* sellProductWorker(action: { payload: { newProduct: TypeProduct, sellId: string } }) {
+export function* sellProductWorker(action: { payload: { close: () => void, newProduct: TypeProduct, sellId: string } }) {
   try {
     const {data} = yield call(axios.post, 'http://localhost:5100/sellProduct/sellProduct', {
       ...action.payload.newProduct
@@ -83,6 +84,7 @@ export function* sellProductWorker(action: { payload: { newProduct: TypeProduct,
         id: action.payload.sellId
       }
     })
+    action.payload.close()
     yield put(setProducts(data))
   } catch (e) {
     console.error(e)

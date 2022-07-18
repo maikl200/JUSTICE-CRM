@@ -8,15 +8,12 @@ import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 import Cookies from "js-cookie";
 import {useAction} from "../../hooks/useAction";
-import {AuthActionEnum} from "../../redux/types/auth";
 import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
-import {logInUser, regUser} from "../../redux/action/auth";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {logInUser} from "../../redux/action/auth";
 import {useDispatch} from "react-redux";
 import {useWindowSize} from "../../hooks/useWindowSize";
 
-const token = Cookies.get('token')
 
 const SignIn: FC = () => {
   const navigate = useNavigate()
@@ -24,7 +21,7 @@ const SignIn: FC = () => {
   const {logInUser} = useAction()
   const dispatch = useDispatch()
   const {width} = useWindowSize()
-
+  const token = Cookies.get('token')
   const {
     register,
     formState: {
@@ -97,11 +94,11 @@ const SignIn: FC = () => {
           </span>
         </form>
       </div>
-      { width! > 1351 && (
-          <div className={style.main_imgBlock}>
-            <img src={imgReg} alt='RegImg' />
-          </div>
-        )}
+      {width! > 1351 && (
+        <div className={style.main_imgBlock}>
+          <img src={imgReg} alt='RegImg'/>
+        </div>
+      )}
     </main>
   );
 };
