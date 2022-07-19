@@ -6,7 +6,7 @@ import deleteIcon from "../../assets/Delete.svg";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeProduct} from "../../types/types";
 import {deleteProductSaga} from "../../redux/action/products";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import EditModal from "./ModalWindow/EditModal";
 import SellModal from "./ModalWindow/SellModal";
@@ -14,7 +14,8 @@ import SellModal from "./ModalWindow/SellModal";
 const ProductOutput = () => {
   const [isEditModalActive, setIsEditModalActive] = useState<boolean>(false)
   const [isSellModalActive, setIsSellModalActive] = useState<boolean>(false)
-  const products = useTypedSelector(state => state.product)
+  // @ts-ignore
+  const products = useSelector(state => state.product)
   const dispatch = useDispatch()
   const [productSell, setProductSell] = useState<TypeProduct>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
@@ -44,7 +45,7 @@ const ProductOutput = () => {
 
   return (
     <div className={style.main_productBar_productCard_productData}>
-      {products?.map((product) => (
+      {products?.map((product: TypeProduct) => (
           <div key={product._id} className={style.main_productBar_productCard_productData_product}>
             <p>{product.productName}</p>
             <p>{product.store}</p>

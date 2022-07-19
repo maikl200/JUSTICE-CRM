@@ -5,6 +5,7 @@ import file from "../../assets/file.svg";
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import {Input} from "../InputUI/Input";
 import plus from "../../assets/Plus.svg";
+import rolling from '../../assets/Rolling.gif'
 
 import previeAvatar from '../../assets/previeAvatar.jpg'
 import {TypeProduct} from "../../types/types";
@@ -13,7 +14,7 @@ import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {addProductSaga} from "../../redux/action/products";
 
 interface HeaderProps {
@@ -32,7 +33,8 @@ const Header: FC<HeaderProps> =
 
     const [modalActive, setModalActive] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const {user} = useTypedSelector(state => state.user)
+    // @ts-ignore
+    const user = useSelector(state => state.user)
     const {pathname} = useLocation();
     const dispatch = useDispatch();
 
@@ -79,14 +81,14 @@ const Header: FC<HeaderProps> =
           <div className={style.topBar_containerInfoPerson}>
             <div className={style.topBar_containerInfoPerson_avatar}>
               {
-                user.avatar
+                user?.avatar
                   ?
-                  <img src={'http://localhost:5100/' + user.avatar} alt='avatar'/>
+                  <img src={'http://localhost:5100/' + user?.avatar} alt='avatar'/>
                   :
                   <img src={previeAvatar} alt={'noAvatar'}/>
               }
             </div>
-            {user.firstName}
+            {user?.firstName}
           </div>
         </div>
         {
@@ -185,10 +187,10 @@ const Header: FC<HeaderProps> =
               <ButtonUI
                 disabled={!isValid || isLoading}
                 height='52px'
-                title='Add Product'
+                title={isLoading ? 'Loading...' : 'Add Product'}
                 type='submit'
                 width='300px'
-                rightSrc={plus}
+                rightSrc={isLoading ? rolling : plus}
                 rightAlt='plusIcon'/>
             </ModalWindow>
             :

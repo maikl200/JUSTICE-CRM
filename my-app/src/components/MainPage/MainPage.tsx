@@ -4,9 +4,9 @@ import style from './mainPage.module.scss'
 
 
 import NavBar from "../NavBar/NavBar";
-import DiogramPie from "../Diogram/DiogramPie";
-import DiogramBars from "../Diogram/DiogramBars";
-import DiogramLine from "../Diogram/DiogramLine";
+// import DiogramPie from "../Diogram/DiogramPie";
+// import DiogramBars from "../Diogram/DiogramBars";
+// import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
@@ -27,20 +27,20 @@ const MainPage: FC = () => {
       <div className={style.main_statisticsBar}>
         <Header btnNone={'none'} title='Sales statistics' subTitle='Welcome to CRM dashboard'/>
         <div className={style.main_statisticsBar_diogram}>
-          {sellProduct.length > 0
+          {sellProduct?.length > 0
             ?
             <>
               <div className={style.main_statisticsBar_diogram_stack}>
                 <div className={style.main_statisticsBar_diogram_pie}>
-                  <DiogramPie/>
+                  {/*<DiogramPie/>*/}
                 </div>
                 <div className={style.main_statisticsBar_diogram_line}>
                   <p className={style.main_statisticsBar_diogram_line_titleBar}>Total earned</p>
-                  <DiogramLine/>
+                  {/*<DiogramLine/>*/}
                 </div>
               </div>
               <div className={style.main_statisticsBar_diogram_bar}>
-                <DiogramBars/>
+                {/*<DiogramBars/>*/}
               </div>
             </>
             :

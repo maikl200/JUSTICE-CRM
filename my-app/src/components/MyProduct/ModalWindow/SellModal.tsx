@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState} from 'react';
+import React, {Dispatch, FC, SetStateAction, useCallback, useState} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
@@ -7,11 +7,13 @@ import {TypeProduct} from "../../../types/types";
 import {sellProductSaga} from "../../../redux/action/products";
 import {useForm} from "react-hook-form";
 import {useDispatch} from "react-redux";
+import rolling from "../../../assets/Rolling.gif";
+
 
 interface SellModalProps {
   sellId: string
-  setIsSellModalActive: any
-  productSell: any
+  setIsSellModalActive: Dispatch<SetStateAction<boolean>>
+  productSell?: TypeProduct
 }
 
 const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSell}) => {
@@ -84,7 +86,8 @@ const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSel
           disabled={!isValid || isLoading}
           width='300px'
           type='submit'
-          title='Sell product'
+          title={isLoading ? 'Loading...' : 'Sell product'}
+          rightSrc={isLoading && rolling}
           height='52px'/>
       </ModalWindow>
     </div>

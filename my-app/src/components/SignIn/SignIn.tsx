@@ -13,6 +13,7 @@ import {useForm} from "react-hook-form";
 import {logInUser} from "../../redux/action/auth";
 import {useDispatch} from "react-redux";
 import {useWindowSize} from "../../hooks/useWindowSize";
+import {setStatus} from "../../redux/slices/authSlice";
 
 
 const SignIn: FC = () => {
@@ -87,7 +88,10 @@ const SignIn: FC = () => {
             width='100%'
           />
           <span
-            onClick={() => navigate('/createAcc')}
+            onClick={() => {
+              dispatch(setStatus('none'))
+              navigate('/createAcc')
+            }}
             className={style.main_logInBlock_regPage}
           >
             Forgot password?

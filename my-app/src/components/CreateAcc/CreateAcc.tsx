@@ -7,20 +7,22 @@ import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {useNavigate} from "react-router-dom";
 
 import Cookies from "js-cookie";
-import {regUser} from "../../redux/action/auth";
 import {useForm} from "react-hook-form";
 import {TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useAction} from "../../hooks/useAction";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useWindowSize} from "../../hooks/useWindowSize";
+import {useDispatch, useSelector} from "react-redux";
+import {regUser} from "../../redux/slices/authSlice";
+import {useAppDispatch} from "../../redux/store";
 
 const CreateAcc: FC = () => {
 
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const [showError, setShowError] = useState<string>('')
   const token = Cookies.get('token')
-  const {regUser} = useAction()
   const {width} = useWindowSize()
   const {
     register,
@@ -34,10 +36,16 @@ const CreateAcc: FC = () => {
     mode: 'all'
   })
 
+  const { status } = useTypedSelector(state => state.auth)
+
   const onSubmit = (data: TypeUser) => {
-    regUser({navigate, setShowError, data})
+    // @ts-ignore
+    dispatch(regUser(data))
   }
 
+  useEffect(() => {
+    if (status === 'success') navigate('/sigIn')
+  }, [status])
 
   useEffect(() => {
     if (token) navigate('/mainPage')

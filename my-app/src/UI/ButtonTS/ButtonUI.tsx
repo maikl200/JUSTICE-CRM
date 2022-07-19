@@ -35,7 +35,7 @@ interface ButtonMuiProps extends ButtonMuiStyleProps {
   bc?: string
   bchactive?: string
   leftAlt?: string
-  title?: string
+  title?: string | boolean
   height?: string
   colorTitle?: string
   jc?: string

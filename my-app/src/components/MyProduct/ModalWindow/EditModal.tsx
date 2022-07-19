@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState} from 'react';
+import React, {Dispatch, FC, SetStateAction, useCallback, useState} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
@@ -7,15 +7,15 @@ import {TypeProduct} from "../../../types/types";
 import {editProduct} from "../../../redux/action/products";
 import {useDispatch} from "react-redux";
 import {useForm} from "react-hook-form";
+import rolling from "../../../assets/Rolling.gif";
 
 interface EditModalProps {
   editId: string
-  dataEditProduct: any
-  setIsEditModalActive: any
+  dataEditProduct?: TypeProduct
+  setIsEditModalActive: Dispatch<SetStateAction<boolean>>
 }
 
 const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalActive}) => {
-
   const {
     register,
     formState: {
@@ -124,7 +124,8 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           type='submit'
           disabled={!isValid || isLoading}
           width='300px'
-          title='Edit product'
+          title={isLoading ? 'Loading...' : 'Edit product'}
+          rightSrc={isLoading && rolling}
           height='52px'/>
       </ModalWindow>
     </div>

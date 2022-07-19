@@ -4,17 +4,33 @@ import Header from "../../UI/Header/Header";
 
 import style from './myProduct.module.scss'
 
+import {fetchProduct} from "../../redux/slices/productSlice";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
 import ProductOutput from "./ProductOutput";
+import {useDispatch, useSelector} from "react-redux";
+import {TypeProduct} from "../../types/types";
+
+const productCartTitle = [
+  'Product name',
+  'Store',
+  'Address',
+  'Category',
+  'Creation date',
+  'Price',
+  'Remains',
+  'Weight / Volume',
+  'Actions',
+]
 
 const MyProduct: FC = () => {
-  
-  const products = useTypedSelector(state => state.product)
-  const {fetchProducts} = useAction()
-
+  const dispatch = useDispatch()
+  // @ts-ignore
+  const product = useSelector(state => state.product)
+  console.log(product)
   useEffect(() => {
-    fetchProducts()
+    // @ts-ignore
+    dispatch(fetchProduct())
   }, [])
 
   return (
@@ -27,18 +43,12 @@ const MyProduct: FC = () => {
         />
         <div className={style.main_productBar_productCard}>
           <div className={style.main_productBar_productCard_Title}>
-            <p>Product name</p>
-            <p>Store</p>
-            <p>Address</p>
-            <p>Category</p>
-            <p>Creation date</p>
-            <p>Price</p>
-            <p>Remains</p>
-            <p>Weight / Volume</p>
-            <p>Actions</p>
+            {productCartTitle.map(title => (
+              <p key={title}>{title}</p>
+            ))}
           </div>
           {
-            products?.length > 0
+            product?.length > 0
               ?
               <ProductOutput/>
               :
