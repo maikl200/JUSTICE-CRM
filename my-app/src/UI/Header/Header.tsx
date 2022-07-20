@@ -14,8 +14,9 @@ import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
-import {useDispatch, useSelector} from "react-redux";
-import {addProductSaga} from "../../redux/action/products";
+import {useSelector} from "react-redux";
+import {useAppDispatch} from "../../redux/store";
+import {addProduct} from "../../redux/slices/productSlice";
 
 interface HeaderProps {
   title: string
@@ -32,11 +33,11 @@ const Header: FC<HeaderProps> =
    }) => {
 
     const [modalActive, setModalActive] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
     // @ts-ignore
     const user = useSelector(state => state.user)
+    const {status} = useTypedSelector(state => state.product)
+    const dispatch = useAppDispatch()
     const {pathname} = useLocation();
-    const dispatch = useDispatch();
 
     const {
       register,
@@ -50,16 +51,14 @@ const Header: FC<HeaderProps> =
       mode: 'all'
     })
 
-    const onSubmit = (data: TypeProduct) => {
-      setIsLoading(true)
-      dispatch(addProductSaga({close, data}))
-    }
-
     const close = useCallback(() => {
       setModalActive(false)
-      setIsLoading(false)
       reset()
     }, [])
+
+    const onSubmit = (product: TypeProduct) => {
+      dispatch(addProduct({close, product}))
+    }
 
     return (
       <div className={style.topBar}>
@@ -91,13 +90,11 @@ const Header: FC<HeaderProps> =
             {user?.firstName}
           </div>
         </div>
-        {
-          modalActive
-            ?
+        {modalActive &&
             <ModalWindow
-              onClose={close}
-              onSubmit={handleSubmit(onSubmit)}
-              title='Creating a product'>
+                onClose={close}
+                onSubmit={handleSubmit(onSubmit)}
+                title='Creating a product'>
               <Input
                 {...register('store', {
                   required: 'Required field',
@@ -185,17 +182,14 @@ const Header: FC<HeaderProps> =
                 type='number'
               />
               <ButtonUI
-                disabled={!isValid || isLoading}
-                height='52px'
-                title={isLoading ? 'Loading...' : 'Add Product'}
-                type='submit'
-                width='300px'
-                rightSrc={isLoading ? rolling : plus}
-                rightAlt='plusIcon'/>
-            </ModalWindow>
-            :
-            ''
-        }
+                  disabled={!isValid || status === 'loading'}
+                  height='52px'
+                  title={status === 'loading' ? 'Loading...' : 'Add Product'}
+                  type='submit'
+                  width='300px'
+                  rightSrc={status === 'loading' ? rolling : plus}
+                  rightAlt='plusIcon'/>
+            </ModalWindow>}
       </div>
     );
   };

@@ -7,11 +7,14 @@ import Cookies from 'js-cookie'
 
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import {NavLink, useNavigate} from "react-router-dom";
+import {setStatus} from "../../redux/slices/authSlice";
+import {useAppDispatch} from "../../redux/store";
 
 const NavBar: FC = () => {
 
   const navigate = useNavigate()
   const token = Cookies.get('token')
+  const dispatch = useAppDispatch()
 
 
   useEffect(() => {
@@ -19,6 +22,7 @@ const NavBar: FC = () => {
   }, [token])
 
   const logOut = () => {
+    dispatch(setStatus('none'))
     navigate('/SignIn')
     Cookies.remove('token')
   }

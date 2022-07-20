@@ -10,10 +10,8 @@ import Cookies from "js-cookie";
 import {useForm} from "react-hook-form";
 import {TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
-import {useAction} from "../../hooks/useAction";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {useDispatch, useSelector} from "react-redux";
 import {regUser} from "../../redux/slices/authSlice";
 import {useAppDispatch} from "../../redux/store";
 
@@ -36,7 +34,7 @@ const CreateAcc: FC = () => {
     mode: 'all'
   })
 
-  const { status } = useTypedSelector(state => state.auth)
+  const {statusReg} = useTypedSelector(state => state.auth)
 
   const onSubmit = (data: TypeUser) => {
     // @ts-ignore
@@ -44,8 +42,13 @@ const CreateAcc: FC = () => {
   }
 
   useEffect(() => {
-    if (status === 'success') navigate('/sigIn')
-  }, [status])
+    if (statusReg === 'success') {
+      navigate('/sigIn')
+      setShowError('')
+    } else if (statusReg === 'error') {
+      setShowError('Such a user already exists')
+    }
+  }, [statusReg])
 
   useEffect(() => {
     if (token) navigate('/mainPage')

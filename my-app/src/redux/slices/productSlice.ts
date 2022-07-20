@@ -1,24 +1,84 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {TypeProduct} from "../../types/types";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const fetchProduct = createAsyncThunk(
   'product/fetchProduct',
   async function () {
-    const response = await axios.get('http://localhost:5100/product/myProducts')
-    console.log(response)
-    return response
+    const {data} = await axios.get('http://localhost:5100/product/myProducts', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+    return data
   }
 )
 
 export const addProduct = createAsyncThunk(
   'product/addProduct',
-  async function () {
-
+  async function (payload: { close: () => void, product: TypeProduct }) {
+    const {data} = await axios.post('http://localhost:5100/product/addProduct', {
+      ...payload.product
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+    return data
   }
 )
 
-type Status = 'loading' | 'success' | 'error'
+export const editProduct = createAsyncThunk(
+  'product/editProduct',
+  async function (payload: { close: () => void, editId: string, product: TypeProduct }) {
+    const {data} = await axios.patch('http://localhost:5100/product/editProduct', {
+      ...payload.product
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: payload.editId
+      }
+    })
+    return data
+  }
+)
+
+export const deleteProduct = createAsyncThunk(
+  'product/deleteProduct',
+  async function (payload: { id: string }) {
+    const {data} = await axios.delete('http://localhost:5100/product/deleteProduct', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: payload.id
+      }
+    })
+    return data
+  }
+)
+
+export const sellProduct = createAsyncThunk(
+  'product/sellProduct',
+  async function (payload: { close: () => void, newProduct: TypeProduct, sellId: string }) {
+    const {data} = await axios.post('http://localhost:5100/sellProduct/sellProduct', {
+      ...payload.newProduct
+    }, {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      },
+      params: {
+        id: payload.sellId
+      }
+    })
+    return data
+  }
+)
+
+type Status = 'loading' | 'success' | 'error' | 'none'
 
 type ProductState = {
   products: TypeProduct[],
@@ -29,46 +89,76 @@ const productSlice = createSlice({
   name: 'product',
   initialState: {
     products: [],
-    status: 'loading'
+    status: 'none'
   } as ProductState,
-  reducers: {},
+  reducers: {
+    setStatus(state, action) {
+      state.status = action.payload as Status
+    }
+  },
   extraReducers: {
     // @ts-ignore
     [fetchProduct.pending]: (state: ProductState) => {
       state.status = 'loading'
     },
     // @ts-ignore
-    [fetchProduct.fulfilled]: (state: ProductState, payload: TypeProduct[]) => {
+    [fetchProduct.fulfilled]: (state: ProductState, action) => {
       state.status = 'success'
-      state.products = payload
-      console.log('===>payloadToolkit', payload)
+      state.products = action.payload
     },
     // @ts-ignore
     [fetchProduct.rejected]: (state: ProductState) => {
       state.status = 'error'
-    }
+    },
+    // @ts-ignore
+    [addProduct.pending]: (state: ProductState) => {
+      state.status = 'loading'
+    },
+    // @ts-ignore
+    [addProduct.fulfilled]: (state: ProductState, action) => {
+      state.status = 'success'
+      state.products.push(action.payload)
+      action.meta.arg.close()
+    },
+    // @ts-ignore
+    [addProduct.rejected]: (state: ProductState) => {
+      state.status = 'error'
+    },
+    // @ts-ignore
+    [editProduct.pending]: (state: ProductState) => {
+      state.status = 'loading'
+    },
+    // @ts-ignore
+    [editProduct.fulfilled]: (state: ProductState, action) => {
+      state.status = 'success'
+      state.products = action.payload
+      action.meta.arg.close()
+    },
+    // @ts-ignore
+    [editProduct.rejected]: (state: ProductState) => {
+      state.status = 'error'
+    },
+    // @ts-ignore
+    [sellProduct.pending]: (state: ProductState) => {
+      state.status = 'loading'
+    },
+    // @ts-ignore
+    [sellProduct.fulfilled]: (state: ProductState, action) => {
+      state.status = 'success'
+      state.products = action.payload
+      action.meta.arg.close()
+    },
+    // @ts-ignore
+    [sellProduct.rejected]: (state: ProductState) => {
+      state.status = 'error'
+    },
+    // @ts-ignore
+    [deleteProduct.fulfilled]: (state: ProductState, action) => {
+     state.products = state.products.filter(product => product._id !== action.payload._id)
+    },
   }
 })
 
-export default productSlice.reducer
+export const {setStatus} = productSlice.actions
 
-// import {ProductAction, ProductActionEnum} from '../types/product'
-// import {TypeProduct} from "../../types/types";
-//
-// const initialState = [] as TypeProduct[]
-//
-// export const productReducer = (state = initialState, action: ProductAction): TypeProduct[] => {
-//   switch (action.type) {
-//     case ProductActionEnum.SET_PRODUCT:
-//       return action.payload
-//     case ProductActionEnum.FETCH_PRODUCT:
-//       return state
-//     case ProductActionEnum.ADD_PRODUCT:
-//       return [...state, action.payload]
-//     case ProductActionEnum.DELETE_PRODUCT:
-//       return state.filter(obj => obj._id !== action.payload)
-//
-//     default:
-//       return state
-//   }
-// }
+export default productSlice.reducer

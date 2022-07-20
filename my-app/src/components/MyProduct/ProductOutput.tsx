@@ -1,22 +1,21 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import style from "./myProduct.module.scss";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
 import pencil from "../../assets/pencil.svg";
 import deleteIcon from "../../assets/Delete.svg";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {TypeProduct} from "../../types/types";
-import {deleteProductSaga} from "../../redux/action/products";
-import {useDispatch, useSelector} from "react-redux";
 import {useForm} from "react-hook-form";
 import EditModal from "./ModalWindow/EditModal";
 import SellModal from "./ModalWindow/SellModal";
+import {deleteProduct, fetchProduct} from "../../redux/slices/productSlice";
+import {useAppDispatch} from "../../redux/store";
 
 const ProductOutput = () => {
   const [isEditModalActive, setIsEditModalActive] = useState<boolean>(false)
   const [isSellModalActive, setIsSellModalActive] = useState<boolean>(false)
-  // @ts-ignore
-  const products = useSelector(state => state.product)
-  const dispatch = useDispatch()
+  const {products} = useTypedSelector(state => state.product)
+  const dispatch = useAppDispatch()
   const [productSell, setProductSell] = useState<TypeProduct>()
   const [dataEditProduct, setDataEditProduct] = useState<TypeProduct>()
   const [editId, setEditId] = useState<string>('')
@@ -32,7 +31,7 @@ const ProductOutput = () => {
   }
 
   const deleteElem = (id: string) => {
-    dispatch(deleteProductSaga(id))
+    dispatch(deleteProduct({id}))
   }
 
   const editElem = (id: string) => {
@@ -42,6 +41,10 @@ const ProductOutput = () => {
     setEditId(id)
     reset()
   }
+
+  useEffect(() => {
+    dispatch(fetchProduct())
+  }, [])
 
   return (
     <div className={style.main_productBar_productCard_productData}>

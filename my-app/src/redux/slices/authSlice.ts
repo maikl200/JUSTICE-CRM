@@ -1,20 +1,22 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import {TypeUser} from "../../types/types";
+import Cookies from "js-cookie";
 
 export const regUser = createAsyncThunk(
   'auth/regUser',
-  async function (data: TypeUser) {
-    const response = axios.post('http://localhost:5100/auth/register', data)
-    return response
+  async function (user: TypeUser) {
+    const {data} = await axios.post('http://localhost:5100/auth/register', user)
+    return data
   }
 )
 
 export const logInUser = createAsyncThunk(
   'auth/logInUser',
-  async function (data: TypeUser) {
-    const response = axios.post('http://localhost:5100/auth/login', data)
-    return response
+  async function (user: TypeUser) {
+    const {data} = await axios.post('http://localhost:5100/auth/login', user)
+    Cookies.set("token", data.token)
+    return data
   }
 )
 
@@ -22,46 +24,49 @@ type Status = 'loading' | 'success' | 'error' | 'none'
 
 type AuthState = {
   user: TypeUser,
-  status: Status
+  statusReg: Status
+  statusLogIn: Status
 }
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: {},
-    status: 'none'
+    statusReg: 'none',
+    statusLogIn: 'none'
   } as AuthState,
   reducers: {
     setStatus(state, action) {
-      state.status = action.payload as Status
+      state.statusReg = action.payload as Status
+      state.statusLogIn = action.payload as Status
     }
   },
   extraReducers: {
     // @ts-ignore
     [regUser.pending]: (state: AuthState) => {
-      state.status = 'loading'
+      state.statusReg = 'loading'
     },
     // @ts-ignore
     [regUser.fulfilled]: (state: AuthState, action) => {
-      state.status = 'success'
+      state.statusReg = 'success'
       state.user = action.payload
     },
     // @ts-ignore
     [regUser.rejected]: (state: AuthState) => {
-      state.status = 'error'
+      state.statusReg = 'error'
     },
     // @ts-ignore
     [logInUser.pending]: (state: AuthState) => {
-      state.status = 'loading'
+      state.statusLogIn = 'loading'
     },
     // @ts-ignore
     [logInUser.fulfilled]: (state: AuthState, action) => {
-      state.status = 'success'
+      state.statusLogIn = 'success'
       state.user = action.payload
     },
     // @ts-ignore
     [logInUser.rejected]: (state: AuthState) => {
-      state.status = 'error'
+      state.statusLogIn = 'error'
     }
   }
 })
@@ -69,27 +74,3 @@ const authSlice = createSlice({
 export const {setStatus} = authSlice.actions
 
 export default authSlice.reducer
-
-// import {TypeUser} from "../../types/types";
-// import {AuthAction, AuthActionEnum} from "../types/auth";
-//
-// const initialState: TypeUser = {}
-//
-// export const authSlice = (state = initialState, action: AuthAction) => {
-//   switch (action.type) {
-//     case AuthActionEnum.REG_USER:
-//       return action.payload
-//     case AuthActionEnum.LOGIN_USER:
-//       return action.payload
-//     case AuthActionEnum.REG_ERROR:
-//       return {
-//         ...state, RegError: action.payload
-//       }
-//     case AuthActionEnum.LOG_IN_ERROR:
-//       return {
-//         ...state, LogInError: action.payload
-//       }
-//     default:
-//       return state
-//   }
-// }

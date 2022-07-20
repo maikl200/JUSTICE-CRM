@@ -1,13 +1,14 @@
-import React, {Dispatch, FC, SetStateAction, useCallback, useState} from 'react';
+import React, {Dispatch, FC, SetStateAction, useCallback} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../../ModalWindow/ModalWindow";
 import {TypeProduct} from "../../../types/types";
-import {sellProductSaga} from "../../../redux/action/products";
 import {useForm} from "react-hook-form";
-import {useDispatch} from "react-redux";
 import rolling from "../../../assets/Rolling.gif";
+import {sellProduct} from "../../../redux/slices/productSlice";
+import {useAppDispatch} from "../../../redux/store";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 
 interface SellModalProps {
@@ -27,12 +28,11 @@ const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSel
   } = useForm({
     mode: 'all'
   })
-  const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
+  const {status} = useTypedSelector(state => state.product)
 
   const close = useCallback(() => {
     setIsSellModalActive(false)
-    setIsLoading(false)
   }, [])
 
   const quantityGoods = (productSell?.quantityGoods)
@@ -44,8 +44,7 @@ const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSel
       quantityGoods: discriminant,
       ...data
     }
-    setIsLoading(true)
-    dispatch(sellProductSaga({close, newProduct, sellId}))
+    dispatch(sellProduct({close, newProduct, sellId}))
   }
 
   return (
@@ -83,11 +82,11 @@ const SellModal: FC<SellModalProps> = ({sellId, setIsSellModalActive, productSel
           type='text'
         />
         <ButtonUI
-          disabled={!isValid || isLoading}
+          disabled={!isValid || status === 'loading'}
           width='300px'
           type='submit'
-          title={isLoading ? 'Loading...' : 'Sell product'}
-          rightSrc={isLoading && rolling}
+          title={status === 'loading' ? 'Loading...' : 'Sell product'}
+          rightSrc={status === 'loading' && rolling}
           height='52px'/>
       </ModalWindow>
     </div>

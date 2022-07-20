@@ -8,7 +8,7 @@ interface ModalCreatingProductProps {
   title: string
   onSubmit?: React.FormEventHandler<HTMLFormElement>
   onBlur?: (e: React.FocusEvent<HTMLFormElement>) => void
-  onClose?: () => void | boolean
+  onClose?: () => void
 }
 
 const ModalWindow: FC<ModalCreatingProductProps> = ({onClose, children, title, onBlur, onSubmit}) => {
