@@ -4,10 +4,11 @@ import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../../ModalWindow/ModalWindow";
 import {TypeProduct} from "../../../types/types";
-import {editProduct} from "../../../redux/action/products";
-import {useDispatch} from "react-redux";
 import {useForm} from "react-hook-form";
 import rolling from "../../../assets/Rolling.gif";
+import {editProduct} from "../../../redux/slices/productSlice";
+import {useAppDispatch} from "../../../redux/store";
+import {useTypedSelector} from "../../../hooks/useTypedSelector";
 
 interface EditModalProps {
   editId: string
@@ -26,17 +27,15 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
   } = useForm({
     mode: 'all'
   })
-  const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
+  const {status} = useTypedSelector(state => state.product)
 
   const close = useCallback(() => {
     setIsEditModalActive(false)
-    setIsLoading(false)
   }, [])
 
-  const editButton = (data: TypeProduct) => {
-    setIsLoading(true)
-    dispatch(editProduct({close, data, editId}))
+  const editButton = (product: TypeProduct) => {
+    dispatch(editProduct({close, editId, product}))
   }
 
   return (
@@ -122,10 +121,10 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
         />
         <ButtonUI
           type='submit'
-          disabled={!isValid || isLoading}
+          disabled={!isValid || status === 'loading'}
           width='300px'
-          title={isLoading ? 'Loading...' : 'Edit product'}
-          rightSrc={isLoading && rolling}
+          title={status === 'loading' ? 'Loading...' : 'Edit product'}
+          rightSrc={status === 'loading' && rolling}
           height='52px'/>
       </ModalWindow>
     </div>

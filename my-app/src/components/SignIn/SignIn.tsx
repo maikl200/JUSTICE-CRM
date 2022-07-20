@@ -7,20 +7,19 @@ import imgReg from "../../assets/img_at_registration.png";
 import {useNavigate} from "react-router-dom";
 import {regEx} from "../../assets/regEx";
 import Cookies from "js-cookie";
-import {useAction} from "../../hooks/useAction";
 import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
-import {logInUser} from "../../redux/action/auth";
-import {useDispatch} from "react-redux";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {setStatus} from "../../redux/slices/authSlice";
+import {logInUser, setStatus} from "../../redux/slices/authSlice";
+import {useAppDispatch} from "../../redux/store";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 
 
 const SignIn: FC = () => {
   const navigate = useNavigate()
   const [showError, setShowError] = useState<string>('')
-  const {logInUser} = useAction()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
+  const {statusLogIn} = useTypedSelector(state => state.auth)
   const {width} = useWindowSize()
   const token = Cookies.get('token')
   const {
@@ -35,8 +34,17 @@ const SignIn: FC = () => {
   })
 
   const onSubmit = (data: TypeUser) => {
-    dispatch(logInUser({navigate, setShowError, data}))
+    dispatch(logInUser(data))
   }
+
+  useEffect(() => {
+    if (statusLogIn === 'success') {
+      navigate('/mainPage')
+      setShowError('')
+    } else if (statusLogIn === 'error') {
+      setShowError('User not found')
+    }
+  }, [statusLogIn])
 
   useEffect(() => {
     if (token) navigate('/mainPage')

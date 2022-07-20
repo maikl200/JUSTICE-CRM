@@ -6,10 +6,8 @@ import style from './myProduct.module.scss'
 
 import {fetchProduct} from "../../redux/slices/productSlice";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useAction} from "../../hooks/useAction";
 import ProductOutput from "./ProductOutput";
-import {useDispatch, useSelector} from "react-redux";
-import {TypeProduct} from "../../types/types";
+import {useAppDispatch} from "../../redux/store";
 
 const productCartTitle = [
   'Product name',
@@ -24,12 +22,10 @@ const productCartTitle = [
 ]
 
 const MyProduct: FC = () => {
-  const dispatch = useDispatch()
-  // @ts-ignore
-  const product = useSelector(state => state.product)
-  console.log(product)
+  const dispatch = useAppDispatch()
+
+  const {products} = useTypedSelector(state => state.product)
   useEffect(() => {
-    // @ts-ignore
     dispatch(fetchProduct())
   }, [])
 
@@ -48,7 +44,7 @@ const MyProduct: FC = () => {
             ))}
           </div>
           {
-            product?.length > 0
+            products?.length > 0
               ?
               <ProductOutput/>
               :
