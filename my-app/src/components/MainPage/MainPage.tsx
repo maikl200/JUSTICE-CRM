@@ -4,21 +4,23 @@ import style from './mainPage.module.scss'
 
 
 import NavBar from "../NavBar/NavBar";
-// import DiogramPie from "../Diogram/DiogramPie";
-// import DiogramBars from "../Diogram/DiogramBars";
-// import DiogramLine from "../Diogram/DiogramLine";
+import DiogramPie from "../Diogram/DiogramPie";
+import DiogramBars from "../Diogram/DiogramBars";
+import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useAction} from "../../hooks/useAction";
+import {fetchSellProduct} from "../../redux/slices/sellProductSlice";
+import {useAppDispatch} from "../../redux/store";
+import {fetchUsers} from "../../redux/slices/userSlice";
 
 const MainPage: FC = () => {
 
-  const {fetchSellProduct, fetchUsers} = useAction()
-  const sellProduct = useTypedSelector(state => state.sellProduct)
+  const {sellProduct} = useTypedSelector(state => state.sellProduct)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
-    fetchSellProduct()
-    fetchUsers()
+    dispatch(fetchSellProduct())
+    dispatch(fetchUsers())
   }, [])
 
   return (
@@ -32,15 +34,15 @@ const MainPage: FC = () => {
             <>
               <div className={style.main_statisticsBar_diogram_stack}>
                 <div className={style.main_statisticsBar_diogram_pie}>
-                  {/*<DiogramPie/>*/}
+                  <DiogramPie/>
                 </div>
                 <div className={style.main_statisticsBar_diogram_line}>
                   <p className={style.main_statisticsBar_diogram_line_titleBar}>Total earned</p>
-                  {/*<DiogramLine/>*/}
+                  <DiogramLine/>
                 </div>
               </div>
               <div className={style.main_statisticsBar_diogram_bar}>
-                {/*<DiogramBars/>*/}
+                <DiogramBars/>
               </div>
             </>
             :

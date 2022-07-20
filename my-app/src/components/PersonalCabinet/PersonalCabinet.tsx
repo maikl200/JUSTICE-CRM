@@ -13,10 +13,7 @@ import {regEx} from "../../assets/regEx";
 import {useAction} from "../../hooks/useAction";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {useDispatch} from "react-redux";
-import {setEditLoading} from "../../redux/action/user";
 import rolling from "../../assets/Rolling.gif";
-import plus from "../../assets/Plus.svg";
 
 const validationSchema = () => yup.object().shape({
   firstName: yup.string()
@@ -70,13 +67,12 @@ const PersonalCabinet: FC = () => {
   const [image, setImage] = useState<FileList | null>()
   const [previewAvatarState, setPreviewAvatarState] = useState<string | ArrayBuffer | null>()
   const [fileName, setFileName] = useState('')
-  const {user, isEditLoading} = useTypedSelector(state => state.user)
+  const {user, status} = useTypedSelector(state => state.user)
   const {width} = useWindowSize()
-  const dispatch = useDispatch()
   const {
-    fetchUsers,
     changeCurrentPassword,
     changeProfile,
+    fetchUsers,
     uploadAvatar,
     deleteAvatar
   } = useAction()
@@ -98,8 +94,9 @@ const PersonalCabinet: FC = () => {
   useEffect(() => {
     fetchUsers()
   }, [])
+
   const deleteAvatarFunk = () => {
-    dispatch(deleteAvatar())
+    deleteAvatar()
   }
 
   return (
@@ -124,12 +121,10 @@ const PersonalCabinet: FC = () => {
               if (data.oldPassword) {
                 changePassword(helper.setFieldError)
               }
-              dispatch(setEditLoading(true))
-              dispatch(changeProfile(data))
+              changeProfile({data})
               setPreviewAvatarState('')
               setFileName('')
               if (!image) return
-              // @ts-ignore
               uploadAvatar(image[0])
             }}
           >
@@ -142,6 +137,7 @@ const PersonalCabinet: FC = () => {
                 touched,
               }) => (
               <>
+                {console.log(typeof touched.firstName)}
                 <div className={style.main_personalCabinetBar_wrapper}>
                   <Form
                     className={style.main_personalCabinetBar_wrapper_userSettings}
@@ -266,10 +262,10 @@ const PersonalCabinet: FC = () => {
                     <div className={style.main_personalCabinetBar_btns}>
                       <ButtonUI
                         type='submit'
-                        disabled={!isValid || isEditLoading}
-                        rightSrc={isEditLoading && rolling}
+                        disabled={!isValid || status === 'loading'}
+                        rightSrc={status === 'loading' && rolling}
                         width='158px'
-                        title={isEditLoading ? 'Loading...' : 'Save changes'}
+                        title={status === 'loading' ? 'Loading...' : 'Save changes'}
                         height='52px'/>
                       <ButtonUI
                         bch='#c23616'

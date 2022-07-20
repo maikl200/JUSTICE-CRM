@@ -6,16 +6,17 @@ import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAction} from "../../hooks/useAction";
+import {fetchSellProduct} from "../../redux/slices/sellProductSlice";
+import {useAppDispatch} from "../../redux/store";
 
 
 const MySales: FC = () => {
-  // const sellProduct = useTypedSelector(state => state.sellProduct)
-  //
-  // const {fetchSellProduct} = useAction()
-  //
-  // useEffect(() => {
-  //   fetchSellProduct()
-  // }, [])
+  const {sellProduct} = useTypedSelector(state => state.sellProduct)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(fetchSellProduct())
+  }, [])
 
   return (
     <main className={style.main}>
@@ -34,31 +35,31 @@ const MySales: FC = () => {
             <p>Weight / Volume</p>
             <p>Last sale</p>
           </div>
-          {/*{*/}
-          {/*  sellProduct.length > 0*/}
-          {/*    ?*/}
-          {/*    <div className={style.main_salesBar_salesCard_salesData}>*/}
-          {/*      {sellProduct?.map((product) => {*/}
-          {/*        return (*/}
-          {/*          <>*/}
-          {/*            <div key={product._id} className={style.main_salesBar_salesCard_salesData_sales}>*/}
-          {/*              <p>{product.productName}</p>*/}
-          {/*              <p>{product.store}</p>*/}
-          {/*              <p>{product?.address ? product.address : '15 Krylatskaya st...'}</p>*/}
-          {/*              <p>{product.productCategory}</p>*/}
-          {/*              <p>{product.dateNow}</p>*/}
-          {/*              <p>${product.price}</p>*/}
-          {/*              <p>{product.soldItems}</p>*/}
-          {/*              <p>{product.weightVolumeOneItem}kg</p>*/}
-          {/*              <p>{product.lastSale}</p>*/}
-          {/*            </div>*/}
-          {/*          </>*/}
-          {/*        )*/}
-          {/*      }).reverse()}*/}
-          {/*    </div>*/}
-          {/*    :*/}
-          {/*    <h1 style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>No goods sold</h1>*/}
-          {/*}*/}
+          {
+            sellProduct.length > 0
+              ?
+              <div className={style.main_salesBar_salesCard_salesData}>
+                {sellProduct?.map((product) => {
+                  return (
+                    <>
+                      <div key={product._id} className={style.main_salesBar_salesCard_salesData_sales}>
+                        <p>{product.productName}</p>
+                        <p>{product.store}</p>
+                        <p>{product?.address ? product.address : '15 Krylatskaya st...'}</p>
+                        <p>{product.productCategory}</p>
+                        <p>{product.dateNow}</p>
+                        <p>${product.price}</p>
+                        <p>{product.soldItems}</p>
+                        <p>{product.weightVolumeOneItem}kg</p>
+                        <p>{product.lastSale}</p>
+                      </div>
+                    </>
+                  )
+                }).reverse()}
+              </div>
+              :
+              <h1 style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>No goods sold</h1>
+          }
         </div>
       </div>
     </main>

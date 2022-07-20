@@ -1,7 +1,8 @@
-import React, {ChangeEvent, FC, forwardRef, useImperativeHandle, useRef} from 'react';
+import React, {ChangeEvent, FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef} from 'react';
 
 import style from './input.module.scss'
-import {DeepRequired, FieldError, FieldErrorsImpl, Merge} from "react-hook-form";
+import {DeepRequired, FieldErrors, FieldErrorsImpl, FieldValues} from "react-hook-form";
+import {FormikErrors} from "formik";
 
 interface Props {
   title?: string
@@ -12,15 +13,14 @@ interface Props {
   className?: string
   defaultValue?: string | number
   errorBorder?: string
-  error?: any
+  error?:  FieldErrors<FieldValues> | string | boolean
   onBlur?: (e: ChangeEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   readOnly?: boolean
   value?: string | number
 }
 
-
-const InputUI: FC<Props> = (
+const InputUI: ForwardRefRenderFunction<any, Props> = (
   {
     title,
     placeholder,
@@ -64,12 +64,10 @@ const InputUI: FC<Props> = (
           ref={inputRef}
           {...props}
         />
-        {error && <span className={style.label_error}>{error}</span>}
+        {error && <span className={style.label_error}>{`${error}`}</span>}
       </label>
     </>
   );
 };
 
-
-// @ts-ignore
 export const Input = forwardRef(InputUI);

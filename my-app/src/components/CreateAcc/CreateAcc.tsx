@@ -37,7 +37,6 @@ const CreateAcc: FC = () => {
   const {statusReg} = useTypedSelector(state => state.auth)
 
   const onSubmit = (data: TypeUser) => {
-    // @ts-ignore
     dispatch(regUser(data))
   }
 

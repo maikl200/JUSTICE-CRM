@@ -96,66 +96,53 @@ const productSlice = createSlice({
       state.status = action.payload as Status
     }
   },
-  extraReducers: {
-    // @ts-ignore
-    [fetchProduct.pending]: (state: ProductState) => {
+  extraReducers: (builder) => {
+    builder.addCase(fetchProduct.pending, (state: ProductState) => {
       state.status = 'loading'
-    },
-    // @ts-ignore
-    [fetchProduct.fulfilled]: (state: ProductState, action) => {
+    })
+    builder.addCase(fetchProduct.fulfilled, (state: ProductState, action) => {
       state.status = 'success'
       state.products = action.payload
-    },
-    // @ts-ignore
-    [fetchProduct.rejected]: (state: ProductState) => {
+    })
+    builder.addCase(fetchProduct.rejected, (state: ProductState) => {
       state.status = 'error'
-    },
-    // @ts-ignore
-    [addProduct.pending]: (state: ProductState) => {
+    })
+    builder.addCase(addProduct.pending, (state: ProductState) => {
       state.status = 'loading'
-    },
-    // @ts-ignore
-    [addProduct.fulfilled]: (state: ProductState, action) => {
+    })
+    builder.addCase(addProduct.fulfilled, (state: ProductState, action) => {
       state.status = 'success'
       state.products.push(action.payload)
       action.meta.arg.close()
-    },
-    // @ts-ignore
-    [addProduct.rejected]: (state: ProductState) => {
+    })
+    builder.addCase(addProduct.rejected, (state: ProductState) => {
       state.status = 'error'
-    },
-    // @ts-ignore
-    [editProduct.pending]: (state: ProductState) => {
+    })
+    builder.addCase(editProduct.pending, (state: ProductState) => {
       state.status = 'loading'
-    },
-    // @ts-ignore
-    [editProduct.fulfilled]: (state: ProductState, action) => {
+    })
+    builder.addCase(editProduct.fulfilled, (state: ProductState, action) => {
       state.status = 'success'
       state.products = action.payload
       action.meta.arg.close()
-    },
-    // @ts-ignore
-    [editProduct.rejected]: (state: ProductState) => {
+    })
+    builder.addCase(editProduct.rejected, (state: ProductState) => {
       state.status = 'error'
-    },
-    // @ts-ignore
-    [sellProduct.pending]: (state: ProductState) => {
+    })
+    builder.addCase(sellProduct.pending, (state: ProductState) => {
       state.status = 'loading'
-    },
-    // @ts-ignore
-    [sellProduct.fulfilled]: (state: ProductState, action) => {
+    })
+    builder.addCase(sellProduct.fulfilled, (state: ProductState, action) => {
       state.status = 'success'
       state.products = action.payload
       action.meta.arg.close()
-    },
-    // @ts-ignore
-    [sellProduct.rejected]: (state: ProductState) => {
+    })
+    builder.addCase(sellProduct.rejected, (state: ProductState) => {
       state.status = 'error'
-    },
-    // @ts-ignore
-    [deleteProduct.fulfilled]: (state: ProductState, action) => {
-     state.products = state.products.filter(product => product._id !== action.payload._id)
-    },
+    })
+    builder.addCase(deleteProduct.fulfilled, (state: ProductState, action) => {
+      state.products = state.products.filter(product => product._id !== action.payload._id)
+    })
   }
 })
 

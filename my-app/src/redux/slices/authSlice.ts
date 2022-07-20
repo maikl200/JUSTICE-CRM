@@ -41,33 +41,27 @@ const authSlice = createSlice({
       state.statusLogIn = action.payload as Status
     }
   },
-  extraReducers: {
-    // @ts-ignore
-    [regUser.pending]: (state: AuthState) => {
+  extraReducers: (builder) => {
+    builder.addCase(regUser.pending, (state: AuthState) => {
       state.statusReg = 'loading'
-    },
-    // @ts-ignore
-    [regUser.fulfilled]: (state: AuthState, action) => {
+    })
+    builder.addCase(regUser.fulfilled, (state: AuthState, action) => {
       state.statusReg = 'success'
       state.user = action.payload
-    },
-    // @ts-ignore
-    [regUser.rejected]: (state: AuthState) => {
+    })
+    builder.addCase(regUser.rejected, (state: AuthState) => {
       state.statusReg = 'error'
-    },
-    // @ts-ignore
-    [logInUser.pending]: (state: AuthState) => {
+    })
+    builder.addCase(logInUser.pending, (state: AuthState) => {
       state.statusLogIn = 'loading'
-    },
-    // @ts-ignore
-    [logInUser.fulfilled]: (state: AuthState, action) => {
+    })
+    builder.addCase(logInUser.fulfilled, (state: AuthState, action) => {
       state.statusLogIn = 'success'
       state.user = action.payload
-    },
-    // @ts-ignore
-    [logInUser.rejected]: (state: AuthState) => {
+    })
+    builder.addCase(logInUser.rejected, (state: AuthState) => {
       state.statusLogIn = 'error'
-    }
+    })
   }
 })
 

@@ -33,8 +33,7 @@ const Header: FC<HeaderProps> =
    }) => {
 
     const [modalActive, setModalActive] = useState<boolean>(false)
-    // @ts-ignore
-    const user = useSelector(state => state.user)
+    const {user} = useTypedSelector(state => state.user)
     const {status} = useTypedSelector(state => state.product)
     const dispatch = useAppDispatch()
     const {pathname} = useLocation();
