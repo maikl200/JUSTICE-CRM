@@ -38,6 +38,7 @@
         color: #5082e1;
         cursor: pointer;
 
+
       }
     }
 
@@ -46,6 +47,10 @@
       justify-content: center;
       font-size: 2.25rem;
       color: #2B3844;
+
+      @media screen and (max-width: 376px) {
+        font-size: 1.3rem;
+      }
     }
 
     &_form {
@@ -53,6 +58,10 @@
       flex-direction: column;
       width: 50%;
       gap: 24px;
+
+      @media screen and (max-width: 1600px) {
+        gap: 5px;
+      }
     }
 
     &_inputsRow {

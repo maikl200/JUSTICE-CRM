@@ -60,6 +60,9 @@ const BootstrapButton = styled(Button)<ButtonMuiStyleProps>`
   flex-direction: ${({direction}) => direction};
   border: ${({border}) => border};
   color: ${({coloring}) => coloring};
+  @media screen and (max-width: 376px) {
+    height: 50px;
+  }
   text-transform: none;
   overflow: hidden;
   line-height: 1.5px;

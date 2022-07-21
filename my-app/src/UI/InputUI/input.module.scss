@@ -12,6 +12,10 @@
     border-radius: 0.188rem;
     width: 100%;
 
+    @media screen and (max-width: 376px) {
+      padding: 0.5rem;
+    }
+
     &::placeholder {
       opacity: 0.3;
     }
