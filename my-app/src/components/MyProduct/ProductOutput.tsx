@@ -8,7 +8,7 @@ import {TypeProduct} from "../../types/types";
 import {useForm} from "react-hook-form";
 import EditModal from "./ModalWindow/EditModal";
 import SellModal from "./ModalWindow/SellModal";
-import {deleteProduct, fetchProduct} from "../../redux/slices/productSlice";
+import {deleteProduct, fetchProduct} from "../../redux/asyncThunk/productAsyncThunk";
 import {useAppDispatch} from "../../redux/store";
 
 const ProductOutput = () => {

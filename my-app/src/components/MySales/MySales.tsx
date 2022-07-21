@@ -5,8 +5,7 @@ import style from './mySales.module.scss'
 import NavBar from "../NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useAction} from "../../hooks/useAction";
-import {fetchSellProduct} from "../../redux/slices/sellProductSlice";
+import {fetchSellProduct} from "../../redux/asyncThunk/sellProductAsyncThunk";
 import {useAppDispatch} from "../../redux/store";
 
 

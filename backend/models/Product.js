@@ -1,8 +1,16 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const productSchema = new Schema({
+const currentDate = new Date()
 
+const getCurrentDate = () => {
+  const date = currentDate.getDate()
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0')
+  const year = currentDate.getFullYear()
+  return `${date}.${month}.${year}`
+}
+
+const productSchema = new Schema({
   userId: {
     ref: 'Users',
     type: Schema.Types.ObjectId
@@ -35,8 +43,8 @@ const productSchema = new Schema({
     type: Number
   },
   dateNow: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: getCurrentDate()
   },
 })
 

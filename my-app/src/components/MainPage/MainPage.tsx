@@ -9,9 +9,9 @@ import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {fetchSellProduct} from "../../redux/slices/sellProductSlice";
+import {fetchSellProduct} from "../../redux/asyncThunk/sellProductAsyncThunk";
 import {useAppDispatch} from "../../redux/store";
-import {fetchUsers} from "../../redux/slices/userSlice";
+import {fetchUsers} from "../../redux/asyncThunk/userAsyncThunk";
 
 const MainPage: FC = () => {
 

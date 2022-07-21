@@ -14,9 +14,8 @@ import {useLocation} from "react-router-dom";
 import {PathEnum} from "../AppRouter/AppRouter";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
-import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../redux/store";
-import {addProduct} from "../../redux/slices/productSlice";
+import {addProduct} from "../../redux/asyncThunk/productAsyncThunk";
 
 interface HeaderProps {
   title: string

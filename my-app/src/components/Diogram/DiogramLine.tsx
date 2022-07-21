@@ -3,7 +3,7 @@ import Chart from "react-apexcharts";
 
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAppDispatch} from "../../redux/store";
-import {fetchSellProduct} from "../../redux/slices/sellProductSlice";
+import {fetchSellProduct} from "../../redux/asyncThunk/sellProductAsyncThunk";
 
 
 const DiogramLine: FC = () => {
