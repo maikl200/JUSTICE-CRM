@@ -1,10 +1,10 @@
 import React, {FC, useEffect} from 'react';
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../../UI/NavBar/NavBar";
 import Header from "../../UI/Header/Header";
 
 import style from './myProduct.module.scss'
 
-import {fetchProduct} from "../../redux/asyncThunk/productAsyncThunk";
+import {fetchProduct} from "../../redux/slices/product/productAsyncAction";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import ProductOutput from "./ProductOutput";
 import {useAppDispatch} from "../../redux/store";

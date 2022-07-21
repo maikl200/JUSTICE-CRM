@@ -1,7 +1,7 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {TypeUser} from "../../types/types";
+import {TypeUser} from "../../../types/types";
 
 export const fetchUsers = createAsyncThunk(
   'user/fetchUser',
@@ -15,32 +15,24 @@ export const fetchUsers = createAsyncThunk(
   }
 )
 
-export const changeCurrentPassword = createAsyncThunk(
-  'user/changeCurrentPassword',
-  async function (payload: { validateError: (field: string, message: (string | undefined)) => void, valueOldPassword: string }) {
-    const {data} = await axios.post('http://localhost:5100/profile/changePassword', {
-      oldPassword: payload.valueOldPassword
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`,
-      }
-    })
-    if (!data) throw new Error('Password not found')
-    return data
-  }
-)
-
 export const changeProfile = createAsyncThunk(
   'user/changeProfile',
-  async function (payload: { data: TypeUser }) {
-    const {data} = await axios.patch('http://localhost:5100/profile/changeProfile', {
-      ...payload.data
-    }, {
-      headers: {
-        Authorization: `${Cookies.get("token")}`
+  async function (payload: { clearPasswordFields: (nextState: any) => void, validateError: (field: string, message: (string | undefined)) => void, valueOldPassword: string, data: TypeUser }) {
+    try {
+      const {data} = await axios.patch('http://localhost:5100/profile/changeProfile', {
+        ...payload.data
+      }, {
+        headers: {
+          Authorization: `${Cookies.get("token")}`
+        }
+      })
+      if (data.isPasswordUpdate) {
+        payload.clearPasswordFields(data)
       }
-    })
-    return data
+      return data
+    } catch (e) {
+      console.error(e)
+    }
   }
 )
 

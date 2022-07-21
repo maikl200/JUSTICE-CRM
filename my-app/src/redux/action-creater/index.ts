@@ -1,12 +1,10 @@
-import * as AuthActionCreators from '../slices/authSlice'
-import * as SellProductActionCreators from '../slices/sellProductSlice'
-import * as ProductActionCreators from '../slices/productSlice'
-import * as UserActionCreators from '../slices/userSlice'
+import * as AuthActionCreators from '../slices/auth/authSlice'
+import * as ProductActionCreators from '../slices/product/productSlice'
+import * as UserActionCreators from '../slices/user/userSlice'
 
 
 export default {
   ...AuthActionCreators,
   ...ProductActionCreators,
-  ...SellProductActionCreators,
   ...UserActionCreators
 }

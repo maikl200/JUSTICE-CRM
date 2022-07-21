@@ -53,7 +53,7 @@ module.exports.deleteAvatar = async function (req, res) {
     try {
       await User.updateOne({_id: req.user.id},{
         $set: {
-          avatar: 'images/image-1656925193112.jpeg'
+          avatar: null
         }
       })
       const updatedUser = await User.findOne({_id: req.user.id})

@@ -5,9 +5,9 @@ import style from './navBar.module.scss'
 
 import Cookies from 'js-cookie'
 
-import ButtonUI from "../../UI/ButtonTS/ButtonUI";
+import ButtonUI from "../ButtonTS/ButtonUI";
 import {NavLink, useNavigate} from "react-router-dom";
-import {setStatus} from "../../redux/slices/authSlice";
+import {setStatus} from "../../redux/slices/auth/authSlice";
 import {useAppDispatch} from "../../redux/store";
 
 const NavBar: FC = () => {

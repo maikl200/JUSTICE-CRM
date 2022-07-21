@@ -1,12 +1,24 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {TypeProduct} from "../../types/types";
+import {TypeProduct} from "../../../types/types";
 
 export const fetchProduct = createAsyncThunk(
   'product/fetchProduct',
   async function () {
     const {data} = await axios.get('http://localhost:5100/product/myProducts', {
+      headers: {
+        Authorization: `${Cookies.get("token")}`,
+      }
+    })
+    return data
+  }
+)
+
+export const fetchSellProduct = createAsyncThunk(
+  'sellProduct/fetchSellProduct',
+  async function () {
+    const {data} = await axios.get('http://localhost:5100/sellProduct/mySellProduct', {
       headers: {
         Authorization: `${Cookies.get("token")}`,
       }

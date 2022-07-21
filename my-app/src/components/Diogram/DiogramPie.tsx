@@ -4,11 +4,11 @@ import Chart from 'react-apexcharts'
 
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAppDispatch} from "../../redux/store";
-import {fetchSellProduct} from "../../redux/asyncThunk/sellProductAsyncThunk";
+import {fetchSellProduct} from "../../redux/slices/product/productAsyncAction";
 
 const DiogramPie = () => {
 
-  const {sellProduct} = useTypedSelector(state => state.sellProduct)
+  const {sellProduct} = useTypedSelector(state => state.product)
   const dispatch = useAppDispatch()
 
   useEffect(() => {

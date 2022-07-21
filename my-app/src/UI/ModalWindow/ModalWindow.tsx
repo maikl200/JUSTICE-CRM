@@ -14,8 +14,8 @@ interface ModalCreatingProductProps {
 const ModalWindow: FC<ModalCreatingProductProps> = ({onClose, children, title, onBlur, onSubmit}) => {
   return (
     <>
-      <div className={style.modal}>
-        <div className={style.modal_wrapper}>
+      <div className={style.modal} onClick={onClose}>
+        <div className={style.modal_wrapper} onClick={(e) => e.stopPropagation()}>
           <div className={style.modal_wrapper_modalContent}>
             <span className={style.modal_wrapper_modalContent_title}>{title}</span>
             <form className={style.modal_wrapper_modalContent_form} onSubmit={onSubmit} onBlur={onBlur}>

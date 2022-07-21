@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {logInUser, regUser} from "../asyncThunk/authAsyncThunk";
-import {AuthState, AuthStatus} from "../types/authType";
+import {logInUser, regUser} from "./authAsyncAction";
+import {AuthState, AuthStatus} from "./authType";
 
 const authSlice = createSlice({
   name: 'auth',

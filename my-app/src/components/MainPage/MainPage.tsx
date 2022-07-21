@@ -3,24 +3,22 @@ import React, {FC, useEffect} from 'react';
 import style from './mainPage.module.scss'
 
 
-import NavBar from "../NavBar/NavBar";
+import NavBar from "../../UI/NavBar/NavBar";
 import DiogramPie from "../Diogram/DiogramPie";
 import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
 import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {fetchSellProduct} from "../../redux/asyncThunk/sellProductAsyncThunk";
+import {fetchSellProduct} from "../../redux/slices/product/productAsyncAction";
 import {useAppDispatch} from "../../redux/store";
-import {fetchUsers} from "../../redux/asyncThunk/userAsyncThunk";
 
 const MainPage: FC = () => {
 
-  const {sellProduct} = useTypedSelector(state => state.sellProduct)
+  const {sellProduct} = useTypedSelector(state => state.product)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(fetchSellProduct())
-    dispatch(fetchUsers())
   }, [])
 
   return (

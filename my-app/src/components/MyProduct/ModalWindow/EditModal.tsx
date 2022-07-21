@@ -2,11 +2,11 @@ import React, {Dispatch, FC, SetStateAction, useCallback} from 'react';
 import {Input} from "../../../UI/InputUI/Input";
 import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
-import ModalWindow from "../../ModalWindow/ModalWindow";
+import ModalWindow from "../../../UI/ModalWindow/ModalWindow";
 import {TypeProduct} from "../../../types/types";
 import {useForm} from "react-hook-form";
 import rolling from "../../../assets/Rolling.gif";
-import {editProduct} from "../../../redux/asyncThunk/productAsyncThunk";
+import {editProduct} from "../../../redux/slices/product/productAsyncAction";
 import {useAppDispatch} from "../../../redux/store";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 

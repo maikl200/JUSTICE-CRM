@@ -1,11 +1,19 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {addProduct, deleteProduct, editProduct, fetchProduct, sellProduct} from "../asyncThunk/productAsyncThunk";
-import {ProductState, ProductStatus} from "../types/productType";
+import {
+  addProduct,
+  deleteProduct,
+  editProduct,
+  fetchProduct,
+  fetchSellProduct,
+  sellProduct
+} from "./productAsyncAction";
+import {ProductState, ProductStatus} from "./productType";
 
 const productSlice = createSlice({
   name: 'product',
   initialState: {
     products: [],
+    sellProduct: [],
     status: 'none'
   } as ProductState,
   reducers: {
@@ -22,6 +30,16 @@ const productSlice = createSlice({
       state.products = action.payload
     })
     builder.addCase(fetchProduct.rejected, (state: ProductState) => {
+      state.status = 'error'
+    })
+    builder.addCase(fetchSellProduct.pending, (state: ProductState) => {
+      state.status = 'loading'
+    })
+    builder.addCase(fetchSellProduct.fulfilled, (state: ProductState, action) => {
+      state.status = 'success'
+      state.sellProduct = action.payload
+    })
+    builder.addCase(fetchSellProduct.rejected, (state: ProductState) => {
       state.status = 'error'
     })
     builder.addCase(addProduct.pending, (state: ProductState) => {

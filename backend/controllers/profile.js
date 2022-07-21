@@ -18,11 +18,12 @@ module.exports.getMyProfile = async (req, res) => {
 module.exports.changeProfile = async (req, res) => {
   const candidate = await User.findOne({_id: req.user.id})
   if (candidate) {
+    console.log(req.body)
+
     const profile = {
       email: candidate.email,
       firstName: req.body.firstName ? req.body.firstName : candidate.firstName,
       lastName: req.body.lastName ? req.body.lastName : candidate.lastName,
-      oldPassword: req.body.oldPassword ? req.body.oldPassword : '',
       companyName: req.body.companyName ? req.body.companyName : candidate.companyName,
       productCategory: req.body.productCategory ? req.body.productCategory : candidate.productCategory,
       address: req.body.address ? req.body.address : candidate.address,
@@ -31,63 +32,48 @@ module.exports.changeProfile = async (req, res) => {
     }
 
     try {
-      await Product.updateOne({_id: req.user.id}, {
-        $set: {
-          address: profile.address
-        }
-      })
-
-    } catch (e) {
-      errorHandler(res, e)
-    }
-
-    try {
       await User.updateOne({_id: req.user.id}, {
         $set: {
           ...profile,
         }
       })
-      let passwordResult = null
       if (req.body.oldPassword) {
-        passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
+        const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
+
+        if (passwordResult) {
+          const newPassword = req.body.password
+          const salt = bcrypt.genSaltSync(10)
+          await User.updateOne(
+            {_id: req.user.id},
+            {
+              $set: {
+                password: bcrypt.hashSync(newPassword, salt),
+              }
+            })
+          return await dataResponse(req.user.id, true)
+        }
+        return await dataResponse(req.user.id, false)
       }
 
-      if (passwordResult) {
-        const password = req.body.password ? req.body.password : candidate.password
-        const salt = bcrypt.genSaltSync(10)
-        await User.updateOne(
-          {_id: req.user.id},
-          {
-            $set: {
-              password: bcrypt.hashSync(password, salt),
-            }
-          })
-      }
-      const updatedUser = await User.findOne({_id: req.user.id})
-      res.status(201).json(updatedUser)
+      return await dataResponse(req.user.id)
+
     } catch (e) {
       errorHandler(res, e)
     }
-  }
-}
 
-module.exports.changePassword = async (req, res) => {
-  try {
+    async function dataResponse(userId, isPasswordUpdate) {
+      const updatedUser = await User.findOne({_id: req.user.id})
+      const userRemoteConnections = JSON.parse(JSON.stringify(updatedUser))
+      const {__v, password, ...currentUser} = userRemoteConnections
 
-    const candidate = await User.findOne({_id: req.user.id})
-    if (candidate) {
-      const passwordResult = bcrypt.compareSync(req.body.oldPassword, candidate.password)
-      if (passwordResult) {
-        res.status(200).json(true)
-      } else {
-        res.status(200).json(false)
+      switch (isPasswordUpdate) {
+        case true:
+          return res.status(201).json({...currentUser, isPasswordUpdate: true})
+        case false:
+          return res.status(201).json({...currentUser, isPasswordUpdate: false})
+        default:
+          return res.status(201).json({...currentUser, isPasswordUpdate: null})
       }
-    } else {
-      res.status(404).json({
-        message: 'user not found'
-      })
     }
-  } catch (e) {
-    errorHandler(res, e)
   }
 }
