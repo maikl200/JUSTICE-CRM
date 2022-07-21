@@ -12,7 +12,7 @@ import {TypeUser} from "../../types/types";
 import {regEx} from "../../assets/regEx";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {regUser} from "../../redux/slices/authSlice";
+import {regUser} from "../../redux/asyncThunk/authAsyncThunk";
 import {useAppDispatch} from "../../redux/store";
 
 const CreateAcc: FC = () => {

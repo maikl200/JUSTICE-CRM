@@ -10,7 +10,8 @@ import Cookies from "js-cookie";
 import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {logInUser, setStatus} from "../../redux/slices/authSlice";
+import {logInUser} from "../../redux/asyncThunk/authAsyncThunk";
+import {setStatus} from '../../redux/slices/authSlice'
 import {useAppDispatch} from "../../redux/store";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 

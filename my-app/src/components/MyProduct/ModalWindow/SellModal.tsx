@@ -6,7 +6,7 @@ import ModalWindow from "../../ModalWindow/ModalWindow";
 import {TypeProduct} from "../../../types/types";
 import {useForm} from "react-hook-form";
 import rolling from "../../../assets/Rolling.gif";
-import {sellProduct} from "../../../redux/slices/productSlice";
+import {sellProduct} from "../../../redux/asyncThunk/productAsyncThunk";
 import {useAppDispatch} from "../../../redux/store";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
 

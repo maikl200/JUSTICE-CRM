@@ -1,32 +1,6 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import axios from "axios";
-import {TypeUser} from "../../types/types";
-import Cookies from "js-cookie";
-
-export const regUser = createAsyncThunk(
-  'auth/regUser',
-  async function (user: TypeUser) {
-    const {data} = await axios.post('http://localhost:5100/auth/register', user)
-    return data
-  }
-)
-
-export const logInUser = createAsyncThunk(
-  'auth/logInUser',
-  async function (user: TypeUser) {
-    const {data} = await axios.post('http://localhost:5100/auth/login', user)
-    Cookies.set("token", data.token)
-    return data
-  }
-)
-
-type Status = 'loading' | 'success' | 'error' | 'none'
-
-type AuthState = {
-  user: TypeUser,
-  statusReg: Status
-  statusLogIn: Status
-}
+import {createSlice} from "@reduxjs/toolkit";
+import {logInUser, regUser} from "../asyncThunk/authAsyncThunk";
+import {AuthState, AuthStatus} from "../types/authType";
 
 const authSlice = createSlice({
   name: 'auth',
@@ -37,8 +11,8 @@ const authSlice = createSlice({
   } as AuthState,
   reducers: {
     setStatus(state, action) {
-      state.statusReg = action.payload as Status
-      state.statusLogIn = action.payload as Status
+      state.statusReg = action.payload as AuthStatus
+      state.statusLogIn = action.payload as AuthStatus
     }
   },
   extraReducers: (builder) => {
