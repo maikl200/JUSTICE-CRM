@@ -34,11 +34,14 @@
       margin-top: 32px;
       gap: 10px;
 
+      @media screen and (max-width: 376px) {
+        font-size: 0.8rem;
+        margin-top: 10px;
+      }
+
       & span {
         color: #5082e1;
         cursor: pointer;
-
-
       }
     }
 
@@ -48,8 +51,17 @@
       font-size: 2.25rem;
       color: #2B3844;
 
+      @media screen and (max-width: 540px) {
+        font-size: 1.6rem;
+      }
+
+
       @media screen and (max-width: 376px) {
         font-size: 1.3rem;
+      }
+
+      @media screen and (max-width: 414px) {
+        font-size: 1.4rem;
       }
     }
 
@@ -62,6 +74,12 @@
       @media screen and (max-width: 1600px) {
         gap: 5px;
       }
+
+      @media screen and (max-width: 540px) {
+        width: 80%;
+      }
+
+
     }
 
     &_inputsRow {

@@ -16,11 +16,7 @@ const productSlice = createSlice({
     sellProduct: [],
     status: 'none'
   } as ProductState,
-  reducers: {
-    setStatus(state, action) {
-      state.status = action.payload as ProductStatus
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchProduct.pending, (state: ProductState) => {
       state.status = 'loading'
@@ -80,7 +76,5 @@ const productSlice = createSlice({
     })
   }
 })
-
-export const {setStatus} = productSlice.actions
 
 export default productSlice.reducer

@@ -27,6 +27,7 @@ export const changeProfile = createAsyncThunk(
         }
       })
       if (data.isPasswordUpdate) {
+
         payload.clearPasswordFields(data)
       }
       return data
