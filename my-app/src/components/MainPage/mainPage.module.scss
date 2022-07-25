@@ -1,0 +1,57 @@
+.main {
+  display: flex;
+  width: 100%;
+
+  &_statisticsBar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background: #F8F8F8;
+
+    &_diogram {
+      display: flex;
+      width: 90%;
+      padding-top: 40px;
+      border-top: 1px solid rgba(60, 78, 96, 0.08);
+      gap: 24px;
+      flex-direction: row;
+
+      &_stack {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      &_line {
+        display: flex;
+        flex-direction: column;
+        background: white;
+
+        &_titleBar {
+          padding: 32px 0 0 32px;
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 18px;
+          color: #2b3844;
+        }
+      }
+
+      &_bar {
+        background: white;
+
+        & div div div svg:first-child g:nth-child(4) g:first-child text:last-child {
+          display: none !important;
+        }
+      }
+
+      &_pie {
+        display: flex;
+        justify-content: center;
+        background: white;
+      }
+    }
+  }
+}

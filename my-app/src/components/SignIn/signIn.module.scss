@@ -1,0 +1,56 @@
+.main {
+  display: flex;
+  height: 100vh;
+
+  &_logInBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+
+    &_errorTop {
+      display: flex;
+      justify-content: center;
+      background: #ff7675;
+      color: #000000;
+    }
+
+    &_error {
+      color: #ff7675;
+      height: 20px;
+    }
+
+    &_regPage {
+      display: flex;
+      justify-content: center;
+      color: #5082e1;
+      cursor: pointer;
+    }
+
+    &_title {
+      display: flex;
+      justify-content: center;
+      font-size: 2.25rem;
+      color: #2B3844;
+    }
+
+    &_form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.875rem;
+      width: 50%;
+
+      @media screen and (max-width: 540px) {
+        width: 80%;
+        gap: 0.875rem;
+      }
+    }
+  }
+
+  &_imgBlock {
+    display: flex;
+    justify-content: flex-end;
+    width: 50%;
+  }
+}

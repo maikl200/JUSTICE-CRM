@@ -1,0 +1,107 @@
+.main {
+  display: flex;
+  height: 100vh;
+
+  &_regBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    &_errorTop {
+      display: flex;
+      justify-content: center;
+      background: #ff7675;
+    }
+
+
+    &_error {
+      display: flex;
+      align-items: flex-end;
+      color: #ff7675;
+    }
+
+    &_errorBlock {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+    }
+
+    &_logInPage {
+      display: flex;
+      justify-content: center;
+      margin-top: 32px;
+      gap: 10px;
+
+      @media screen and (max-width: 376px) {
+        font-size: 0.8rem;
+        margin-top: 10px;
+      }
+
+      & span {
+        color: #5082e1;
+        cursor: pointer;
+      }
+    }
+
+    &_title {
+      display: flex;
+      justify-content: center;
+      font-size: 2.25rem;
+      color: #2B3844;
+
+      @media screen and (max-width: 540px) {
+        font-size: 1.6rem;
+      }
+
+
+      @media screen and (max-width: 376px) {
+        font-size: 1.3rem;
+      }
+
+      @media screen and (max-width: 414px) {
+        font-size: 1.4rem;
+      }
+    }
+
+    &_form {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      gap: 24px;
+
+      @media screen and (max-width: 1600px) {
+        gap: 5px;
+      }
+
+      @media screen and (max-width: 540px) {
+        width: 80%;
+      }
+
+
+    }
+
+    &_inputsRow {
+      display: flex;
+      margin-top: 48px;
+      gap: 1rem;
+
+      @media screen and (max-width: 1597px) and (min-width: 1548px) {
+        width: 190px;
+      }
+      @media screen and (max-width: 1021px) {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5px;
+        gap: 0.5rem;
+      }
+    }
+  }
+
+  &_imgBlock {
+    display: flex;
+    justify-content: flex-end;
+    width: 50%;
+  }
+}

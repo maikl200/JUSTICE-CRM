@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  padding-top: 64px;
+
+  &_logOutBlock {
+    display: flex;
+    position: absolute;
+    border-top: 3px solid #E8EBEF;
+    bottom: 0;
+    gap: 15px;
+    color: #a9aeb3;
+  }
+
+  &_navElements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+  }
+}
+
+.active {
+  text-decoration: none;
+
+  button {
+    background: #F4F6FAFF;
+    color: #5382E7;
+    border-right: 1px solid #5382E7;
+  }
+}

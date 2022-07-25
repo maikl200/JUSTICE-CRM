@@ -1,0 +1,36 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+
+  & input {
+    padding: 1rem;
+    border: 0.063rem solid rgba(178, 178, 178, 0.9);
+    border-radius: 0.188rem;
+    width: 100%;
+
+    @media screen and (max-width: 540px) {
+      padding: 0.5rem;
+    }
+
+    @media screen and (max-width: 376px) {
+      padding: 0.5rem;
+    }
+
+    &::placeholder {
+      opacity: 0.3;
+    }
+  }
+
+  &_error {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    bottom: -20px;
+    background: #ff7675;
+  }
+}
