@@ -2,24 +2,26 @@ import React, {FC, useState} from 'react';
 
 import NavBar from "../../UI/NavBar/NavBar";
 import Header from "../../UI/Header/Header";
-
-import style from './personalCabinet.module.scss'
-
-import {Form, Formik} from 'formik'
+import TextField from "../../UI/TextField/TextField";
 import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {useWindowSize} from "../../hooks/useWindowSize";
-import rolling from "../../assets/Rolling.gif";
+import {validationSchema} from "./ValidationSchema/ValidationSchema";
+
 import {
   changeProfile,
   deleteAvatar,
   uploadAvatar
 } from '../../redux/slices/user/userAsyncAction';
 import {useAppDispatch} from "../../redux/store";
+import {Form, Formik, FormikHelpers, FormikValues} from 'formik'
+import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {useWindowSize} from "../../hooks/useWindowSize";
+
 import {TypeUser} from "../../types/types";
-import {validationSchema} from "./ValidationSchema/ValidationSchema";
-import TextField from "../../UI/TextField/TextField";
+
+import style from './personalCabinet.module.scss'
+
+import rolling from "../../assets/Rolling.gif";
 
 const PersonalCabinet: FC = () => {
   const [image, setImage] = useState<FileList | null>()
@@ -58,28 +60,33 @@ const PersonalCabinet: FC = () => {
     password: '',
   }
 
+  const onSubmit = (data: FormikValues, helper: FormikHelpers<FormikValues>) => {
+    if (status === 'loading') return
+    const clearPasswordFields = async () => {
+      helper.setFieldValue('oldPassword', '')
+      await helper.setFieldValue('password', '')
+      helper.setFieldError('password', '')
+    }
+    changeCurrentProfile(clearPasswordFields, helper.setFieldError, data)
+    setPreviewAvatarState('')
+    helper.resetForm({values: data})
+    if (!image) return
+    dispatch(uploadAvatar(image[0]))
+  }
+
   return (
     <main className={style.main}>
       <NavBar/>
       <div className={style.main_personalCabinetBar}>
-        <Header title='Personal Cabinet'
-                subTitle='Information about your account'/>
+        <Header
+          title='Personal Cabinet'
+          subTitle='Information about your account'/>
         {!!Object.keys(user).length &&
           <Formik
             initialValues={initialState}
             validationSchema={validationSchema()}
-            onSubmit={(data, helper) => {
-              if (status === 'loading') return
-              const clearPasswordFields = async () => {
-                helper.setFieldValue('oldPassword', '')
-                await helper.setFieldValue('password', '')
-                helper.setFieldError('password', '')
-              }
-              changeCurrentProfile(clearPasswordFields, helper.setFieldError, data)
-              setPreviewAvatarState('')
-              helper.resetForm({values: data})
-              if (!image) return
-              dispatch(uploadAvatar(image[0]))
+            onSubmit={(data, helper: FormikHelpers<FormikValues>) => {
+              onSubmit(data, helper)
             }}
           >
             {({

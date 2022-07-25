@@ -171,15 +171,10 @@ const CreateAcc: FC = () => {
             onClick={() => navigate('/signIn')}>Log in</span></span>
         </form>
       </div>
-      {width! > 1548
-        ?
+      {width! > 1548 &&
         <div className={style.main_imgBlock}>
           <img src={imgReg} alt='RegImg'/>
-        </div>
-        :
-        ''
-      }
-
+        </div>}
     </main>
   );
 };
