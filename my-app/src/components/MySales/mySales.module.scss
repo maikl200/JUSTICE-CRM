@@ -8,6 +8,8 @@
     flex-direction: column;
     background: #f8f8f8;
     width: 100%;
+    max-height: 100vh;
+    overflow-x: hidden;
 
     &_salesCard {
       display: flex;
@@ -15,9 +17,7 @@
       width: 90%;
       font-size: 14px;
       margin-top: 28px;
-      max-height: calc(100vh - 180px);
       overflow: scroll;
-      overflow-x: hidden;
 
       &_Title {
         display: flex;

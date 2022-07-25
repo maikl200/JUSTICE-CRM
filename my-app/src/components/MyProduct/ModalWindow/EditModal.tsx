@@ -46,6 +46,10 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
         title='Editing a product'>
         <Input
           {...register('store', {
+            maxLength: {
+              value: 15,
+              message: 'The name is too long'
+            },
             required: 'Required field',
             pattern: {
               value: regEx.name,
@@ -76,6 +80,10 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
         />
         <Input
           {...register('productCategory', {
+            maxLength: {
+              value: 15,
+              message: 'The name is too long'
+            },
             required: 'Required field',
             pattern: {
               value: regEx.name,

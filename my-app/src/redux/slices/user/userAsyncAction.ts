@@ -17,7 +17,7 @@ export const fetchUsers = createAsyncThunk(
 
 export const changeProfile = createAsyncThunk(
   'user/changeProfile',
-  async function (payload: { clearPasswordFields: (nextState: any) => void, validateError: (field: string, message: (string | undefined)) => void, valueOldPassword: string, data: TypeUser }) {
+  async function (payload: { clearPasswordFields: (nextState: string) => void, validateError: (field: string, message: (string | undefined)) => void, data: TypeUser }) {
     try {
       const {data} = await axios.patch('http://localhost:5100/profile/changeProfile', {
         ...payload.data

@@ -41,6 +41,7 @@ module.exports.sellProduct = async function (req, res) {
       }
     })
     const updatedProducts = await Product.find({userId: userId})
+    console.log(updatedProducts)
 
     res.status(201).json(updatedProducts)
   } catch (e) {

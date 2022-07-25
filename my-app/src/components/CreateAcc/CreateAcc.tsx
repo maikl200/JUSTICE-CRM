@@ -70,7 +70,7 @@ const CreateAcc: FC = () => {
                   }
                 })}
                 errorBorder={errors.firstName ? '1px solid red' : ''}
-                title='First name'
+                label='First name'
                 error={errors.firstName && errors.firstName.message}
                 placeholder='First name'
                 type='text'
@@ -87,7 +87,7 @@ const CreateAcc: FC = () => {
                 })}
                 errorBorder={errors.lastName && '1px solid red'}
                 error={errors.lastName && errors.lastName.message}
-                title='Last name'
+                label='Last name'
                 placeholder='Last name'
                 type='text'
               />
@@ -108,7 +108,7 @@ const CreateAcc: FC = () => {
             errorBorder={errors.companyName && '1px solid red'}
             error={errors.companyName && errors.companyName.message}
             name='companyName'
-            title='Company name'
+            label='Company name'
             placeholder='Company name'
             type='text'
           />
@@ -124,7 +124,7 @@ const CreateAcc: FC = () => {
             errorBorder={errors.email && '1px solid red'}
             error={errors.email && errors.email.message}
             name='email'
-            title='Email'
+            label='Email'
             placeholder='Email'
             type='email'
           />
@@ -140,7 +140,7 @@ const CreateAcc: FC = () => {
             errorBorder={errors.password && '1px solid red'}
             error={errors.password && errors.password.message}
             name='password'
-            title='Password'
+            label='Password'
             placeholder='Password'
             type='password'
           />
@@ -155,7 +155,7 @@ const CreateAcc: FC = () => {
             errorBorder={errors.repeatPassword && '1px solid red'}
             error={errors.repeatPassword && errors.repeatPassword.message}
             name='repeatPassword'
-            title='Repeat password'
+            label='Repeat password'
             placeholder='Repeat password'
             type='password'
           />

@@ -1,20 +1,19 @@
-import React, {ChangeEvent, FC, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef} from 'react';
+import React, {ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef} from 'react';
 
 import style from './input.module.scss'
-import {DeepRequired, FieldErrors, FieldErrorsImpl, FieldValues} from "react-hook-form";
-import {FormikErrors} from "formik";
+import {FieldErrors, FieldValues} from "react-hook-form";
 
 interface Props {
-  title?: string
+  label?: string
   placeholder?: string
-  type: string
+  type?: string
   width?: string
   name?: string
   className?: string
   defaultValue?: string | number
   errorBorder?: string
-  error?:  FieldErrors<FieldValues> | string | boolean
-  onBlur?: any
+  error?: FieldErrors<FieldValues> | string | boolean
+  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   readOnly?: boolean
   value?: string | number
@@ -22,7 +21,7 @@ interface Props {
 
 const InputUI: ForwardRefRenderFunction<any, Props> = (
   {
-    title,
+    label,
     placeholder,
     name,
     type,
@@ -49,7 +48,7 @@ const InputUI: ForwardRefRenderFunction<any, Props> = (
   return (
     <>
       <label className={style.label}>
-        {title}
+        {label}
         <input
           className={className}
           name={name}

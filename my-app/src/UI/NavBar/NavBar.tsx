@@ -32,7 +32,8 @@ const NavBar: FC = () => {
       <nav className={style.nav}>
         <img src={Logo} alt='Logo'/>
         <div className={style.nav_navElements}>
-          <NavLink style={{textDecoration: 'none'}} to='/mainPage' className={({isActive}) => isActive && style.active}>
+          <NavLink style={{textDecoration: 'none'}} to='/mainPage'
+                   className={({isActive}) => isActive ? style.active : null}>
             <ButtonUI
               bchactive='red'
               icon='home'
@@ -49,7 +50,7 @@ const NavBar: FC = () => {
           <NavLink
             style={{textDecoration: 'none'}}
             to='/myProduct'
-            className={({isActive}) => isActive && style.active}>
+            className={({isActive}) => isActive ? style.active : null}>
             <ButtonUI
               icon='document'
               title='My Products'
@@ -64,7 +65,7 @@ const NavBar: FC = () => {
           </NavLink>
           <NavLink
             style={{textDecoration: 'none'}}
-            to='/mySales' className={({isActive}) => isActive && style.active}>
+            to='/mySales' className={({isActive}) => isActive ? style.active : null}>
             <ButtonUI
               icon='percent'
               title='My sales'
@@ -81,7 +82,7 @@ const NavBar: FC = () => {
           <NavLink
             style={{textDecoration: 'none'}}
             to='/personalCabinet'
-            className={({isActive}) => isActive && style.active}>
+            className={({isActive}) => isActive ? style.active : null}>
             <ButtonUI
               icon='user'
               title='Personal Cabinet'

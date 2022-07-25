@@ -70,7 +70,7 @@ const SignIn: FC = () => {
             errorBorder={errors.email && '1px solid red'}
             error={errors.email && errors.email.message}
             name='email'
-            title='Email'
+            label='Email'
             placeholder='Email'
             type='email'
           />
@@ -85,7 +85,7 @@ const SignIn: FC = () => {
             errorBorder={errors.password && '1px solid red'}
             error={errors.password && errors.password.message}
             name='password'
-            title='Password'
+            label='Password'
             placeholder='Password'
             type='password'
           />
