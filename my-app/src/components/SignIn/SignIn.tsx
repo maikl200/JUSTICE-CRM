@@ -1,20 +1,23 @@
 import React, {FC, useEffect, useState} from 'react';
 
-import style from './signIn.module.scss'
 import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
-import imgReg from "../../assets/img_at_registration.png";
+
 import {useNavigate} from "react-router-dom";
-import {regEx} from "../../assets/regEx";
-import Cookies from "js-cookie";
-import {TypeUser} from "../../types/types";
 import {useForm} from "react-hook-form";
 import {useWindowSize} from "../../hooks/useWindowSize";
-import {logInUser} from "../../redux/slices/auth/authAsyncAction";
-import {setStatus} from '../../redux/slices/auth/authSlice'
 import {useAppDispatch} from "../../redux/store";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+import {regEx} from "../../assets/regEx";
+import Cookies from "js-cookie";
+import {logInUser} from "../../redux/slices/auth/authAsyncAction";
+import {setStatus} from '../../redux/slices/auth/authSlice'
 
+import {TypeUser} from "../../types/types";
+
+import style from './signIn.module.scss'
+
+import imgReg from "../../assets/img_at_registration.png";
 
 const SignIn: FC = () => {
   const navigate = useNavigate()

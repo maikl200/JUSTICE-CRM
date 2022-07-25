@@ -1,22 +1,17 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import style from "./header.module.scss";
-import ButtonUI from "../ButtonTS/ButtonUI";
-import file from "../../assets/file.svg";
-import ModalWindow from "../ModalWindow/ModalWindow";
-import {Input} from "../InputUI/Input";
-import plus from "../../assets/Plus.svg";
-import rolling from '../../assets/Rolling.gif'
 
-import previeAvatar from '../../assets/previeAvatar.jpg'
-import {TypeProduct} from "../../types/types";
-import {regEx} from "../../assets/regEx";
+import AddProductModalWindow from "./ModalWindow/AddProductModalWindow";
+import ButtonUI from "../ButtonTS/ButtonUI";
+
+import {useAppDispatch} from "../../redux/store";
 import {useLocation} from "react-router-dom";
-import {PathEnum} from "../AppRouter/AppRouter";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useForm} from "react-hook-form";
-import {useAppDispatch} from "../../redux/store";
+import {PathEnum} from "../AppRouter/AppRouter";
 import {addProduct} from "../../redux/slices/product/productAsyncAction";
 import {fetchUsers} from "../../redux/slices/user/userAsyncAction";
+
+import {TypeProduct} from "../../types/types";
 
 interface HeaderProps {
   title: string
@@ -26,6 +21,11 @@ interface HeaderProps {
   formFirstName?: string
 }
 
+import style from "./header.module.scss";
+import file from "../../assets/file.svg";
+import previeAvatar from '../../assets/previeAvatar.jpg'
+
+
 const Header: FC<HeaderProps> =
   ({
      title,
@@ -34,21 +34,10 @@ const Header: FC<HeaderProps> =
 
     const [modalActive, setModalActive] = useState<boolean>(false)
     const {user} = useTypedSelector(state => state.user)
-    const {status} = useTypedSelector(state => state.product)
     const dispatch = useAppDispatch()
     const {pathname} = useLocation();
 
-    const {
-      register,
-      reset,
-      formState: {
-        errors,
-        isValid,
-      },
-      handleSubmit
-    } = useForm({
-      mode: 'all'
-    })
+    const {reset} = useForm()
 
     useEffect(() => {
       dispatch(fetchUsers())
@@ -93,118 +82,7 @@ const Header: FC<HeaderProps> =
             {user?.firstName}
           </div>
         </div>
-        {modalActive &&
-          <ModalWindow
-            onClose={close}
-            onSubmit={handleSubmit(onSubmit)}
-            title='Creating a product'>
-            <Input
-              {...register('store', {
-                required: 'Required field',
-                maxLength: {
-                  value: 15,
-                  message: 'Long title'
-                },
-                pattern: {
-                  value: regEx.name,
-                  message: 'Invalid store'
-                },
-              })}
-              errorBorder={errors.store && '1px solid red'}
-              error={errors.store && errors.store.message}
-              placeholder='Store'
-              type='text'
-              defaultValue={''}
-            />
-            <Input
-              {...register('price', {
-                required: 'Required field',
-                valueAsNumber: true,
-                validate: (value) => {
-                  return value <= 5000 && value > 0
-                    ||
-                    'No more than 5,000 or no less than 1'
-                }
-              })}
-              errorBorder={errors.price && '1px solid red'}
-              error={errors.price && errors.price.message}
-              placeholder='Price'
-              type='number'
-            />
-            <Input
-              {...register('productName', {
-                required: 'Required field',
-                maxLength: {
-                  value: 15,
-                  message: 'Long title'
-                },
-                pattern: {
-                  value: regEx.name,
-                  message: 'Invalid product name'
-                },
-              })}
-              errorBorder={errors.productName && '1px solid red'}
-              error={errors.productName && errors.productName.message}
-              placeholder='Product name'
-              type='text'
-              defaultValue={''}
-            />
-            <Input
-              {...register('productCategory', {
-                required: 'Required field',
-                maxLength: {
-                  value: 15,
-                  message: 'Long title'
-                },
-                pattern: {
-                  value: regEx.name,
-                  message: 'Invalid category'
-                },
-              })}
-              errorBorder={errors.productCategory && '1px solid red'}
-              error={errors.productCategory && errors.productCategory.message}
-              placeholder='Product Category'
-              type='text'
-            />
-            <Input
-              {...register('quantityGoods', {
-                required: 'Required field',
-                valueAsNumber: true,
-                validate: (value) => {
-                  return value <= 200 && value > 0
-                    ||
-                    'No more than 200 or no less than 1'
-                }
-              })}
-              errorBorder={errors.quantityGoods && '1px solid red'}
-              error={errors.quantityGoods && errors.quantityGoods.message}
-              placeholder='Quantity of goods'
-              type='number'
-            />
-            <Input
-              {...register('weightVolumeOneItem', {
-                required: 'Required field',
-                valueAsNumber: true,
-                validate: (value) => {
-                  return value <= 20 && value > 0
-                    ||
-                    'No more than 20 or no less than 1'
-                }
-              })}
-              errorBorder={errors.weightVolumeOneItem && '1px solid red'}
-              error={errors.weightVolumeOneItem && errors.weightVolumeOneItem.message}
-              placeholder='Weight / Volume of one item'
-              type='number'
-            />
-            <ButtonUI
-              disabled={!isValid || status === 'loading'}
-              height='52px'
-              title={status === 'loading' ? 'Loading...' : 'Add Product'}
-              type='submit'
-              width='300px'
-              rightSrc={status === 'loading' ? rolling : plus}
-              rightAlt='plusIcon'/>
-          </ModalWindow>}
+        {modalActive && <AddProductModalWindow close={close} onSubmit={onSubmit}/>}
       </div>
     );
   };

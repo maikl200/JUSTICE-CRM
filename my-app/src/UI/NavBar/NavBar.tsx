@@ -1,14 +1,15 @@
 import React, {FC, useEffect} from 'react';
 
-import Logo from '../../assets/Logo.svg'
-import style from './navBar.module.scss'
-
-import Cookies from 'js-cookie'
-
+import {useAppDispatch} from "../../redux/store";
 import ButtonUI from "../ButtonTS/ButtonUI";
+
 import {NavLink, useNavigate} from "react-router-dom";
 import {setStatus} from "../../redux/slices/auth/authSlice";
-import {useAppDispatch} from "../../redux/store";
+import Cookies from 'js-cookie'
+
+import style from './navBar.module.scss'
+
+import Logo from '../../assets/Logo.svg'
 
 const NavBar: FC = () => {
 

@@ -1,6 +1,7 @@
 import React, {FC} from 'react';
 
 import style from './modalWindow.module.scss'
+
 import cross from '../../assets/Cross.svg'
 
 interface ModalCreatingProductProps {

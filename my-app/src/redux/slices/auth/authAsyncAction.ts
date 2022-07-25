@@ -1,7 +1,9 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {TypeUser} from "../../../types/types";
+
 import axios from "axios";
 import Cookies from "js-cookie";
+
+import {TypeUser} from "../../../types/types";
 
 export const regUser = createAsyncThunk(
   'auth/regUser',

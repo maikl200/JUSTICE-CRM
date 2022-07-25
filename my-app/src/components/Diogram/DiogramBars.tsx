@@ -1,10 +1,10 @@
 import React, {FC, useEffect} from 'react';
+
 import Chart from "react-apexcharts";
 
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useAppDispatch} from "../../redux/store";
 import {fetchSellProduct} from "../../redux/slices/product/productAsyncAction";
-
 
 const DiogramBars: FC = () => {
 

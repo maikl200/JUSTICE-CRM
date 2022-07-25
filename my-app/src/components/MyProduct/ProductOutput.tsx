@@ -1,15 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import style from "./myProduct.module.scss";
+
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
-import pencil from "../../assets/pencil.svg";
-import deleteIcon from "../../assets/Delete.svg";
-import {useTypedSelector} from "../../hooks/useTypedSelector";
-import {TypeProduct} from "../../types/types";
-import {useForm} from "react-hook-form";
 import EditModal from "./ModalWindow/EditModal";
 import SellModal from "./ModalWindow/SellModal";
+
+import {useForm} from "react-hook-form";
+import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {deleteProduct, fetchProduct} from "../../redux/slices/product/productAsyncAction";
 import {useAppDispatch} from "../../redux/store";
+
+import {TypeProduct} from "../../types/types";
+
+import style from "./myProduct.module.scss";
+
+import pencil from "../../assets/pencil.svg";
+import deleteIcon from "../../assets/Delete.svg";
 
 const ProductOutput = () => {
   const [isEditModalActive, setIsEditModalActive] = useState<boolean>(false)

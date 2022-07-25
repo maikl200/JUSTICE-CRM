@@ -7,7 +7,7 @@ import {
   fetchSellProduct,
   sellProduct
 } from "./productAsyncAction";
-import {ProductState, ProductStatus} from "./productType";
+import {ProductState} from "./productType";
 
 const productSlice = createSlice({
   name: 'product',

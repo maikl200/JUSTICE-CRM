@@ -1,16 +1,16 @@
 import React, {FC, useEffect} from 'react';
 
-import style from './mainPage.module.scss'
-
-
 import NavBar from "../../UI/NavBar/NavBar";
 import DiogramPie from "../Diogram/DiogramPie";
 import DiogramBars from "../Diogram/DiogramBars";
 import DiogramLine from "../Diogram/DiogramLine";
 import Header from '../../UI/Header/Header'
+
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {fetchSellProduct} from "../../redux/slices/product/productAsyncAction";
 import {useAppDispatch} from "../../redux/store";
+
+import style from './mainPage.module.scss'
 
 const MainPage: FC = () => {
 

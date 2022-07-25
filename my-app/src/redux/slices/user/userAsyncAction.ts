@@ -1,6 +1,8 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
+
 import axios from "axios";
 import Cookies from "js-cookie";
+
 import {TypeUser} from "../../../types/types";
 
 export const fetchUsers = createAsyncThunk(

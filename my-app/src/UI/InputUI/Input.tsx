@@ -1,7 +1,8 @@
 import React, {ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef} from 'react';
 
-import style from './input.module.scss'
 import {FieldErrors, FieldValues} from "react-hook-form";
+
+import style from './input.module.scss'
 
 interface Props {
   label?: string

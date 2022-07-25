@@ -1,19 +1,22 @@
 import React, {FC, useEffect, useState} from 'react';
 
-import style from './createAcc.module.scss'
-import imgReg from '../../assets/img_at_registration.png'
-import {Input} from "../../UI/InputUI/Input";
 import ButtonUI from "../../UI/ButtonTS/ButtonUI";
-import {useNavigate} from "react-router-dom";
+import {Input} from "../../UI/InputUI/Input";
 
-import Cookies from "js-cookie";
-import {useForm} from "react-hook-form";
-import {TypeUser} from "../../types/types";
-import {regEx} from "../../assets/regEx";
+import {useNavigate} from "react-router-dom";
+import {useAppDispatch} from "../../redux/store";
 import {useTypedSelector} from "../../hooks/useTypedSelector";
 import {useWindowSize} from "../../hooks/useWindowSize";
+import {useForm} from "react-hook-form";
+import Cookies from "js-cookie";
+import {regEx} from "../../assets/regEx";
 import {regUser} from "../../redux/slices/auth/authAsyncAction";
-import {useAppDispatch} from "../../redux/store";
+
+import {TypeUser} from "../../types/types";
+
+import style from './createAcc.module.scss'
+
+import imgReg from '../../assets/img_at_registration.png'
 
 const CreateAcc: FC = () => {
 
@@ -172,9 +175,9 @@ const CreateAcc: FC = () => {
         </form>
       </div>
       {width! > 1548 &&
-        <div className={style.main_imgBlock}>
-          <img src={imgReg} alt='RegImg'/>
-        </div>}
+          <div className={style.main_imgBlock}>
+            <img src={imgReg} alt='RegImg'/>
+          </div>}
     </main>
   );
 };

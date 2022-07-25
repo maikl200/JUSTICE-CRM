@@ -1,15 +1,18 @@
 import React, {Dispatch, FC, SetStateAction, useCallback} from 'react';
+
 import {Input} from "../../../UI/InputUI/Input";
-import {regEx} from "../../../assets/regEx";
 import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
 import ModalWindow from "../../../UI/ModalWindow/ModalWindow";
-import {TypeProduct} from "../../../types/types";
-import {useForm} from "react-hook-form";
-import rolling from "../../../assets/Rolling.gif";
+
+import {regEx} from "../../../assets/regEx";
 import {sellProduct} from "../../../redux/slices/product/productAsyncAction";
 import {useAppDispatch} from "../../../redux/store";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
+import {useForm} from "react-hook-form";
 
+import {TypeProduct} from "../../../types/types";
+
+import rolling from "../../../assets/Rolling.gif";
 
 interface SellModalProps {
   sellId: string

@@ -1,6 +1,8 @@
 import React from 'react';
-import style from "./mySales.module.scss";
+
 import {useTypedSelector} from "../../hooks/useTypedSelector";
+
+import style from "./mySales.module.scss";
 
 const SellProductOutput = () => {
   const {sellProduct} = useTypedSelector(state => state.product)

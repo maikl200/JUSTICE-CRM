@@ -1,26 +1,24 @@
-import React, {Dispatch, FC, SetStateAction, useCallback} from 'react';
+import React, {FC} from 'react';
 
-import {Input} from "../../../UI/InputUI/Input";
-import ButtonUI from "../../../UI/ButtonTS/ButtonUI";
-import ModalWindow from "../../../UI/ModalWindow/ModalWindow";
+import ModalWindow from "../../ModalWindow/ModalWindow";
+import {Input} from "../../InputUI/Input";
+import ButtonUI from "../../ButtonTS/ButtonUI";
 
 import {regEx} from "../../../assets/regEx";
 import {useForm} from "react-hook-form";
-import {useAppDispatch} from "../../../redux/store";
 import {useTypedSelector} from "../../../hooks/useTypedSelector";
-import {editProduct} from "../../../redux/slices/product/productAsyncAction";
 
 import {TypeProduct} from "../../../types/types";
 
-import rolling from "../../../assets/Rolling.gif";
-
-interface EditModalProps {
-  editId: string
-  dataEditProduct?: TypeProduct
-  setIsEditModalActive: Dispatch<SetStateAction<boolean>>
+interface addProductModalWindowProps {
+  onSubmit: (product: TypeProduct) => void
+  close: () => void
 }
 
-const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalActive}) => {
+import rolling from "../../../assets/Rolling.gif";
+import plus from "../../../assets/Plus.svg";
+
+const AddProductModalWindow: FC<addProductModalWindowProps> = ({onSubmit, close}) => {
   const {
     register,
     formState: {
@@ -31,30 +29,21 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
   } = useForm({
     mode: 'all'
   })
-  const dispatch = useAppDispatch()
+
   const {status} = useTypedSelector(state => state.product)
-
-  const close = useCallback(() => {
-    setIsEditModalActive(false)
-  }, [])
-
-  const editButton = (product: TypeProduct) => {
-    dispatch(editProduct({close, editId, product}))
-  }
-
   return (
-    <div>
+    <>
       <ModalWindow
         onClose={close}
-        onSubmit={handleSubmit(editButton)}
-        title='Editing a product'>
+        onSubmit={handleSubmit(onSubmit)}
+        title='Creating a product'>
         <Input
           {...register('store', {
+            required: 'Required field',
             maxLength: {
               value: 15,
-              message: 'The name is too long'
+              message: 'Long title'
             },
-            required: 'Required field',
             pattern: {
               value: regEx.name,
               message: 'Invalid store'
@@ -62,13 +51,13 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           })}
           errorBorder={errors.store && '1px solid red'}
           error={errors.store && errors.store.message}
-          defaultValue={dataEditProduct?.store}
           placeholder='Store'
           type='text'
-
+          defaultValue={''}
         />
         <Input
           {...register('price', {
+            required: 'Required field',
             valueAsNumber: true,
             validate: (value) => {
               return value <= 5000 && value > 0
@@ -78,17 +67,34 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           })}
           errorBorder={errors.price && '1px solid red'}
           error={errors.price && errors.price.message}
-          defaultValue={dataEditProduct?.price!}
           placeholder='Price'
           type='number'
         />
         <Input
-          {...register('productCategory', {
+          {...register('productName', {
+            required: 'Required field',
             maxLength: {
               value: 15,
-              message: 'The name is too long'
+              message: 'Long title'
             },
+            pattern: {
+              value: regEx.name,
+              message: 'Invalid product name'
+            },
+          })}
+          errorBorder={errors.productName && '1px solid red'}
+          error={errors.productName && errors.productName.message}
+          placeholder='Product name'
+          type='text'
+          defaultValue={''}
+        />
+        <Input
+          {...register('productCategory', {
             required: 'Required field',
+            maxLength: {
+              value: 15,
+              message: 'Long title'
+            },
             pattern: {
               value: regEx.name,
               message: 'Invalid category'
@@ -96,12 +102,12 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           })}
           errorBorder={errors.productCategory && '1px solid red'}
           error={errors.productCategory && errors.productCategory.message}
-          defaultValue={dataEditProduct?.productCategory}
-          placeholder='Category'
+          placeholder='Product Category'
           type='text'
         />
         <Input
           {...register('quantityGoods', {
+            required: 'Required field',
             valueAsNumber: true,
             validate: (value) => {
               return value <= 200 && value > 0
@@ -111,13 +117,12 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           })}
           errorBorder={errors.quantityGoods && '1px solid red'}
           error={errors.quantityGoods && errors.quantityGoods.message}
-          defaultValue={dataEditProduct?.quantityGoods!}
-          placeholder='Remains'
+          placeholder='Quantity of goods'
           type='number'
-
         />
         <Input
           {...register('weightVolumeOneItem', {
+            required: 'Required field',
             valueAsNumber: true,
             validate: (value) => {
               return value <= 20 && value > 0
@@ -127,20 +132,20 @@ const EditModal: FC<EditModalProps> = ({editId, dataEditProduct, setIsEditModalA
           })}
           errorBorder={errors.weightVolumeOneItem && '1px solid red'}
           error={errors.weightVolumeOneItem && errors.weightVolumeOneItem.message}
-          defaultValue={dataEditProduct?.weightVolumeOneItem!}
-          placeholder='Weight / Volume'
+          placeholder='Weight / Volume of one item'
           type='number'
         />
         <ButtonUI
-          type='submit'
           disabled={!isValid || status === 'loading'}
+          height='52px'
+          title={status === 'loading' ? 'Loading...' : 'Add Product'}
+          type='submit'
           width='300px'
-          title={status === 'loading' ? 'Loading...' : 'Edit product'}
-          rightSrc={status === 'loading' && rolling}
-          height='52px'/>
+          rightSrc={status === 'loading' ? rolling : plus}
+          rightAlt='plusIcon'/>
       </ModalWindow>
-    </div>
+    </>
   );
 };
 
-export default EditModal;
+export default AddProductModalWindow;

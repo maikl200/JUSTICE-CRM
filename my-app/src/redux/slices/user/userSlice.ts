@@ -1,10 +1,12 @@
 import {createSlice} from "@reduxjs/toolkit";
+
 import {
   changeProfile,
   deleteAvatar,
   fetchUsers,
   uploadAvatar
 } from "./userAsyncAction";
+
 import {UserState} from "./userType";
 
 const userSlice = createSlice({

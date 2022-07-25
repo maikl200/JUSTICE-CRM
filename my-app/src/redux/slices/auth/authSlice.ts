@@ -1,5 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
+
 import {logInUser, regUser} from "./authAsyncAction";
+
 import {AuthState, AuthStatus} from "./authType";
 
 const authSlice = createSlice({
