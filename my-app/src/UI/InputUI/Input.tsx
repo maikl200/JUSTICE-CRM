@@ -6,7 +6,7 @@ import {FormikErrors} from "formik";
 
 interface Props {
   title?: string
-  placeholder: string
+  placeholder?: string
   type: string
   width?: string
   name?: string
@@ -14,7 +14,7 @@ interface Props {
   defaultValue?: string | number
   errorBorder?: string
   error?:  FieldErrors<FieldValues> | string | boolean
-  onBlur?: (e: ChangeEvent<HTMLInputElement>) => void
+  onBlur?: any
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
   readOnly?: boolean
   value?: string | number
